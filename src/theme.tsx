@@ -69,7 +69,7 @@ const themeOptions: ThemeOptions = {
 		},
 	},
 	typography: {
-		fontFamily: '"Montserrat", "Helvetica", "Arial", sans-serif',
+		fontFamily: ' "Poppins","Montserrat", "Helvetica", "Arial", sans-serif',
 		fontSize: 14,
 		h1: {
 			fontSize: "2.8rem",
@@ -164,7 +164,10 @@ const themeOptions: ThemeOptions = {
 					},
 					// contained variant
 					"&.MuiButton-contained": {
-						padding: "7px 20px",
+						padding: "10px 20px",
+						fontSize:"14px",
+						fontWeight:"500",
+						lineHeight:"20px"
 					},
 				},
 			},
