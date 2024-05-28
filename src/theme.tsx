@@ -139,6 +139,7 @@ const themeOptions: ThemeOptions = {
 		MuiAppBar: {
 			styleOverrides: {
 				colorInherit: {
+					// backgroundImage: "linear-gradient(180deg, #8CEEED, #FBFEFD)",
 					backgroundColor: "rgba(102, 209, 209, 0.1)",
 					borderBottom: "2px solid #eceefe;",
 					color: "#fff",
@@ -151,7 +152,6 @@ const themeOptions: ThemeOptions = {
 		},
 		MuiButton: {
 			defaultProps: {
-				className: "praneeth",
 				// disableElevation: true,
 				sx: {
 					borderRadius: 1,
