@@ -25,3 +25,8 @@ html {
 .DatePicker {
 	display: inherit;
 }
+
+.abosolute{
+	position: absolute;
+	right:7px;
+}
