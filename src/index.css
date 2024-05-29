@@ -1,0 +1,26 @@
+@import url("@fontsource/montserrat/300.css");
+@import url("@fontsource/montserrat/400.css");
+@import url("@fontsource/montserrat/500.css");
+@import url("@fontsource/montserrat/700.css");
+@import "suneditor/dist/css/suneditor.min.css";
+*,
+html {
+	margin: 0;
+	padding: 0;
+	font-family: "Montserrat", "Helvetica", "Arial", sans-serif;
+}
+
+::-webkit-scrollbar {
+	display: block;
+	width: 7px;
+	height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.2);
+	border-radius: 1px;
+	display: block;
+}
+.DatePicker {
+	display: inherit;
+}
