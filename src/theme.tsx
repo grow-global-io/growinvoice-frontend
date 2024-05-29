@@ -157,6 +157,7 @@ const themeOptions: ThemeOptions = {
 					borderRadius: 1,
 					minWidth: 120,
 					margin: "0px 8px",
+					textTransform: "capitalize",
 					// outlined variant
 					"&.MuiButton-outlined": {
 						borderWidth: 3,
@@ -164,10 +165,10 @@ const themeOptions: ThemeOptions = {
 					},
 					// contained variant
 					"&.MuiButton-contained": {
-						padding: "10px 20px",
-						fontSize:"14px",
-						fontWeight:"500",
-						lineHeight:"20px"
+						padding: "6px 20px",
+						fontSize: "14px",
+						fontWeight: "500",
+						lineHeight: "20px",
 					},
 				},
 			},
