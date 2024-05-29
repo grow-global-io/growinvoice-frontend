@@ -1,0 +1,38 @@
+.mainpage .menu-items {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	flex-grow: 1;
+}
+
+.mainpage .main-heading-div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding: 30px 0;
+	width: 50%;
+}
+
+.mainpage .main-heading-div .main-heading-text {
+	color: #000;
+	text-align: center;
+	font-size: 48px;
+	font-weight: 500;
+	line-height: 20px;
+}
+
+.mainpage .main-heading-div .main-heading-heading {
+	font-size: 98px;
+	font-weight: 800;
+	text-align: center;
+	line-height: 130px;
+}
+
+.mainpage .main-heading-div .main-heading-para {
+	color: #000;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 36px;
+}
