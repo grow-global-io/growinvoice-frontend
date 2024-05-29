@@ -63,8 +63,9 @@ export default function MainHome() {
 				</Box>
 
 				<Box sx={{ padding: "50px 100px" }}>
-					{mainHomeData.map((item) => (
+					{mainHomeData.map((item, index) => (
 						<MainHomeCard
+							key={index}
 							heading={item.heading}
 							text={item.text}
 							buttonText={item.buttonText}

@@ -54,7 +54,14 @@ const MainNavbar = () => {
 					>
 						Login
 					</Button>
-					<Button variant="contained">Signup</Button>
+					<Button
+						variant="contained"
+						onClick={() => {
+							navigation("/register");
+						}}
+					>
+						Signup
+					</Button>
 				</Box>
 			</Toolbar>
 		</AppBar>

@@ -54,7 +54,7 @@ function AppContainer() {
 			{protectedRoutes.map(({ path, Component }) => (
 				<Route key={path} path={path} element={<Component />} />
 			))}
-			{/* <Route path="/login" element={<Navigate to="/" replace />} /> */}
+			<Route path="/login" element={<Navigate to="/" replace />} />
 		</Routes>
 		// </Navbar>
 	);

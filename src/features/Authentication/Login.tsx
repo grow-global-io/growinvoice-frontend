@@ -16,8 +16,10 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import BgImageSvg from "../../assets/bgpng.png";
 import ForgotPassword from "./ForgotPassword";
 import { useUserControllerLoginUser } from "../../api/services/auth/users";
+import { useAuthStore } from "../../store/auth";
 
 const Login = () => {
+	const { setToken } = useAuthStore();
 	const login = useUserControllerLoginUser();
 	const initialValues = {
 		email: "",
@@ -39,7 +41,7 @@ const Login = () => {
 		event.preventDefault();
 	};
 
-	const handleSubmit = async (values: any) => {
+	const handleSubmit = async (values: typeof initialValues) => {
 		const a = await login.mutateAsync({
 			data: {
 				email: values.email,
@@ -47,6 +49,7 @@ const Login = () => {
 			},
 		});
 		console.log(a.authToken);
+		setToken(a.authToken);
 	};
 
 	return (
