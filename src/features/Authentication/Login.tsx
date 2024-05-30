@@ -17,8 +17,10 @@ import BgImageSvg from "../../assets/bgpng.png";
 import ForgotPassword from "./ForgotPassword";
 import { useUserControllerLoginUser } from "../../api/services/auth/users";
 import { useAuthStore } from "../../store/auth";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+	const navigation = useNavigate();
 	const { setToken } = useAuthStore();
 	const login = useUserControllerLoginUser();
 	const initialValues = {
@@ -90,10 +92,10 @@ const Login = () => {
 								alignItems: "center",
 							}}
 						>
-							<Typography fontWeight="600" sx={{ mb: 2, fontSize: 26 }}>
+							<Typography variant='h1' sx={{ mb: 2 }}>
 								Welcome Back!
 							</Typography>
-							<Typography color="text.secondary" sx={{ mb: 2 }} variant="caption" fontWeight="400">
+							<Typography color="text.secondary" sx={{ mb: 2 }} variant="h4" fontWeight="400" textAlign={"center"}>
 								Please login to continue with growinvoice &nbsp;
 								<Typography color="text.secondary" variant="caption" fontWeight="700">
 									GROWINVOICE
@@ -172,6 +174,7 @@ const Login = () => {
 														alignItems: "center",
 														minWidth: 200,
 													}}
+													onClick={()=>{navigation("/register");}}
 												>
 													Register
 												</Button>

@@ -1,0 +1,18 @@
+.gray {
+    background-color: #FDFDFD;
+}
+
+.sidebar-bg {
+    background-color: #F6FAFF;
+    border-right: 1px solid #EEEEEE;
+}
+
+.active {
+    background-color: #F6FAFF;
+}
+
+.list-item-style {
+    padding: 8px 0;
+    border-radius: 6px;
+    margin: 5px 0;
+}

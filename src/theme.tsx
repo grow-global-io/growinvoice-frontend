@@ -72,9 +72,9 @@ const themeOptions: ThemeOptions = {
 		fontFamily: ' "Poppins","Montserrat", "Helvetica", "Arial", sans-serif',
 		fontSize: 14,
 		h1: {
-			fontSize: "2.8rem",
+			fontSize: "2.5rem",
 			fontWeight: "bold",
-			lineHeight: "1.5rem",
+			lineHeight: "2.75rem",
 			letterspacing: "0rem",
 		},
 		h2: {
