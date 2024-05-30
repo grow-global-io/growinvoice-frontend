@@ -66,6 +66,7 @@ function App() {
 	const [backdropOpen, setBackdropOpen] = useState(false);
 
 	const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+		console.log("handleClose", event);
 		if (reason === "clickaway") {
 			return;
 		}
