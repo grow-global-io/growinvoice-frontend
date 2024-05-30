@@ -5,6 +5,18 @@ on:
 name: 🚀 Deploy website on push
 
 jobs:
+  create-env-file:
+    name: 🛠️ Create .env File
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📄 Create .env File
+        run: |
+          echo "VITE_BASE_URL=https://growinvoice-backend-16f908d94aed.herokuapp.com" > .env
+      - name: 📦 Upload .env File
+        uses: actions/upload-artifact@v3
+        with:
+          name: env-file
+          path: .env
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
