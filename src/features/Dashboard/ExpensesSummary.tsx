@@ -27,8 +27,8 @@ const ExpensesSummary = () => {
 
 	return (
 		<Box sx={{ display: "flex", gap: "20px" }}>
-			{data.map((item) => (
-				<OverviewCard name={item.name} img={item.img} />
+			{data.map((item, index) => (
+				<OverviewCard key={index} name={item.name} img={item.img} />
 			))}
 		</Box>
 	);

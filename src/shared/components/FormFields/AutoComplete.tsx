@@ -41,7 +41,7 @@ export const AutocompleteField: React.FC<
 							if (form.values[field.name].length === 0) {
 								onValueChange?.(value[0] as ListDto);
 							} else {
-								const data: any[] = [];
+								const data: ListDto[] = [];
 								value.map((obj) => {
 									if (!(form.values[field.name].indexOf(obj.value) !== -1)) {
 										data.push(obj);

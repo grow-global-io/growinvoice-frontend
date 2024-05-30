@@ -80,22 +80,20 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 					backgroundColor: "#000",
 				}}
 			>
-				<Toolbar
-					children={
-						<Box
-							sx={{
-								display: "flex",
-								alignItems: "center",
-								height: 64,
-							}}
-						>
-							<img src={logo} alt="logo" style={{ height: 64, width: 64 }} />
-							<Typography variant="h6" color={"#fff"}>
-								GROW INVOICE
-							</Typography>
-						</Box>
-					}
-				/>
+				<Toolbar>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							height: 64,
+						}}
+					>
+						<img src={logo} alt="logo" style={{ height: 64, width: 64 }} />
+						<Typography variant="h6" color={"#fff"}>
+							GROW INVOICE
+						</Typography>
+					</Box>
+				</Toolbar>
 			</Box>
 			<Divider />
 			<List>
