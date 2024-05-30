@@ -37,6 +37,7 @@ const themeOptions: ThemeOptions = {
 			main: "rgba(13, 110, 253, 1)",
 			contrastText: "#fff",
 			light: "#31C4C3",
+			
 		},
 		secondary: {
 			main: "#0D6EFD",

@@ -15,6 +15,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ConfirmDialog from "./shared/components/ConfirmDialog";
 import { useEffectOnce } from "./shared/hooks/useEffectOnce";
 import { AlertTitle } from "@mui/material";
+import Navbar from "./layout/navbar/Home/Navbar";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken } = useAuthStore();
@@ -48,15 +49,15 @@ function AppContainer() {
 	}
 
 	return (
-		// <Navbar>
-		<Routes>
-			<Route path="*" element={<NotFoundPage />} />
-			{protectedRoutes.map(({ path, Component }) => (
-				<Route key={path} path={path} element={<Component />} />
-			))}
-			<Route path="/login" element={<Navigate to="/" replace />} />
-		</Routes>
-		// </Navbar>
+		<Navbar>
+			<Routes>
+				<Route path="*" element={<NotFoundPage />} />
+				{protectedRoutes.map(({ path, Component }) => (
+					<Route key={path} path={path} element={<Component />} />
+				))}
+				<Route path="/login" element={<Navigate to="/" replace />} />
+			</Routes>
+		</Navbar>
 	);
 }
 
