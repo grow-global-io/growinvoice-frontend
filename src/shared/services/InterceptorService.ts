@@ -42,7 +42,7 @@ export class InterceptorService {
 				// check the error status code
 				if (![401, 404, 500].includes(error.response?.status || 0)) {
 					const message = error.response?.data?.message;
-					if (message && message !== "User not found") {
+					if (message) {
 						AlertService.instance.errorMessage(message);
 					}
 				}

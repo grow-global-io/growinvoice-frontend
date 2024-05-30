@@ -50,7 +50,6 @@ const Login = () => {
 				password: values.password,
 			},
 		});
-		console.log(a.authToken);
 		setToken(a.authToken);
 	};
 
@@ -92,10 +91,16 @@ const Login = () => {
 								alignItems: "center",
 							}}
 						>
-							<Typography variant='h1' sx={{ mb: 2 }}>
+							<Typography variant="h1" sx={{ mb: 2 }}>
 								Welcome Back!
 							</Typography>
-							<Typography color="text.secondary" sx={{ mb: 2 }} variant="h4" fontWeight="400" textAlign={"center"}>
+							<Typography
+								color="text.secondary"
+								sx={{ mb: 2 }}
+								variant="h4"
+								fontWeight="400"
+								textAlign={"center"}
+							>
 								Please login to continue with growinvoice &nbsp;
 								<Typography color="text.secondary" variant="caption" fontWeight="700">
 									GROWINVOICE
@@ -174,7 +179,9 @@ const Login = () => {
 														alignItems: "center",
 														minWidth: 200,
 													}}
-													onClick={()=>{navigation("/register");}}
+													onClick={() => {
+														navigation("/register");
+													}}
 												>
 													Register
 												</Button>
