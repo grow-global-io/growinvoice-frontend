@@ -1,23 +1,17 @@
 import { Dialog, DialogContent, Button, Typography } from "@mui/material";
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import * as React from "react";
 import AppDialogFooter from "../../shared/components/Dialog/AppDialogFooter";
 import AppDialogHeader from "../../shared/components/Dialog/AppDialogHeader";
 import { TextFormField } from "../../shared/components/FormFields/TextFormField";
+import { useDialog } from "../../shared/hooks/useDialog";
+import { useUserControllerForgotPassword } from "../../api/services/auth/users";
 
 export default function ForgotPassword() {
-	const [open, setOpen] = React.useState(false);
+	const { open, handleClickOpen, handleClose } = useDialog();
+	const forgotPassword = useUserControllerForgotPassword();
 
 	const initialValues = {
 		email: "",
-	};
-
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
-
-	const handleClose = () => {
-		setOpen(false);
 	};
 
 	const handleSubmit = async (
@@ -26,7 +20,9 @@ export default function ForgotPassword() {
 	) => {
 		try {
 			actions.setSubmitting(true);
-			console.log(values);
+			await forgotPassword.mutateAsync({
+				data: values,
+			});
 			actions.setSubmitting(false);
 			actions.resetForm();
 			handleClose();

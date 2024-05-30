@@ -1,5 +1,6 @@
 import {
 	AppBar,
+	Avatar,
 	Box,
 	Divider,
 	Drawer,
@@ -9,7 +10,10 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
+	Menu,
+	MenuItem,
 	Toolbar,
+	Tooltip,
 	Typography,
 } from "@mui/material";
 import React from "react";
@@ -17,11 +21,34 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import logo from "../../../assets/logo.svg";
+import { useAuthStore } from "../../../store/auth";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
+	const { logout } = useAuthStore();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [isClosing, setIsClosing] = React.useState(false);
+	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+	const settingsWithFunc = [
+		{
+			name: "Profile",
+			func: () => console.log("Profile"),
+		},
+		{
+			name: "Account",
+			func: () => console.log("Account"),
+		},
+		{
+			name: "Dashboard",
+			func: () => console.log("Dashboard"),
+		},
+		{
+			name: "Logout",
+			func: () => {
+				logout();
+			},
+		},
+	];
 
 	const handleDrawerClose = () => {
 		setIsClosing(true);
@@ -36,6 +63,14 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 		if (!isClosing) {
 			setMobileOpen(!mobileOpen);
 		}
+	};
+
+	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorElUser(event.currentTarget);
+	};
+
+	const handleCloseUserMenu = () => {
+		setAnchorElUser(null);
 	};
 
 	const drawer = (
@@ -86,7 +121,16 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 					backgroundColor: "#000",
 				}}
 			>
-				<Toolbar>
+				<Toolbar
+					sx={{
+						display: "flex",
+						justifyContent: {
+							xs: "space-between",
+							md: "flex-end",
+						},
+						flex: 1,
+					}}
+				>
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
@@ -96,6 +140,41 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 					>
 						<MenuIcon />
 					</IconButton>
+					<Box sx={{ flexGrow: 0 }}>
+						<Tooltip title="Open settings">
+							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+							</IconButton>
+						</Tooltip>
+						<Menu
+							sx={{ mt: "45px" }}
+							id="menu-appbar"
+							anchorEl={anchorElUser}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							open={Boolean(anchorElUser)}
+							onClose={handleCloseUserMenu}
+						>
+							{settingsWithFunc.map((setting) => (
+								<MenuItem
+									key={setting?.name}
+									onClick={() => {
+										setting.func();
+										handleCloseUserMenu();
+									}}
+								>
+									<Typography textAlign="center">{setting?.name}</Typography>
+								</MenuItem>
+							))}
+						</Menu>
+					</Box>
 				</Toolbar>
 			</AppBar>
 			<Box
@@ -134,7 +213,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				component="main"
 				sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
 			>
-				<Toolbar />
+				<Toolbar></Toolbar>
 				{children}
 			</Box>
 		</Box>
