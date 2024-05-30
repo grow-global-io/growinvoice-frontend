@@ -14,6 +14,7 @@ export const useTabs = (searchParam = "tab") => {
 	}, []);
 
 	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+		console.log("handleChange", event);
 		setTabValue(newValue);
 		navigate(`?tab=${newValue}`);
 	};

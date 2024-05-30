@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
+import Register from "../features/Authentication/Register";
 
 const RegisterPage = () => {
-	return <Box></Box>;
+	return <Register />;
 };
 
 export default RegisterPage;

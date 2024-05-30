@@ -1,6 +1,4 @@
 import { createStore } from "zustand/vanilla";
-// import { environment } from "../environment";
-// import { mountStoreDevtool } from "simple-zustand-devtools";
 
 interface LoaderStore {
 	open: boolean;

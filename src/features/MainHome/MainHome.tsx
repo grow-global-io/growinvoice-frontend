@@ -1,32 +1,15 @@
-// import * as React from 'react';
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import "./mainhome.css";
+import MainNavbar from "../../layout/navbar/Mainpage/MainNavbar";
+import HeroSecton from "./HeroSecton";
+import ProcessSection from "./ProcessSection";
 
 export default function MainHome() {
-	const navigation = useNavigate();
-
 	return (
-		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position="static">
-				<Toolbar>
-					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						Grow Invoice
-					</Typography>
-					<Button
-						variant="outlined"
-						onClick={() => {
-							navigation("/login");
-						}}
-					>
-						Login
-					</Button>
-					<Button variant="contained">Signup</Button>
-				</Toolbar>
-			</AppBar>
+		<Box component={"div"} className="mainpage">
+			<MainNavbar />
+			<HeroSecton />
+			<ProcessSection />
 		</Box>
 	);
 }

@@ -6,10 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CreateUserDto {
+export interface ForgotPasswordDto {
+	/** Email address to send password reset link */
 	email: string;
-	/** @nullable */
-	name?: string | null;
-	/** @nullable */
-	phone?: string | null;
 }

@@ -1,6 +1,10 @@
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MainHomePage from "./pages/MainHomePage";
+import RegisterPage from "./pages/RegisterPage";
+import OveviewPage from "./pages/OveviewPage";
 import { Route } from "./shared/models/Route";
+import ResetPassword from "./features/Authentication/ResetPassword";
 
 export const unProtectedRoutes: Route[] = [
 	{
@@ -13,8 +17,21 @@ export const unProtectedRoutes: Route[] = [
 	},
 	{
 		path: "/register",
-		Component: LoginPage,
+		Component: RegisterPage,
+	},
+	{
+		path: "/reset-password",
+		Component: ResetPassword,
 	},
 ];
 
-export const protectedRoutes: Route[] = [];
+export const protectedRoutes: Route[] = [
+	{
+		path: "/",
+		Component: HomePage,
+	},
+	{
+		path: "/overview",
+		Component: OveviewPage,
+	},
+];

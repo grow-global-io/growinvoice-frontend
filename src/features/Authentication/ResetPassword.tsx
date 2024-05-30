@@ -1,36 +1,61 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import { Formik, Field, Form } from "formik";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
-import * as yup from "yup";
+import { Box, Card, CardContent, Typography, Button } from "@mui/material";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import BgImageSvg from "../../assets/bgpng.png";
-import ForgotPassword from "./ForgotPassword";
-import { useUserControllerLoginUser } from "../../api/services/auth/users";
-import { useAuthStore } from "../../store/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { TextFormField } from "../../shared/components/FormFields/TextFormField";
+import NoDataFound from "../../shared/components/NoDataFound";
+import * as yup from "yup";
+import { useUserControllerResetPassword } from "../../api/services/auth/users";
 
-const Login = () => {
+const ResetPassword = () => {
+	const location = useLocation();
 	const navigation = useNavigate();
-	const { setToken } = useAuthStore();
-	const login = useUserControllerLoginUser();
+	const resetPassword = useUserControllerResetPassword({
+		mutation: {
+			onSuccess: () => {
+				navigation("/login");
+			},
+		},
+	});
+	const queryParams = new URLSearchParams(location.search);
+	const token = queryParams.get("token");
+
 	const initialValues = {
-		email: "",
+		token: token || "",
 		password: "",
+		conpassword: "",
 	};
 
 	const schema = yup.object().shape({
-		email: yup.string().email().required("Email is required"),
-		password: yup.string().min(7, "Password is atleast 7 chars").required("Password is required"),
+		token: yup.string().required("Token is required"),
+		password: yup
+			.string()
+			.min(7, "Password is at least 7 characters")
+			.required("Password is required"),
+		conpassword: yup
+			.string()
+			.oneOf([yup.ref("password")], "Passwords must match")
+			.required("Confirm Password is required"),
 	});
 
-	const handleSubmit = async (values: typeof initialValues) => {
-		const a = await login.mutateAsync({
+	const handleSubmit = async (
+		values: typeof initialValues,
+		actions: FormikHelpers<typeof initialValues>,
+	) => {
+		actions.setSubmitting(true);
+		await resetPassword.mutateAsync({
 			data: {
-				email: values.email,
+				token: values.token,
 				password: values.password,
 			},
 		});
-		setToken(a.authToken);
+		actions.resetForm();
+		actions.setSubmitting(false);
 	};
+
+	if (!token) {
+		return <NoDataFound message="Invalid token. Please check your email for the correct link." />;
+	}
 
 	return (
 		<Box
@@ -71,10 +96,10 @@ const Login = () => {
 							}}
 						>
 							<Typography fontWeight="600" sx={{ mb: 2, fontSize: 26 }}>
-								Welcome Back!
+								Reset Password
 							</Typography>
 							<Typography color="text.secondary" sx={{ mb: 2 }} variant="caption" fontWeight="400">
-								Please login to continue with growinvoice &nbsp;
+								Please enter your new password to reset your password &nbsp;
 								<Typography color="text.secondary" variant="caption" fontWeight="700">
 									GROWINVOICE
 								</Typography>
@@ -89,7 +114,6 @@ const Login = () => {
 								{(formik) => {
 									return (
 										<Form>
-											<Field name="email" component={TextFormField} label="Email" required={true} />
 											<Field
 												name="password"
 												type={"password"}
@@ -97,15 +121,13 @@ const Login = () => {
 												label="Password"
 												required={true}
 											/>
-											<Box
-												sx={{
-													display: "flex",
-													justifyContent: "flex-end",
-													marginBottom: 1,
-												}}
-											>
-												<ForgotPassword />
-											</Box>
+											<Field
+												name="conpassword"
+												type={"password"}
+												component={TextFormField}
+												label="Confirm Password"
+												required={true}
+											/>
 											<Box
 												sx={{
 													display: "flex",
@@ -127,22 +149,7 @@ const Login = () => {
 														minWidth: 200,
 													}}
 												>
-													Login
-												</Button>
-												<Button
-													variant="outlined"
-													color="primary"
-													sx={{
-														display: "flex",
-														justifyContent: "center",
-														alignItems: "center",
-														minWidth: 200,
-													}}
-													onClick={() => {
-														navigation("/register");
-													}}
-												>
-													Register
+													Reset Password
 												</Button>
 											</Box>
 										</Form>
@@ -171,4 +178,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default ResetPassword;

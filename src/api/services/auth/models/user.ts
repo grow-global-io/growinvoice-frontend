@@ -13,8 +13,13 @@ export interface User {
 	isExist: boolean;
 	/** @nullable */
 	name: string | null;
+	password: string;
 	/** @nullable */
 	phone: string | null;
+	/** @nullable */
+	resetToken: string | null;
+	/** @nullable */
+	resetTokenExpiry: string | null;
 	/** @nullable */
 	updatedAt: string | null;
 }

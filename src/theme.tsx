@@ -8,7 +8,7 @@ import { GridToolbarQuickFilter } from "@mui/x-data-grid";
 
 const Transition = React.forwardRef(function Transition(
 	props: TransitionProps & {
-		children: React.ReactElement<any, any>;
+		children: React.ReactElement;
 	},
 	ref: React.Ref<unknown>,
 ) {
@@ -72,9 +72,9 @@ const themeOptions: ThemeOptions = {
 		fontFamily: '"Montserrat", "Helvetica", "Arial", sans-serif',
 		fontSize: 14,
 		h1: {
-			fontSize: "2.8rem",
+			fontSize: "2.5rem",
 			fontWeight: "bold",
-			lineHeight: "1.5rem",
+			lineHeight: "2.75rem",
 			letterspacing: "0rem",
 		},
 		h2: {
@@ -157,6 +157,7 @@ const themeOptions: ThemeOptions = {
 					borderRadius: 1,
 					minWidth: 120,
 					margin: "0px 8px",
+					textTransform: "capitalize",
 					// outlined variant
 					"&.MuiButton-outlined": {
 						borderWidth: 3,
@@ -164,7 +165,10 @@ const themeOptions: ThemeOptions = {
 					},
 					// contained variant
 					"&.MuiButton-contained": {
-						padding: "7px 20px",
+						padding: "6px 20px",
+						fontSize: "14px",
+						fontWeight: "500",
+						lineHeight: "20px",
 					},
 				},
 			},
