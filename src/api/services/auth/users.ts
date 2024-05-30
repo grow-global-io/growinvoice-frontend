@@ -11,16 +11,23 @@ import type {
 	UseMutationOptions,
 	UseMutationResult,
 } from "@tanstack/react-query";
-import type { CreateUserDto, ErrorMessageDto, LoginSuccessDto, LoginUserDto } from "./models";
+import type {
+	CreateUserCompany,
+	ErrorMessageDto,
+	ForgotPasswordDto,
+	LoginSuccessDto,
+	LoginUserDto,
+	ResetPasswordTokenDto,
+} from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
-export const userControllerCreateUser = (createUserDto: CreateUserDto) => {
+export const userControllerCreateUser = (createUserCompany: CreateUserCompany) => {
 	return authInstance<ErrorMessageDto>({
 		url: `/api/user/create`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		data: createUserDto,
+		data: createUserCompany,
 	});
 };
 
@@ -31,20 +38,20 @@ export const getUserControllerCreateUserMutationOptions = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof userControllerCreateUser>>,
 		TError,
-		{ data: CreateUserDto },
+		{ data: CreateUserCompany },
 		TContext
 	>;
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof userControllerCreateUser>>,
 	TError,
-	{ data: CreateUserDto },
+	{ data: CreateUserCompany },
 	TContext
 > => {
 	const { mutation: mutationOptions } = options ?? {};
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof userControllerCreateUser>>,
-		{ data: CreateUserDto }
+		{ data: CreateUserCompany }
 	> = (props) => {
 		const { data } = props ?? {};
 
@@ -57,7 +64,7 @@ export const getUserControllerCreateUserMutationOptions = <
 export type UserControllerCreateUserMutationResult = NonNullable<
 	Awaited<ReturnType<typeof userControllerCreateUser>>
 >;
-export type UserControllerCreateUserMutationBody = CreateUserDto;
+export type UserControllerCreateUserMutationBody = CreateUserCompany;
 export type UserControllerCreateUserMutationError = ErrorType<unknown>;
 
 export const useUserControllerCreateUser = <
@@ -67,13 +74,13 @@ export const useUserControllerCreateUser = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof userControllerCreateUser>>,
 		TError,
-		{ data: CreateUserDto },
+		{ data: CreateUserCompany },
 		TContext
 	>;
 }): UseMutationResult<
 	Awaited<ReturnType<typeof userControllerCreateUser>>,
 	TError,
-	{ data: CreateUserDto },
+	{ data: CreateUserCompany },
 	TContext
 > => {
 	const mutationOptions = getUserControllerCreateUserMutationOptions(options);
@@ -142,6 +149,136 @@ export const useUserControllerLoginUser = <
 	TContext
 > => {
 	const mutationOptions = getUserControllerLoginUserMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const userControllerForgotPassword = (forgotPasswordDto: ForgotPasswordDto) => {
+	return authInstance<ErrorMessageDto>({
+		url: `/api/user/forgot-password`,
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		data: forgotPasswordDto,
+	});
+};
+
+export const getUserControllerForgotPasswordMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof userControllerForgotPassword>>,
+		TError,
+		{ data: ForgotPasswordDto },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof userControllerForgotPassword>>,
+	TError,
+	{ data: ForgotPasswordDto },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userControllerForgotPassword>>,
+		{ data: ForgotPasswordDto }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return userControllerForgotPassword(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerForgotPasswordMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userControllerForgotPassword>>
+>;
+export type UserControllerForgotPasswordMutationBody = ForgotPasswordDto;
+export type UserControllerForgotPasswordMutationError = ErrorType<unknown>;
+
+export const useUserControllerForgotPassword = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof userControllerForgotPassword>>,
+		TError,
+		{ data: ForgotPasswordDto },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof userControllerForgotPassword>>,
+	TError,
+	{ data: ForgotPasswordDto },
+	TContext
+> => {
+	const mutationOptions = getUserControllerForgotPasswordMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const userControllerResetPassword = (resetPasswordTokenDto: ResetPasswordTokenDto) => {
+	return authInstance<ErrorMessageDto>({
+		url: `/api/user/reset-password`,
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		data: resetPasswordTokenDto,
+	});
+};
+
+export const getUserControllerResetPasswordMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof userControllerResetPassword>>,
+		TError,
+		{ data: ResetPasswordTokenDto },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof userControllerResetPassword>>,
+	TError,
+	{ data: ResetPasswordTokenDto },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userControllerResetPassword>>,
+		{ data: ResetPasswordTokenDto }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return userControllerResetPassword(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerResetPasswordMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userControllerResetPassword>>
+>;
+export type UserControllerResetPasswordMutationBody = ResetPasswordTokenDto;
+export type UserControllerResetPasswordMutationError = ErrorType<unknown>;
+
+export const useUserControllerResetPassword = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof userControllerResetPassword>>,
+		TError,
+		{ data: ResetPasswordTokenDto },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof userControllerResetPassword>>,
+	TError,
+	{ data: ResetPasswordTokenDto },
+	TContext
+> => {
+	const mutationOptions = getUserControllerResetPasswordMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };

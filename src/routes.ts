@@ -5,7 +5,6 @@ import RegisterPage from "./pages/RegisterPage";
 import OveviewPage from "./pages/OveviewPage";
 import { Route } from "./shared/models/Route";
 
-
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",

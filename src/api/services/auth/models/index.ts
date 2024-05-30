@@ -6,8 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export * from "./createUserDto";
+export * from "./createUserCompany";
 export * from "./errorMessageDto";
+export * from "./forgotPasswordDto";
 export * from "./loginSuccessDto";
 export * from "./loginUserDto";
+export * from "./resetPasswordTokenDto";
 export * from "./user";

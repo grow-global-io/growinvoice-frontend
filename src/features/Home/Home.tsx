@@ -15,13 +15,11 @@ const Home = () => {
 			queryKey: getAuthControllerStatusQueryKey(),
 		});
 	};
-
+	console.log(a.data);
 	if (a.isLoading) {
 		return <Loader />;
 	}
-	if (a.error) {
-		return <Typography paragraph>{a.error.message}</Typography>;
-	}
+
 	return (
 		<>
 			<Typography paragraph>{a.data?.name}</Typography>

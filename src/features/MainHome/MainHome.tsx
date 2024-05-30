@@ -8,8 +8,8 @@ export default function MainHome() {
 	return (
 		<Box component={"div"} className="mainpage">
 			<MainNavbar />
-            <HeroSecton/>
-		    <ProcessSection/>
+			<HeroSecton />
+			<ProcessSection />
 		</Box>
 	);
 }

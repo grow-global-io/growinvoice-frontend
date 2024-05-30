@@ -1,18 +1,7 @@
-import {
-	Box,
-	Button,
-	Card,
-	CardContent,
-	IconButton,
-	InputAdornment,
-	Typography,
-} from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { Formik, Field, Form } from "formik";
 import { TextFormField } from "../../shared/components/FormFields/TextFormField";
-import { useState } from "react";
 import * as yup from "yup";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import BgImageSvg from "../../assets/bgpng.png";
 import ForgotPassword from "./ForgotPassword";
 import { useUserControllerLoginUser } from "../../api/services/auth/users";
@@ -32,16 +21,6 @@ const Login = () => {
 		email: yup.string().email().required("Email is required"),
 		password: yup.string().min(7, "Password is atleast 7 chars").required("Password is required"),
 	});
-
-	const [hidePassword, setHidePassword] = useState(true);
-
-	const handleClickHidePassword = () => {
-		setHidePassword(!hidePassword);
-	};
-
-	const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-		event.preventDefault();
-	};
 
 	const handleSubmit = async (values: typeof initialValues) => {
 		const a = await login.mutateAsync({
@@ -91,16 +70,10 @@ const Login = () => {
 								alignItems: "center",
 							}}
 						>
-							<Typography variant="h1" sx={{ mb: 2 }}>
+							<Typography fontWeight="600" sx={{ mb: 2, fontSize: 26 }}>
 								Welcome Back!
 							</Typography>
-							<Typography
-								color="text.secondary"
-								sx={{ mb: 2 }}
-								variant="h4"
-								fontWeight="400"
-								textAlign={"center"}
-							>
+							<Typography color="text.secondary" sx={{ mb: 2 }} variant="caption" fontWeight="400">
 								Please login to continue with growinvoice &nbsp;
 								<Typography color="text.secondary" variant="caption" fontWeight="700">
 									GROWINVOICE
@@ -119,24 +92,10 @@ const Login = () => {
 											<Field name="email" component={TextFormField} label="Email" required={true} />
 											<Field
 												name="password"
-												type={hidePassword ? "password" : "text"}
+												type={"password"}
 												component={TextFormField}
 												label="Password"
 												required={true}
-												InputProps={{
-													endAdornment: (
-														<InputAdornment position="end">
-															<IconButton
-																aria-label="toggle password visibility"
-																onClick={handleClickHidePassword}
-																onMouseDown={handleMouseDownPassword}
-																edge="end"
-															>
-																{hidePassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-															</IconButton>
-														</InputAdornment>
-													),
-												}}
 											/>
 											<Box
 												sx={{

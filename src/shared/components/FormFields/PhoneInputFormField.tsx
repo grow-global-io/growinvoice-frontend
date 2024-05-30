@@ -6,7 +6,6 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import "react-phone-number-input/style.css";
-import { environment } from "../../../environment";
 
 const phoneInput = (props: TextFieldProps, ref: React.Ref<HTMLInputElement>) => {
 	return <TextField {...props} inputRef={ref} sx={{ mt: 2 }} />;
@@ -34,8 +33,7 @@ export const PhoneInputFormField: React.FC<
 			<PhoneInput
 				limitMaxLength
 				addInternationalOption={false}
-				defaultCountry="US"
-				countries={environment.isTrueProd ? ["US"] : ["US", "IN", "MX"]}
+				defaultCountry="IN"
 				inputComponent={CustomPhoneInput}
 				fullWidth
 				id={field.name}

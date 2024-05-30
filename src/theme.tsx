@@ -37,7 +37,6 @@ const themeOptions: ThemeOptions = {
 			main: "rgba(13, 110, 253, 1)",
 			contrastText: "#fff",
 			light: "#31C4C3",
-			
 		},
 		secondary: {
 			main: "#0D6EFD",
@@ -70,7 +69,7 @@ const themeOptions: ThemeOptions = {
 		},
 	},
 	typography: {
-		fontFamily: ' "Poppins","Montserrat", "Helvetica", "Arial", sans-serif',
+		fontFamily: '"Montserrat", "Helvetica", "Arial", sans-serif',
 		fontSize: 14,
 		h1: {
 			fontSize: "2.5rem",
