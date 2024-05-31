@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Grid } from "@mui/material";
 import OverviewCard from "../../shared/components/OverviewCard";
 import GroupUser from "./../../assets/img/group-user.png";
 import InvoiceFile from "./../../assets/img/invoice-file.png";
@@ -26,11 +26,13 @@ const ExpensesSummary = () => {
 	];
 
 	return (
-		<Box sx={{ display: "flex", gap: "20px" }}>
+		<Grid container spacing={2}>
 			{data.map((item, index) => (
-				<OverviewCard key={index} name={item.name} img={item.img} />
+				<Grid item xs={12} md={3} key={index}>
+					<OverviewCard name={item.name} img={item.img} />
+				</Grid>
 			))}
-		</Box>
+		</Grid>
 	);
 };
 
