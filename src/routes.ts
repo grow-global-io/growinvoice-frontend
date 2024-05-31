@@ -4,7 +4,6 @@ import RegisterPage from "./pages/RegisterPage";
 import OveviewPage from "./pages/OveviewPage";
 import { Route } from "./shared/models/Route";
 import ResetPassword from "./features/Authentication/ResetPassword";
-import Test from "./features/Dashboard/Test";
 
 export const unProtectedRoutes: Route[] = [
 	{
@@ -29,9 +28,5 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/",
 		Component: OveviewPage,
-	},
-	{
-		path: "/test",
-		Component: Test,
 	},
 ];
