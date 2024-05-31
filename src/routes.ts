@@ -1,4 +1,3 @@
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MainHomePage from "./pages/MainHomePage";
 import RegisterPage from "./pages/RegisterPage";
@@ -28,10 +27,6 @@ export const unProtectedRoutes: Route[] = [
 export const protectedRoutes: Route[] = [
 	{
 		path: "/",
-		Component: HomePage,
-	},
-	{
-		path: "/overview",
 		Component: OveviewPage,
 	},
 ];
