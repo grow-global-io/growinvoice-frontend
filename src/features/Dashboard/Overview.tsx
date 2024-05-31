@@ -6,7 +6,8 @@ const Overview = () => {
 	const { open, handleClickOpen, handleClose } = useDialog();
 	return (
 		<>
-			<Button variant="contained"
+			<Button
+				variant="contained"
 				onClick={() => {
 					handleClickOpen();
 				}}

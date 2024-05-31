@@ -42,7 +42,7 @@ const themeOptions: ThemeOptions = {
 			main: "#0D6EFD",
 			contrastText: "#fff",
 			light: "#CFF1DE",
-	        dark: "#000",
+			dark: "#000",
 		},
 		warning: {
 			main: "#facea8",
