@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from "./authControllerGetUserParams";
 export * from "./createUserCompany";
 export * from "./errorMessageDto";
 export * from "./forgotPasswordDto";
