@@ -37,8 +37,7 @@ jobs:
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.growinvoice.com
-          username: u644247801.reactgrowinvoice
-          password: Growinvoice@123
-          protocol: ftps
+          server: "ftp.growinvoice.com"
+          username: "u644247801.reactgrowinvoice"
+          password: ${{ secrets.GIT_CPANEL_REACT_PWD }}
           local-dir: ./dist/
