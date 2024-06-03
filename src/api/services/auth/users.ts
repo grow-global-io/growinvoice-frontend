@@ -18,12 +18,13 @@ import type {
 	LoginSuccessDto,
 	LoginUserDto,
 	ResetPasswordTokenDto,
+	UserControllerCreateUser201,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
 export const userControllerCreateUser = (createUserCompany: CreateUserCompany) => {
-	return authInstance<ErrorMessageDto>({
+	return authInstance<UserControllerCreateUser201>({
 		url: `/api/user/create`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -88,7 +89,7 @@ export const useUserControllerCreateUser = <
 	return useMutation(mutationOptions);
 };
 export const userControllerLoginUser = (loginUserDto: LoginUserDto) => {
-	return authInstance<LoginSuccessDto>({
+	return authInstance<LoginSuccessDto | void>({
 		url: `/api/user/login`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -153,7 +154,7 @@ export const useUserControllerLoginUser = <
 	return useMutation(mutationOptions);
 };
 export const userControllerForgotPassword = (forgotPasswordDto: ForgotPasswordDto) => {
-	return authInstance<ErrorMessageDto>({
+	return authInstance<ErrorMessageDto | void>({
 		url: `/api/user/forgot-password`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -218,7 +219,7 @@ export const useUserControllerForgotPassword = <
 	return useMutation(mutationOptions);
 };
 export const userControllerResetPassword = (resetPasswordTokenDto: ResetPasswordTokenDto) => {
-	return authInstance<ErrorMessageDto>({
+	return authInstance<ErrorMessageDto | void>({
 		url: `/api/user/reset-password`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },

@@ -69,7 +69,7 @@ const themeOptions: ThemeOptions = {
 		},
 	},
 	typography: {
-		fontFamily: '"Montserrat", "Helvetica", "Arial", sans-serif',
+		fontFamily: '"Raleway", sans-serif',
 		fontSize: 14,
 		h1: {
 			fontSize: "2.5rem",

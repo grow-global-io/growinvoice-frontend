@@ -7,10 +7,19 @@
  */
 
 export * from "./authControllerGetUserParams";
+export * from "./companyControllerUpdate201";
+export * from "./companyControllerUpdate201AllOf";
+export * from "./companyDto";
 export * from "./createUserCompany";
 export * from "./errorMessageDto";
 export * from "./forgotPasswordDto";
 export * from "./loginSuccessDto";
 export * from "./loginUserDto";
 export * from "./resetPasswordTokenDto";
+export * from "./successResponseDto";
+export * from "./updateCompanyDto";
 export * from "./user";
+export * from "./userControllerCreateUser201";
+export * from "./userControllerCreateUser201AllOf";
+export * from "./userDto";
+export * from "./userWithCompanyDto";
