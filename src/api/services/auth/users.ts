@@ -18,12 +18,15 @@ import type {
 	LoginSuccessDto,
 	LoginUserDto,
 	ResetPasswordTokenDto,
+	UpdateCurrencyCompanyDto,
+	UserControllerCreateUser201,
+	UserControllerUpdateCurrencyCompany201,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
 export const userControllerCreateUser = (createUserCompany: CreateUserCompany) => {
-	return authInstance<ErrorMessageDto>({
+	return authInstance<UserControllerCreateUser201>({
 		url: `/api/user/create`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -153,7 +156,7 @@ export const useUserControllerLoginUser = <
 	return useMutation(mutationOptions);
 };
 export const userControllerForgotPassword = (forgotPasswordDto: ForgotPasswordDto) => {
-	return authInstance<ErrorMessageDto>({
+	return authInstance<ErrorMessageDto | void>({
 		url: `/api/user/forgot-password`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -218,7 +221,7 @@ export const useUserControllerForgotPassword = <
 	return useMutation(mutationOptions);
 };
 export const userControllerResetPassword = (resetPasswordTokenDto: ResetPasswordTokenDto) => {
-	return authInstance<ErrorMessageDto>({
+	return authInstance<ErrorMessageDto | void>({
 		url: `/api/user/reset-password`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -279,6 +282,73 @@ export const useUserControllerResetPassword = <
 	TContext
 > => {
 	const mutationOptions = getUserControllerResetPasswordMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const userControllerUpdateCurrencyCompany = (
+	updateCurrencyCompanyDto: UpdateCurrencyCompanyDto,
+) => {
+	return authInstance<UserControllerUpdateCurrencyCompany201>({
+		url: `/api/user/update-currency-company`,
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		data: updateCurrencyCompanyDto,
+	});
+};
+
+export const getUserControllerUpdateCurrencyCompanyMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof userControllerUpdateCurrencyCompany>>,
+		TError,
+		{ data: UpdateCurrencyCompanyDto },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof userControllerUpdateCurrencyCompany>>,
+	TError,
+	{ data: UpdateCurrencyCompanyDto },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof userControllerUpdateCurrencyCompany>>,
+		{ data: UpdateCurrencyCompanyDto }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return userControllerUpdateCurrencyCompany(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type UserControllerUpdateCurrencyCompanyMutationResult = NonNullable<
+	Awaited<ReturnType<typeof userControllerUpdateCurrencyCompany>>
+>;
+export type UserControllerUpdateCurrencyCompanyMutationBody = UpdateCurrencyCompanyDto;
+export type UserControllerUpdateCurrencyCompanyMutationError = ErrorType<unknown>;
+
+export const useUserControllerUpdateCurrencyCompany = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof userControllerUpdateCurrencyCompany>>,
+		TError,
+		{ data: UpdateCurrencyCompanyDto },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof userControllerUpdateCurrencyCompany>>,
+	TError,
+	{ data: UpdateCurrencyCompanyDto },
+	TContext
+> => {
+	const mutationOptions = getUserControllerUpdateCurrencyCompanyMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };

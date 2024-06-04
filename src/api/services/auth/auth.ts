@@ -12,16 +12,16 @@ import type {
 	UseQueryOptions,
 	UseQueryResult,
 } from "@tanstack/react-query";
-import type { AuthControllerGetUserParams, User } from "./models";
+import type { AuthControllerGetUserParams, UserDto, UserWithCompanyDto } from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
 export const authControllerStatus = (signal?: AbortSignal) => {
-	return authInstance<User>({ url: `/api/auth/verify`, method: "GET", signal });
+	return authInstance<UserWithCompanyDto>({ url: `/api/auth`, method: "GET", signal });
 };
 
 export const getAuthControllerStatusQueryKey = () => {
-	return [`/api/auth/verify`] as const;
+	return [`/api/auth`] as const;
 };
 
 export const getAuthControllerStatusQueryOptions = <
@@ -68,7 +68,7 @@ export const authControllerGetUser = (
 	params: AuthControllerGetUserParams,
 	signal?: AbortSignal,
 ) => {
-	return authInstance<User>({ url: `/api/auth/user`, method: "GET", params, signal });
+	return authInstance<UserDto>({ url: `/api/auth/user`, method: "GET", params, signal });
 };
 
 export const getAuthControllerGetUserQueryKey = (params: AuthControllerGetUserParams) => {

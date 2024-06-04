@@ -5,26 +5,29 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import type { UserCurrency } from "./userCurrency";
 
-export interface User {
+export interface CompanyDto {
+	/** @nullable */
+	address: string | null;
+	/** @nullable */
+	city: string | null;
+	/** @nullable */
+	country: string | null;
 	createdAt: string;
-	/** @nullable */
-	currency?: UserCurrency;
-	/** @nullable */
-	currency_id: string | null;
-	email: string;
 	id: string;
 	isExist: boolean;
 	/** @nullable */
-	name: string | null;
-	password: string;
+	logo: string | null;
+	name: string;
 	/** @nullable */
 	phone: string | null;
 	/** @nullable */
-	resetToken: string | null;
-	/** @nullable */
-	resetTokenExpiry: string | null;
+	state: string | null;
 	/** @nullable */
 	updatedAt: string | null;
+	user_id: string;
+	/** @nullable */
+	vat: string | null;
+	/** @nullable */
+	zip: string | null;
 }

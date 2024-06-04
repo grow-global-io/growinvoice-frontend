@@ -2,12 +2,12 @@ import {
 	AppBar,
 	Avatar,
 	Box,
+	Collapse,
 	Divider,
 	Drawer,
 	IconButton,
 	List,
 	ListItem,
-	ListItemButton,
 	ListItemIcon,
 	ListItemText,
 	Menu,
@@ -16,12 +16,15 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import React from "react";
-import MailIcon from "@mui/icons-material/Mail";
+import "./Home.css";
+import React, { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import logo from "../../../assets/logo.svg";
 import { useAuthStore } from "../../../store/auth";
+import HomeIcon from "@mui/icons-material/Home";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
@@ -73,6 +76,12 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 		setAnchorElUser(null);
 	};
 
+	const [open, setOpen] = useState(false);
+
+	const handleClick = () => {
+		setOpen(!open);
+	};
+
 	const drawer = (
 		<div>
 			<Box
@@ -96,7 +105,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				</Toolbar>
 			</Box>
 			<Divider />
-			<List>
+			{/* <List>
 				{["Home", "Invoice"].map((text, index) => (
 					<ListItem key={text} disablePadding>
 						<ListItemButton>
@@ -105,6 +114,70 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						</ListItemButton>
 					</ListItem>
 				))}
+			</List> */}
+			<List sx={{ px: "7%" }}>
+				<ListItem sx={{ bgcolor: "secondary.main" }} component={"div"} className="list-item-style">
+					<ListItemIcon>
+						<HomeIcon htmlColor="white" />
+					</ListItemIcon>
+					<ListItemText
+						primary={
+							<Typography variant="h6" fontWeight={"500"} color={"#fff"}>
+								Home
+							</Typography>
+						}
+					/>
+				</ListItem>
+				<ListItem
+					onClick={handleClick}
+					sx={{
+						background: open ? "rgba(13, 110, 253, 0.1)" : "inherit",
+					}}
+					component={"div"}
+					className="list-item-style"
+				>
+					<ListItemIcon>
+						<ReceiptIcon sx={{ color: open ? "secondary.main" : "inherit" }} />
+					</ListItemIcon>
+					<ListItemText
+						primary={
+							<Typography
+								variant="h6"
+								color={open ? "secondary.main" : "inherit"}
+								fontWeight={"500"}
+							>
+								Invoices
+							</Typography>
+						}
+					/>
+					{open ? <ExpandLessIcon sx={{ color: "secondary.main" }} /> : <ExpandMoreIcon />}
+				</ListItem>
+				<Collapse in={open} timeout="auto" unmountOnExit>
+					<List component="div" disablePadding sx={{ pl: "15%" }}>
+						<ListItem sx={{}} component={"div"} className="list-item-style">
+							<ListItemText
+								primary={
+									<Typography variant="h6" fontWeight={"500"}>
+										Invoice
+									</Typography>
+								}
+							/>
+						</ListItem>
+						<ListItem
+							sx={{ bgcolor: "secondary.main" }}
+							component={"div"}
+							className="list-item-style"
+						>
+							<ListItemText
+								primary={
+									<Typography variant="h6" color={"#fff"} fontWeight={"500"}>
+										Create Invoice
+									</Typography>
+								}
+							/>
+						</ListItem>
+					</List>
+				</Collapse>
 			</List>
 		</div>
 	);
@@ -200,7 +273,11 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 					variant="permanent"
 					sx={{
 						display: { xs: "none", sm: "block" },
-						"& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+						"& .MuiDrawer-paper": {
+							boxSizing: "border-box",
+							width: drawerWidth,
+							backgroundColor: "rgba(246, 250, 255, 1)",
+						},
 					}}
 					open
 				>

@@ -42,7 +42,7 @@ const themeOptions: ThemeOptions = {
 			main: "#0D6EFD",
 			contrastText: "#fff",
 			light: "#CFF1DE",
-			dark: "#DB883F",
+			dark: "#000",
 		},
 		warning: {
 			main: "#facea8",
@@ -69,7 +69,7 @@ const themeOptions: ThemeOptions = {
 		},
 	},
 	typography: {
-		fontFamily: '"Montserrat", "Helvetica", "Arial", sans-serif',
+		fontFamily: '"Raleway", sans-serif',
 		fontSize: 14,
 		h1: {
 			fontSize: "2.5rem",
