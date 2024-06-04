@@ -2,17 +2,17 @@ import { create } from "zustand";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { environment } from "../environment";
 import { LoaderService } from "../shared/services/LoaderService";
-import { User } from "../api/services/auth/models";
+import { UserWithCompanyDto } from "../api/services/auth/models";
 import { authControllerStatus } from "../api/services/auth/auth";
 
 interface AuthStore {
 	isLoggedIn: boolean;
-	user: User | null;
+	user: UserWithCompanyDto | null;
 	setLoggedIn: (isLoggedIn: boolean) => void;
-	setUser: (user: User | null) => void;
+	setUser: (user: UserWithCompanyDto | null) => void;
 	setToken: (token: string) => void;
 	logout: () => void;
-	validateToken: () => Promise<User | null>;
+	validateToken: () => Promise<UserWithCompanyDto | null>;
 }
 
 export const useAuthStore = create<AuthStore>((set, getStore) => ({

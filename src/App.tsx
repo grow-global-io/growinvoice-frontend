@@ -16,9 +16,10 @@ import ConfirmDialog from "./shared/components/ConfirmDialog";
 import { useEffectOnce } from "./shared/hooks/useEffectOnce";
 import { AlertTitle } from "@mui/material";
 import Navbar from "./layout/navbar/Home/Navbar";
+import GetStartedDialog from "./features/Dashboard/GetStartedDialog";
 
 function AppContainer() {
-	const { isLoggedIn, logout, validateToken } = useAuthStore();
+	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffectOnce(() => {
@@ -50,6 +51,7 @@ function AppContainer() {
 
 	return (
 		<Navbar>
+			<GetStartedDialog open={user?.company?.[0]?.address === null} />
 			<Routes>
 				<Route path="*" element={<NotFoundPage />} />
 				{protectedRoutes.map(({ path, Component }) => (

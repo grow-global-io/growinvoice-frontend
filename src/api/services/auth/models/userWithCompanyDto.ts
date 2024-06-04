@@ -8,7 +8,7 @@
 import type { CompanyDto } from "./companyDto";
 
 export interface UserWithCompanyDto {
-	company?: CompanyDto;
+	company?: CompanyDto[];
 	createdAt: string;
 	email: string;
 	id: string;
