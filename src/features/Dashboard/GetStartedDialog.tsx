@@ -7,7 +7,6 @@ import {
 	Step,
 	Stepper,
 	StepConnector,
-	Typography,
 	stepConnectorClasses,
 	styled,
 } from "@mui/material";
@@ -17,7 +16,6 @@ import CurrencyUpdateForm from "./GetStarted/CurrencyUpdateForm";
 import CompanyUpdateForm from "./GetStarted/CompanyUpdateForm";
 import * as Yup from "yup";
 import { Form, Formik, FormikHelpers } from "formik";
-import { useAuthStore } from "../../store/auth";
 
 const validationSchema = Yup.object().shape({
 	currency: Yup.string().required("Currency is required"),
@@ -61,7 +59,6 @@ const CustomStepperBox = styled(Box)(() => ({
 }));
 
 const GetStartedDialog = ({ open, handleClose }: { open: boolean; handleClose?: () => void }) => {
-	const { user } = useAuthStore();
 	const [activeStep, setActiveStep] = React.useState(0);
 
 	const handleNext = () => {
