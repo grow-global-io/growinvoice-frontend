@@ -91,7 +91,7 @@ export const useUserControllerCreateUser = <
 	return useMutation(mutationOptions);
 };
 export const userControllerLoginUser = (loginUserDto: LoginUserDto) => {
-	return authInstance<LoginSuccessDto | void>({
+	return authInstance<LoginSuccessDto>({
 		url: `/api/user/login`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
