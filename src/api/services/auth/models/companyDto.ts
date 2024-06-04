@@ -16,6 +16,8 @@ export interface CompanyDto {
 	createdAt: string;
 	id: string;
 	isExist: boolean;
+	/** @nullable */
+	logo: string | null;
 	name: string;
 	/** @nullable */
 	phone: string | null;
@@ -23,6 +25,7 @@ export interface CompanyDto {
 	state: string | null;
 	/** @nullable */
 	updatedAt: string | null;
+	user_id: string;
 	/** @nullable */
 	vat: string | null;
 	/** @nullable */
