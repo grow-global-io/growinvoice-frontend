@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import InvoiceListData from "./../../data/InvoiceListData.json";
+import InvoiceListData from "../../data/InvoiceListData.json";
 
 const columns: GridColDef[] = [
 	{ field: "id", headerName: "ID", width: 90 },

@@ -49,19 +49,19 @@ export const protectedRoutes: Route[] = [
 		Component: CreateProductPage,
 	},
 	{
-		path: "/customerlist",
+		path: "/customer/customerlist",
 		Component: CustomerListPage,
 	},
 	{
-		path: "/createcustomer",
+		path: "/customer/createcustomer",
 		Component: CreateCustomerPage,
 	},
 	{
-		path: "/invoicelist",
+		path: "/invoice/invoicelist",
 		Component: InvoiceListPage,
 	},
 	{
-		path: "/createinvoice",
+		path: "/invoice/createinvoice",
 		Component: CreateInvoicePage,
 	},
 ];

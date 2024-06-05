@@ -7,7 +7,6 @@ import {
 	Drawer,
 	IconButton,
 	List,
-	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
@@ -81,16 +80,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 		setAnchorElUser(null);
 	};
 
-	// useEffect(() => {
-	// 	if (path === "/createproduct" || path === "/productlist") {
-	// 		setOpenState({ showProduct: true, showCustomer: false, showInvoice: false });
-	// 	} else if (path === "/createcustomer" || path === "/customerlist") {
-	// 		setOpenState({ showProduct: false, showCustomer: true, showInvoice: false });
-	// 	} else if (path === "/createinvoice" || path === "/invoicelist") {
-	// 		setOpenState({ showProduct: false, showCustomer: false, showInvoice: true });
-	// 	}
-	// }, []);
-
 	const menuList = [
 		{
 			path: "/",
@@ -112,8 +101,8 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			icon: <PeopleIcon />,
 			menuName: "Customer",
 			menuItems: [
-				{ path: "/customerlist", label: "Customer List" },
-				{ path: "/createcustomer", label: "Create Customer" },
+				{ path: "/customer/customerlist", label: "Customer List" },
+				{ path: "/customer/createcustomer", label: "Create Customer" },
 			],
 		},
 		{
@@ -121,8 +110,8 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			icon: <ReceiptIcon />,
 			menuName: "Invoice",
 			menuItems: [
-				{ path: "/invoicelist", label: "Invoice" },
-				{ path: "/createinvoice", label: "Create Invoice" },
+				{ path: "/invoice/invoicelist", label: "Invoice" },
+				{ path: "/invoice/createinvoice", label: "Create Invoice" },
 			],
 		},
 	];
@@ -133,7 +122,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			return false;
 		}),
 	);
-
+	console.log(pathname);
 	useEffect(() => {
 		setMenuToggle(
 			menuList.map((menuItemMap) => {

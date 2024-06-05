@@ -1,4 +1,4 @@
-import CreateCustomer from "../features/Dashboard/CreateCustomer";
+import CreateCustomer from "../features/Customer/CreateCustomer";
 
 const CreateCustomerPage = () => {
 	return <CreateCustomer />;

@@ -1,4 +1,4 @@
-import ProductList from "../features/Dashboard/ProductList";
+import ProductList from "../features/Products/ProductList";
 
 const ProductListPage = () => {
 	return <ProductList />;
