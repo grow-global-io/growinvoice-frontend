@@ -125,7 +125,17 @@ const CreateInvoice = () => {
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
-								<Grid item xs={12} sm={6}>
+								<Grid
+									item
+									xs={12}
+									sm={6}
+									sx={{
+										pr: {
+											sm: "20%",
+											xs: 0,
+										},
+									}}
+								>
 									<Field
 										name="addNote"
 										component={TextFormField}
@@ -217,60 +227,8 @@ const CreateInvoice = () => {
 											<Typography variant="h5">0.000</Typography>
 										</Grid>
 									</Grid>
-									{/* <Box sx={{ background: "rgba(247, 247, 247, 1)" }} px={2} py={3} borderRadius={1}>
-										<Box display={"flex"} justifyContent={"space-between"}>
-											<Typography variant="h5">Subtotal</Typography>
-											<Typography variant="h5">0.000</Typography>
-										</Box>
-										<Box display={"flex"} justifyContent={"space-between"}>
-											<Box
-												display={"flex"}
-												alignItems={"center"}
-												justifyContent={"space-between"}
-												width={isSmallScreen ? "70%" : "55%"}
-											>
-												<Typography variant="h5">Taxes</Typography>
-												<Grid item xs={8} sm={8}>
-													<Field
-														name="taxes"
-														component={TextFormField}
-														required={true}
-														backgroundColor={"#fff"}
-													/>
-												</Grid>
-											</Box>
-											<Typography variant="h5">0.000</Typography>
-										</Box>
-										<Box display={"flex"} justifyContent={"space-between"}>
-											<Box
-												display={"flex"}
-												alignItems={"center"}
-												justifyContent={"space-between"}
-												width={isSmallScreen ? "70%" : "55%"}
-											>
-												<Typography variant="h5">Discount</Typography>
-												<Grid item xs={8} sm={8}>
-													<Field
-														name="discount"
-														component={TextFormField}
-														type={"number"}
-														required={true}
-														backgroundColor={"#fff"}
-													/>
-												</Grid>
-											</Box>
-											<Typography variant="h5">0.000</Typography>
-										</Box>
-
-										<Typography border={"0.1px solid rgba(234, 234, 234, 1)"} my={3}></Typography>
-
-										<Box display={"flex"} justifyContent={"space-between"}>
-											<Typography variant="h4">Total</Typography>
-											<Typography variant="h4">0.000</Typography>
-										</Box>
-									</Box> */}
 								</Grid>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={3.5}>
 									<Field
 										name="invoiceTemplate"
 										label="Invoice Template"
@@ -279,7 +237,7 @@ const CreateInvoice = () => {
 										options={options}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={6} display="flex" alignItems="center" mt={1}>
+								<Grid item xs={12} sm={6} display="flex" alignItems="center">
 									<Button variant="outlined">Preview</Button>
 								</Grid>
 							</Grid>
