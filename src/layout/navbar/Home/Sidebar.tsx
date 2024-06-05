@@ -16,7 +16,6 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import "./Home.css";
 import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../../../assets/logo.svg";
