@@ -1,13 +1,10 @@
-import { Box, Typography, Grid, useMediaQuery, Button, Divider } from "@mui/material";
+import { Box, Typography, Grid, Button, Divider } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { TextFormField } from "../../shared/components/FormFields/TextFormField";
 import { DateFormField } from "../../shared/components/FormFields/DateFormField";
 import * as yup from "yup";
 import InvoiceIcon from "./../../assets/img/invoice-icon.png";
-import { useTheme } from "@mui/material/styles"; // Correct import for useTheme from MUI
-import "./Dashboard.css";
 import { AutocompleteField } from "../../shared/components/FormFields/AutoComplete";
-import NoDataFound from "../../shared/components/NoDataFound";
 
 const CreateInvoice = () => {
 	const initialValues = {
@@ -40,8 +37,6 @@ const CreateInvoice = () => {
 
 	const handleSubmit = () => {};
 
-	const theme = useTheme();
-	const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 	const options = [
 		{ value: "1", label: "Option 1" },
 		{ value: "2", label: "Option 2" },
@@ -50,9 +45,21 @@ const CreateInvoice = () => {
 
 	return (
 		<>
-			<Typography variant="h3" textTransform={"capitalize"} mb={"10px"}>
+			<Typography
+				variant="h3"
+				sx={{
+					display: "flex",
+					alignItems: "center",
+					gap: 2,
+				}}
+			>
 				<img src={InvoiceIcon} alt="Invoice Icon" /> New Invoices
 			</Typography>
+			<Divider
+				sx={{
+					my: 2,
+				}}
+			/>
 			<Box sx={{ mb: 2, mt: 2 }}>
 				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
 					{() => (

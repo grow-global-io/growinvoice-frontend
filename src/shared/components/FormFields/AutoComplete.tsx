@@ -32,6 +32,9 @@ export const AutocompleteField: React.FC<
 				id={field.name}
 				options={options}
 				onChange={(_, value) => {
+					if (value === null) {
+						form.setFieldValue(field.name, "");
+					}
 					if (value) {
 						if (Array.isArray(value)) {
 							form.setFieldValue(
