@@ -1,7 +1,7 @@
-import InvoiceList from "../features/Dashboard/InvoiceList"
+import InvoiceList from "../features/Dashboard/InvoiceList";
 
 const InvoiceListPage = () => {
-  return <InvoiceList/>
-}
+	return <InvoiceList />;
+};
 
-export default InvoiceListPage
+export default InvoiceListPage;

@@ -1,7 +1,7 @@
-import CreateInvoice from "../features/Dashboard/CreateInvoice"
+import CreateInvoice from "../features/Dashboard/CreateInvoice";
 
 const CreateInvoicePage = () => {
-  return <CreateInvoice/>
-}
+	return <CreateInvoice />;
+};
 
-export default CreateInvoicePage
+export default CreateInvoicePage;

@@ -14,8 +14,9 @@ export const TextFormField: React.FC<
 		label?: string;
 		required?: boolean;
 		type?: string;
+		backgroundColor?: string; // New prop for background color
 	}
-> = ({ field, form, label, ...props }) => {
+> = ({ field, form, label, backgroundColor, ...props }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
 	const [hidePassword, setHidePassword] = useState(true);
 	const handleClickHidePassword = () => setHidePassword((hide) => !hide);
@@ -52,6 +53,7 @@ export const TextFormField: React.FC<
 							</IconButton>
 						</InputAdornment>
 					),
+					style: { backgroundColor: backgroundColor || "transparent" }, // Conditional background color
 				}}
 				{...props}
 				type={

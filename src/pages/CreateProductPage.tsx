@@ -1,7 +1,7 @@
-import CreateProduct from "../features/Dashboard/CreateProduct"
+import CreateProduct from "../features/Dashboard/CreateProduct";
 
 const CreateProductPage = () => {
-  return <CreateProduct/>
-}
+	return <CreateProduct />;
+};
 
-export default CreateProductPage
+export default CreateProductPage;

@@ -1,7 +1,7 @@
-import CustomerList from "../features/Dashboard/CustomerList"
+import CustomerList from "../features/Dashboard/CustomerList";
 
 function CustomerListPage() {
-  return <CustomerList/>
+	return <CustomerList />;
 }
 
-export default CustomerListPage
+export default CustomerListPage;

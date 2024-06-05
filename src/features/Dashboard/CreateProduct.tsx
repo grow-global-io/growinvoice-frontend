@@ -1,17 +1,11 @@
 import { Box, Typography } from "@mui/material";
 
-
 const CreateProduct = () => {
-    return (
+	return (
 		<Box>
-			<Typography
-				variant="h2"
-			>
-				Test
-			</Typography>
-			
+			<Typography variant="h2">Test</Typography>
 		</Box>
 	);
-}
+};
 
-export default CreateProduct
+export default CreateProduct;

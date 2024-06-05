@@ -1,7 +1,7 @@
-import ProductList from "../features/Dashboard/ProductList"
+import ProductList from "../features/Dashboard/ProductList";
 
 const ProductListPage = () => {
-  return <ProductList/>
-}
+	return <ProductList />;
+};
 
-export default ProductListPage
+export default ProductListPage;

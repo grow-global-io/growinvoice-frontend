@@ -1,7 +1,7 @@
-import CreateCustomer from "../features/Dashboard/CreateCustomer"
+import CreateCustomer from "../features/Dashboard/CreateCustomer";
 
 const CreateCustomerPage = () => {
-  return <CreateCustomer/>
-}
+	return <CreateCustomer />;
+};
 
-export default CreateCustomerPage
+export default CreateCustomerPage;

@@ -1,16 +1,11 @@
 import { Box, Typography } from "@mui/material";
 
 function ProductList() {
-    return (
+	return (
 		<Box>
-			<Typography
-				variant="h2"
-			>
-				Test
-			</Typography>
-			
+			<Typography variant="h2">Test</Typography>
 		</Box>
 	);
 }
 
-export default ProductList
+export default ProductList;
