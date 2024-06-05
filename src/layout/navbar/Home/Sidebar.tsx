@@ -3,6 +3,7 @@ import {
 	Avatar,
 	Box,
 	Collapse,
+	Collapse,
 	Divider,
 	Drawer,
 	IconButton,
@@ -262,6 +263,70 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				{menuList.map((menu, index) => (
 					<React.Fragment key={menu.path}>{renderListItems(menu, index)}</React.Fragment>
 				))}
+			</List> */}
+			<List sx={{ px: "7%" }}>
+				<ListItem sx={{ bgcolor: "secondary.main" }} component={"div"} className="list-item-style">
+					<ListItemIcon>
+						<HomeIcon htmlColor="white" />
+					</ListItemIcon>
+					<ListItemText
+						primary={
+							<Typography variant="h6" fontWeight={"500"} color={"#fff"}>
+								Home
+							</Typography>
+						}
+					/>
+				</ListItem>
+				<ListItem
+					onClick={handleClick}
+					sx={{
+						background: open ? "rgba(13, 110, 253, 0.1)" : "inherit",
+					}}
+					component={"div"}
+					className="list-item-style"
+				>
+					<ListItemIcon>
+						<ReceiptIcon sx={{ color: open ? "secondary.main" : "inherit" }} />
+					</ListItemIcon>
+					<ListItemText
+						primary={
+							<Typography
+								variant="h6"
+								color={open ? "secondary.main" : "inherit"}
+								fontWeight={"500"}
+							>
+								Invoices
+							</Typography>
+						}
+					/>
+					{open ? <ExpandLessIcon sx={{ color: "secondary.main" }} /> : <ExpandMoreIcon />}
+				</ListItem>
+				<Collapse in={open} timeout="auto" unmountOnExit>
+					<List component="div" disablePadding sx={{ pl: "15%" }}>
+						<ListItem sx={{}} component={"div"} className="list-item-style">
+							<ListItemText
+								primary={
+									<Typography variant="h6" fontWeight={"500"}>
+										Invoice
+									</Typography>
+								}
+							/>
+						</ListItem>
+						<ListItem
+							sx={{ bgcolor: "secondary.main" }}
+							component={"div"}
+							className="list-item-style"
+						>
+							<ListItemText
+								primary={
+									<Typography variant="h6" color={"#fff"} fontWeight={"500"}>
+										Create Invoice
+									</Typography>
+								}
+							/>
+						</ListItem>
+					</List>
+				</Collapse>
 			</List>
 		</div>
 	);
