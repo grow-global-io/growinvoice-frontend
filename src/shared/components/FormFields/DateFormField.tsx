@@ -42,7 +42,6 @@ export const DateFormField: React.FC<
 					</InputLabel>
 				)}
 				<DatePicker
-					sx={{ width: "100%" }}
 					onChange={(value) => {
 						if (value && moment.isMoment(value) && value.isValid()) {
 							form.setFieldValue(field.name, moment(value).format("YYYY-MM-DD"), true);

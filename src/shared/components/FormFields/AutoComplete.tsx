@@ -64,6 +64,7 @@ export const AutocompleteField: React.FC<
 				}}
 				renderInput={(params) => (
 					<TextField
+						placeholder={label ? `Enter ${label?.toLowerCase()}` : undefined}
 						error={Boolean(errorText)}
 						helperText={errorText}
 						label={undefined}

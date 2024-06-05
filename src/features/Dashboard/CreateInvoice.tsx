@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, useMediaQuery, Button } from "@mui/material";
+import { Box, Typography, Grid, useMediaQuery, Button, Divider } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { TextFormField } from "../../shared/components/FormFields/TextFormField";
 import { DateFormField } from "../../shared/components/FormFields/DateFormField";
@@ -7,6 +7,7 @@ import InvoiceIcon from "./../../assets/img/invoice-icon.png";
 import { useTheme } from "@mui/material/styles"; // Correct import for useTheme from MUI
 import "./Dashboard.css";
 import { AutocompleteField } from "../../shared/components/FormFields/AutoComplete";
+import NoDataFound from "../../shared/components/NoDataFound";
 
 const CreateInvoice = () => {
 	const initialValues = {
@@ -49,33 +50,27 @@ const CreateInvoice = () => {
 
 	return (
 		<>
-			<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"} mb={"10px"}>
-				<img src={InvoiceIcon} alt="Invoice Icon" /> Invoices
+			<Typography variant="h3" textTransform={"capitalize"} mb={"10px"}>
+				<img src={InvoiceIcon} alt="Invoice Icon" /> New Invoices
 			</Typography>
 			<Box sx={{ mb: 2, mt: 2 }}>
 				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
 					{() => (
 						<Form>
 							<Grid container spacing={2}>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={4}>
 									<Field
 										name="customerName"
 										label="Customer Name"
 										component={AutocompleteField}
-										required={true}
 										options={options}
 										placeholder={"Select or add a customer"}
 									/>
 								</Grid>
-							</Grid>
-							<Typography border={"0.1px solid rgba(234, 234, 234, 1)"} my={3}></Typography>
-
-							<Grid
-								container
-								spacing={isSmallScreen ? 2 : 10}
-								width={isSmallScreen ? "100%" : "80%"}
-							>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} mb={3}>
+									<Divider />
+								</Grid>
+								<Grid item xs={12} sm={4}>
 									<Field
 										name="invoiceNumber"
 										component={TextFormField}
@@ -84,7 +79,7 @@ const CreateInvoice = () => {
 										placeholder={"Enter invoice number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={4}>
 									<Field
 										name="referenceNumber"
 										component={TextFormField}
@@ -93,14 +88,7 @@ const CreateInvoice = () => {
 										placeholder={"Enter reference number"}
 									/>
 								</Grid>
-							</Grid>
-
-							<Grid
-								container
-								spacing={isSmallScreen ? 2 : 10}
-								width={isSmallScreen ? "100%" : "80%"}
-							>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={4}>
 									<Field
 										name="invoiceDate"
 										component={DateFormField}
@@ -109,7 +97,7 @@ const CreateInvoice = () => {
 										placeholder={"Select invoice date"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={4}>
 									<Field
 										name="isRecurring"
 										label="Is Recurring"
@@ -119,14 +107,7 @@ const CreateInvoice = () => {
 										placeholder={"select"}
 									/>
 								</Grid>
-							</Grid>
-
-							<Grid
-								container
-								spacing={isSmallScreen ? 2 : 10}
-								width={isSmallScreen ? "100%" : "80%"}
-							>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={4}>
 									<Field
 										name="invoiceDueDate"
 										component={DateFormField}
@@ -135,34 +116,108 @@ const CreateInvoice = () => {
 										placeholder={"Select invoice due date"}
 									/>
 								</Grid>
-							</Grid>
-
-							<Typography border={"0.1px solid rgba(234, 234, 234, 1)"} my={3}></Typography>
-
-							<Grid container spacing={isSmallScreen ? 1 : 10} width={"100%"}>
+								<Grid item xs={12} mb={3}>
+									<Divider />
+								</Grid>
+								<Grid item xs={12}>
+									{/* <NoDataFound message="Product table will be here" /> */}
+								</Grid>
+								<Grid item xs={12} mb={3}>
+									<Divider />
+								</Grid>
 								<Grid item xs={12} sm={6}>
 									<Field
 										name="addNote"
 										component={TextFormField}
-										label="Add Note"
+										label="Notes"
 										required={true}
 										multiline
 										rows={5}
 									/>
-
-									<Grid item xs={12} sm={8} my={2}>
-										<Field
-											name="paymentDetail"
-											label="Payment Detail"
-											component={AutocompleteField}
-											required={true}
-											options={options}
-										/>
-									</Grid>
+									<Field
+										name="paymentDetail"
+										label="Payment Details"
+										component={AutocompleteField}
+										required={true}
+										options={options}
+									/>
 								</Grid>
-
 								<Grid item xs={12} sm={6}>
-									<Box sx={{ background: "rgba(247, 247, 247, 1)" }} px={2} py={3} borderRadius={1}>
+									<Grid
+										container
+										px={2}
+										py={3}
+										borderRadius={1}
+										sx={{ background: "rgba(247, 247, 247, 1)" }}
+									>
+										<Grid item xs={12} sm={6}>
+											<Typography variant="h5">Subtotal</Typography>
+										</Grid>
+										<Grid item xs={12} sm={6} textAlign={"right"}>
+											<Typography variant="h5">0.000</Typography>
+										</Grid>
+										<Grid item xs={12} sm={12} display={"flex"} alignItems={"center"}>
+											<Typography variant="h5">Taxes</Typography>
+											<Box
+												sx={{
+													width: "50%",
+													px: 2,
+												}}
+											>
+												<Field
+													name="taxes"
+													component={TextFormField}
+													required={true}
+													backgroundColor={"#fff"}
+												/>
+											</Box>
+											<Box
+												sx={{
+													width: "100%",
+													display: "flex",
+													justifyContent: "flex-end",
+												}}
+											>
+												<Typography variant="h5">0.000</Typography>
+											</Box>
+										</Grid>
+										<Grid item xs={12} sm={12} display={"flex"} alignItems={"center"}>
+											<Typography variant="h5">Discount</Typography>
+											<Box
+												sx={{
+													width: "50%",
+													px: 2,
+												}}
+											>
+												<Field
+													name="discount"
+													type="number"
+													component={TextFormField}
+													required={true}
+													backgroundColor={"#fff"}
+												/>
+											</Box>
+											<Box
+												sx={{
+													width: "100%",
+													display: "flex",
+													justifyContent: "flex-end",
+												}}
+											>
+												<Typography variant="h5">0.000</Typography>
+											</Box>
+										</Grid>
+										<Grid item xs={12}>
+											<Divider />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Typography variant="h5">Total</Typography>
+										</Grid>
+										<Grid item xs={12} sm={6} textAlign={"right"}>
+											<Typography variant="h5">0.000</Typography>
+										</Grid>
+									</Grid>
+									{/* <Box sx={{ background: "rgba(247, 247, 247, 1)" }} px={2} py={3} borderRadius={1}>
 										<Box display={"flex"} justifyContent={"space-between"}>
 											<Typography variant="h5">Subtotal</Typography>
 											<Typography variant="h5">0.000</Typography>
@@ -213,11 +268,8 @@ const CreateInvoice = () => {
 											<Typography variant="h4">Total</Typography>
 											<Typography variant="h4">0.000</Typography>
 										</Box>
-									</Box>
+									</Box> */}
 								</Grid>
-							</Grid>
-
-							<Grid container spacing={2} width={isSmallScreen ? "100%" : "70%"} mt={1}>
 								<Grid item xs={12} sm={6}>
 									<Field
 										name="invoiceTemplate"
