@@ -41,11 +41,11 @@ export const protectedRoutes: Route[] = [
 		Component: Test,
 	},
 	{
-		path: "/productlist",
+		path: "/product/productlist",
 		Component: ProductListPage,
 	},
 	{
-		path: "/createproduct",
+		path: "/product/createproduct",
 		Component: CreateProductPage,
 	},
 	{

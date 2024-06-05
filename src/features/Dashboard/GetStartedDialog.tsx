@@ -93,7 +93,7 @@ const GetStartedDialog = ({ open, handleClose }: { open: boolean; handleClose?: 
 
 	return (
 		<>
-			<Dialog open={open} onClose={handleClose} fullWidth maxWidth={"sm"}>
+			<Dialog open={false} onClose={handleClose} fullWidth maxWidth={"sm"}>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={validationSchema}
