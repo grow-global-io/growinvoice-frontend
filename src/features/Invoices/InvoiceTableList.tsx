@@ -1,4 +1,3 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import InvoiceListData from "../../data/InvoiceListData.json";
@@ -34,7 +33,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function DataGridDemo() {
-	const [invoiceData, setInvoiceData] = React.useState(InvoiceListData);
+	const invoiceData = InvoiceListData;
 
 	return (
 		<Box sx={{ height: "auto", width: "100%" }}>

@@ -59,6 +59,7 @@ const CustomStepperBox = styled(Box)(() => ({
 }));
 
 const GetStartedDialog = ({ open, handleClose }: { open: boolean; handleClose?: () => void }) => {
+	console.log(open);
 	const [activeStep, setActiveStep] = React.useState(0);
 
 	const handleNext = () => {
