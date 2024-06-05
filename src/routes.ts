@@ -5,6 +5,12 @@ import OveviewPage from "./pages/OveviewPage";
 import { Route } from "./shared/models/Route";
 import ResetPassword from "./features/Authentication/ResetPassword";
 import Test from "./features/Dashboard/Test";
+import ProductListPage from "./pages/ProductListPage";
+import CreateProductPage from "./pages/CreateProductPage";
+import CustomerListPage from "./pages/CustomerListPage";
+import CreateCustomerPage from "./pages/CreateCustomerPage";
+import InvoiceListPage from "./pages/InvoiceListPage";
+import CreateInvoicePage from "./pages/CreateInvoicePage";
 
 export const unProtectedRoutes: Route[] = [
 	{
@@ -33,5 +39,29 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/test",
 		Component: Test,
+	},
+	{
+		path: "/productlist",
+		Component: ProductListPage,
+	},
+	{
+		path: "/createproduct",
+		Component: CreateProductPage,
+	},
+	{
+		path: "/customerlist",
+		Component: CustomerListPage,
+	},
+	{
+		path: "/createcustomer",
+		Component: CreateCustomerPage,
+	},
+	{
+		path: "/invoicelist",
+		Component: InvoiceListPage,
+	},
+	{
+		path: "/createinvoice",
+		Component: CreateInvoicePage,
 	},
 ];
