@@ -12,7 +12,7 @@ const OverviewCard = ({ name, img }: { name: string; img: string }) => {
 			alignItems={"center"}
 		>
 			<Box>
-				<Typography variant="h3" fontWeight={"500"}>
+				<Typography variant="h3" fontWeight={"600"}>
 					$32.5k
 				</Typography>
 				<Typography variant="h6" fontWeight={"600"} sx={{ my: 1 }}>

@@ -7,7 +7,7 @@ import {
 	Drawer,
 	IconButton,
 	List,
-	ListItem,
+	ListItemButton,
 	ListItemIcon,
 	ListItemText,
 	Menu,
@@ -16,18 +16,22 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import "./Home.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../../../assets/logo.svg";
 import { useAuthStore } from "../../../store/auth";
 import HomeIcon from "@mui/icons-material/Home";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import StoreIcon from "@mui/icons-material/Store";
+import PeopleIcon from "@mui/icons-material/People";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
+	const { pathname } = useLocation();
+	const navigate = useNavigate();
 	const { logout } = useAuthStore();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [isClosing, setIsClosing] = React.useState(false);
@@ -52,7 +56,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			},
 		},
 	];
-
 	const handleDrawerClose = () => {
 		setIsClosing(true);
 		setMobileOpen(false);
@@ -76,10 +79,159 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 		setAnchorElUser(null);
 	};
 
-	const [open, setOpen] = useState(false);
+	const menuList = [
+		{
+			path: "/",
+			icon: <HomeIcon />,
+			menuName: "Home",
+			menuItems: [],
+		},
+		{
+			path: "/product",
+			icon: <StoreIcon />,
+			menuName: "Product",
+			menuItems: [
+				{ path: "/product/productlist", label: "Product List" },
+				{ path: "/product/createproduct", label: "Create Product" },
+			],
+		},
+		{
+			path: "/customer",
+			icon: <PeopleIcon />,
+			menuName: "Customer",
+			menuItems: [
+				{ path: "/customer/customerlist", label: "Customer List" },
+				{ path: "/customer/createcustomer", label: "Create Customer" },
+			],
+		},
+		{
+			path: "/invoice",
+			icon: <ReceiptIcon />,
+			menuName: "Invoice",
+			menuItems: [
+				{ path: "/invoice/invoicelist", label: "Invoice" },
+				{ path: "/invoice/createinvoice", label: "Create Invoice" },
+			],
+		},
+	];
 
-	const handleClick = () => {
-		setOpen(!open);
+	const [menuToggle, setMenuToggle] = useState(
+		menuList.map((menuItemMap) => {
+			if (pathname.startsWith(menuItemMap?.path)) return true;
+			return false;
+		}),
+	);
+	console.log(pathname);
+	useEffect(() => {
+		setMenuToggle(
+			menuList.map((menuItemMap) => {
+				if (pathname.startsWith(menuItemMap?.path)) return true;
+				return false;
+			}),
+		);
+	}, [pathname]);
+
+	const renderListItems = (
+		{
+			path,
+			icon,
+			menuName,
+			menuItems,
+		}: {
+			path: string;
+			icon: React.ReactElement;
+			menuName: string;
+			menuItems: { path: string; label: string }[];
+		},
+		index: number,
+	) => {
+		const navigation = (path: string) => {
+			navigate(path);
+		};
+		const handleToggle = () => {
+			setMenuToggle((prevState) => {
+				const newState = [...prevState];
+				newState.fill(false, 0, newState.length);
+				newState[index] = !newState[index];
+				return newState;
+			});
+		};
+		const color = "#000";
+		return (
+			<>
+				<ListItemButton
+					key={index}
+					sx={{
+						bgcolor: "inherit",
+						borderRadius: "4px",
+						padding: "2px 16px",
+						"&:hover": { backgroundColor: "rgba(13, 110, 253, 0.1)" },
+						"&:hover .MuiListItemIcon-root": { color: "#000" },
+						"&:hover .MuiListItemText-primary": { color: "#000" },
+						"& .MuiListItemIcon-root": { color: color, minWidth: "auto" },
+						"& .MuiListItemText-primary": { color: color },
+						color: color,
+						border: "1px solid rgba(0, 0, 0, 0.1)",
+						marginTop: "5px",
+						borderWidth: "1px",
+					}}
+					onClick={menuItems?.length > 0 ? handleToggle : () => navigation(path)}
+				>
+					<ListItemIcon
+						sx={{
+							pr: 2,
+						}}
+					>
+						{icon}
+					</ListItemIcon>
+					<ListItemText primary={menuName} />
+					{menuItems?.length > 0 && (
+						<ListItemIcon>
+							{menuToggle[index] ? (
+								<ExpandLessIcon sx={{ color: color }} />
+							) : (
+								<ExpandMoreIcon sx={{ color: color }} />
+							)}
+						</ListItemIcon>
+					)}
+				</ListItemButton>
+				{menuItems?.length > 0 && (
+					<Collapse in={menuToggle[index]} timeout="auto" unmountOnExit>
+						<List
+							component="div"
+							disablePadding
+							sx={{
+								marginLeft: 3,
+								my: 1,
+							}}
+						>
+							{menuItems.map((item) => (
+								<ListItemButton
+									key={item.path}
+									sx={{
+										marginTop: "5px",
+										pl: 4,
+										bgcolor: item.path === pathname ? "secondary.main" : "inherit",
+										"&:hover": { backgroundColor: "rgba(13, 110, 253, 0.1)" },
+										"&:hover .MuiListItemText-primary": { color: "#000" },
+										"& .MuiListItemText-primary": {
+											color: item.path === pathname ? "#fff" : "#000",
+										},
+										borderRadius: "4px",
+									}}
+									onClick={() => {
+										console.log(item);
+										navigation(item.path);
+									}}
+								>
+									<ListItemText primary={item?.label} />
+								</ListItemButton>
+							))}
+						</List>
+					</Collapse>
+				)}
+			</>
+		);
 	};
 
 	const drawer = (
@@ -105,79 +257,10 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				</Toolbar>
 			</Box>
 			<Divider />
-			{/* <List>
-				{["Home", "Invoice"].map((text, index) => (
-					<ListItem key={text} disablePadding>
-						<ListItemButton>
-							<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItemButton>
-					</ListItem>
+			<List sx={{ px: "7%" }} component="nav">
+				{menuList.map((menu, index) => (
+					<React.Fragment key={menu.path}>{renderListItems(menu, index)}</React.Fragment>
 				))}
-			</List> */}
-			<List sx={{ px: "7%" }}>
-				<ListItem sx={{ bgcolor: "secondary.main" }} component={"div"} className="list-item-style">
-					<ListItemIcon>
-						<HomeIcon htmlColor="white" />
-					</ListItemIcon>
-					<ListItemText
-						primary={
-							<Typography variant="h6" fontWeight={"500"} color={"#fff"}>
-								Home
-							</Typography>
-						}
-					/>
-				</ListItem>
-				<ListItem
-					onClick={handleClick}
-					sx={{
-						background: open ? "rgba(13, 110, 253, 0.1)" : "inherit",
-					}}
-					component={"div"}
-					className="list-item-style"
-				>
-					<ListItemIcon>
-						<ReceiptIcon sx={{ color: open ? "secondary.main" : "inherit" }} />
-					</ListItemIcon>
-					<ListItemText
-						primary={
-							<Typography
-								variant="h6"
-								color={open ? "secondary.main" : "inherit"}
-								fontWeight={"500"}
-							>
-								Invoices
-							</Typography>
-						}
-					/>
-					{open ? <ExpandLessIcon sx={{ color: "secondary.main" }} /> : <ExpandMoreIcon />}
-				</ListItem>
-				<Collapse in={open} timeout="auto" unmountOnExit>
-					<List component="div" disablePadding sx={{ pl: "15%" }}>
-						<ListItem sx={{}} component={"div"} className="list-item-style">
-							<ListItemText
-								primary={
-									<Typography variant="h6" fontWeight={"500"}>
-										Invoice
-									</Typography>
-								}
-							/>
-						</ListItem>
-						<ListItem
-							sx={{ bgcolor: "secondary.main" }}
-							component={"div"}
-							className="list-item-style"
-						>
-							<ListItemText
-								primary={
-									<Typography variant="h6" color={"#fff"} fontWeight={"500"}>
-										Create Invoice
-									</Typography>
-								}
-							/>
-						</ListItem>
-					</List>
-				</Collapse>
 			</List>
 		</div>
 	);
