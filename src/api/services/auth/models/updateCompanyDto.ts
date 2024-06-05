@@ -13,11 +13,14 @@ export interface UpdateCompanyDto {
 	city?: string | null;
 	/** @nullable */
 	country?: string | null;
+	/** @nullable */
+	logo?: string | null;
 	name?: string;
 	/** @nullable */
 	phone?: string | null;
 	/** @nullable */
 	state?: string | null;
+	user_id?: string;
 	/** @nullable */
 	vat?: string | null;
 	/** @nullable */

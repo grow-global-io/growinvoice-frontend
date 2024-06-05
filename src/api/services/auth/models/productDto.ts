@@ -5,23 +5,21 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { ProductDtoType } from "./productDtoType";
 
-export interface UserDto {
+export interface ProductDto {
 	createdAt: string;
 	/** @nullable */
-	currency_id: string | null;
-	email: string;
+	description: string | null;
+	hsnCode_id: string;
 	id: string;
 	isExist: boolean;
-	/** @nullable */
-	name: string | null;
-	password: string;
-	/** @nullable */
-	phone: string | null;
-	/** @nullable */
-	resetToken: string | null;
-	/** @nullable */
-	resetTokenExpiry: string | null;
+	name: string;
+	price: number;
+	tax_id: string;
+	type: ProductDtoType;
+	unit_id: string;
 	/** @nullable */
 	updatedAt: string | null;
+	user_id: string;
 }
