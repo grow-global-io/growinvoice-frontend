@@ -5,18 +5,138 @@ import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { ListDto } from "@shared/models/ListDto";
+import { ListDto } from "../../models/ListDto";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useDebounceValue } from "usehooks-ts";
+
+const transformData = (data: unknown) => {
+	if (!Array.isArray(data)) {
+		return [];
+	}
+	return data.map((item: unknown): ListDto => {
+		if (typeof item === "string") {
+			return { label: item, value: item };
+		}
+		if (
+			typeof item === "object" &&
+			item !== null &&
+			"label" in item &&
+			"value" in item &&
+			typeof item.label === "string" &&
+			typeof item.value === "string"
+		) {
+			return { label: item.label, value: item.value };
+		}
+		return { label: "", value: "" };
+	});
+};
+
+function AsyncAutoCompleteField({
+	field,
+	form,
+	label,
+	optionUrl,
+	onValueChange,
+	...props
+}: FieldProps & {
+	label: string;
+	required?: boolean;
+	optionUrl: string;
+	onValueChange?: (value: ListDto) => void;
+}) {
+	const [debouncedInputValue, setSearchTerm] = useDebounceValue("", 500);
+
+	const { data = [], isLoading } = useQuery({
+		queryKey: ["autocomplete", optionUrl, debouncedInputValue],
+		queryFn: async () => {
+			const params = new URLSearchParams();
+			if (debouncedInputValue) {
+				params.append("q", debouncedInputValue);
+			}
+			const { data } = await axios.get(optionUrl, { params });
+			return transformData(data);
+		},
+	});
+
+	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
+
+	return (
+		<FormControl fullWidth error={!!errorText}>
+			{field.name && (
+				<InputLabel sx={{ ml: -1.6 }} shrink htmlFor={field.name}>
+					<Typography variant="h4" color="text.primary">
+						{label?.toUpperCase()}
+					</Typography>
+				</InputLabel>
+			)}
+			<Autocomplete
+				{...props}
+				id={field.name}
+				filterOptions={(x) => x}
+				options={data}
+				loading={isLoading}
+				onChange={(_, value) => {
+					if (value) {
+						form.setFieldValue(field.name, value.value);
+						onValueChange?.(value);
+					}
+				}}
+				onInputChange={(_, value, reason) => {
+					if (reason === "input") {
+						setSearchTerm(value);
+					} else if (reason === "clear") {
+						setSearchTerm("");
+					}
+				}}
+				renderOption={(props, option) => {
+					return (
+						<li {...props} key={option.value}>
+							<Typography>{option.label}</Typography>
+						</li>
+					);
+				}}
+				renderInput={(params) => (
+					<TextField
+						error={Boolean(errorText)}
+						helperText={errorText}
+						label={undefined}
+						name={field.name}
+						{...params}
+					/>
+				)}
+				value={data.find((option) => option.value === field.value) ?? null}
+			/>
+		</FormControl>
+	);
+}
 
 export const AutocompleteField: React.FC<
 	FieldProps & {
 		label: string;
 		required?: boolean;
-		options: ListDto[];
+		options?: ListDto[];
+		optionUrl?: string;
 		onValueChange?: (value: ListDto) => void;
 		multiple?: boolean;
 	}
-> = ({ field, form, label, options, onValueChange, ...props }) => {
+> = ({ field, form, label, options = [], optionUrl, onValueChange, ...props }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
+
+	if (optionUrl) {
+		return (
+			<AsyncAutoCompleteField
+				field={field}
+				form={form}
+				label={label}
+				required={props.required}
+				optionUrl={optionUrl}
+				onValueChange={onValueChange}
+				{...props}
+			/>
+		);
+	}
+
 	return (
 		<FormControl fullWidth error={!!errorText}>
 			{field.name && (
@@ -44,11 +164,12 @@ export const AutocompleteField: React.FC<
 							if (form.values[field.name].length === 0) {
 								onValueChange?.(value[0] as ListDto);
 							} else {
-								const data: ListDto[] = [];
+								const data: any[] = [];
 								value.map((obj) => {
 									if (!(form.values[field.name].indexOf(obj.value) !== -1)) {
 										data.push(obj);
 									}
+									return data;
 								});
 								onValueChange?.(data[0] as ListDto);
 							}
@@ -67,9 +188,10 @@ export const AutocompleteField: React.FC<
 				}}
 				renderInput={(params) => (
 					<TextField
-						placeholder={label ? `Enter ${label?.toLowerCase()}` : undefined}
+						autoComplete="off"
 						error={Boolean(errorText)}
 						helperText={errorText}
+						placeholder={label ? `Enter ${label?.toLowerCase()}` : undefined}
 						label={undefined}
 						name={field.name}
 						{...params}

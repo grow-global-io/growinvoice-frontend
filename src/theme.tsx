@@ -436,7 +436,10 @@ const themeOptions: ThemeOptions = {
 		},
 		MuiDataGrid: {
 			defaultProps: {
-				components: { toolbar: QuickSearchToolbar },
+				// components: { toolbar: QuickSearchToolbar },
+				slots: {
+					toolbar: QuickSearchToolbar,
+				},
 				pageSizeOptions: [10, 25, 50, 100],
 				initialState: {
 					pagination: {
