@@ -1,34 +1,52 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import InvoiceListData from "../../data/InvoiceListData.json";
+import { Typography } from "@mui/material";
 
 const columns: GridColDef[] = [
-	{ field: "id", headerName: "ID", width: 90 },
-	{ field: "invoiceNumber", headerName: "Invoice Number", width: 90 },
+	{ field: "id", headerName: "ID", flex: 0.25 },
+	{
+		field: "invoiceNumber",
+		headerName: "Invoice Number",
+		flex: 1,
+
+		renderCell: (params) => {
+			return (
+				<Box
+					sx={{
+						display: "flex",
+						alignItems: "center",
+					}}
+				>
+					<Typography variant="h6">{params.row.invoiceNumber}</Typography>;
+				</Box>
+			);
+		},
+	},
 	{
 		field: "invoiceDate",
 		headerName: "Invoice Date",
-		width: 150,
+		flex: 1,
 	},
 	{
 		field: "dueDate",
 		headerName: "Due Date",
-		width: 150,
+		flex: 1,
 	},
 	{
 		field: "status",
 		headerName: "Status",
-		width: 110,
+		flex: 1,
 	},
 	{
 		field: "paidStatus",
 		headerName: "Paid Status",
-		width: 110,
+		flex: 1,
 	},
 	{
 		field: "amountDue",
 		headerName: "Amount Due",
-		width: 110,
+		flex: 1,
 	},
 ];
 
