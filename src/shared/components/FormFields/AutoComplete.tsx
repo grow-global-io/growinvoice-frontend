@@ -5,7 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { ListDto } from "../../models/ListDto";
+import { ListDto } from "@shared/models/ListDto";
 
 export const AutocompleteField: React.FC<
 	FieldProps & {

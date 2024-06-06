@@ -1,4 +1,4 @@
-import InvoiceList from "../features/Invoices/InvoiceList";
+import InvoiceList from "@features/Invoices/InvoiceList";
 
 const InvoiceListPage = () => {
 	return <InvoiceList />;

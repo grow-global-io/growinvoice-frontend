@@ -1,27 +1,24 @@
 import { Grid } from "@mui/material";
-import OverviewCard from "../../shared/components/OverviewCard";
-import GroupUser from "./../../assets/img/group-user.png";
-import InvoiceFile from "./../../assets/img/invoice-file.png";
-import Estimate from "./../../assets/img/estimate.png";
-import Amount from "./../../assets/img/due-amount.png";
+import OverviewCard from "@shared/components/OverviewCard";
+import { Constants } from "@shared/constants";
 
 const ExpensesSummary = () => {
 	const data = [
 		{
 			name: "Customers",
-			img: GroupUser,
+			img: Constants.customImages.GroupUser,
 		},
 		{
 			name: "Invoices",
-			img: InvoiceFile,
+			img: Constants.customImages.InvoiceFile,
 		},
 		{
 			name: "Estimates",
-			img: Estimate,
+			img: Constants.customImages.Estimate,
 		},
 		{
 			name: "Due Amount",
-			img: Amount,
+			img: Constants.customImages.Amount,
 		},
 	];
 

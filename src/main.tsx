@@ -4,14 +4,12 @@ import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import "./index.css";
 import { theme } from "./theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { environment } from "./environment";
-
+import { environment } from "@enviroment";
 import { ErrorBoundary } from "react-error-boundary";
-import InternalServerErrorPage from "./pages/InternalServerErrorPage";
+import InternalServerErrorPage from "@pages/InternalServerErrorPage";
 
 const queryClient = new QueryClient({
 	defaultOptions: {

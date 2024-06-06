@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { Field } from "formik";
-import { TextFormField } from "../../../shared/components/FormFields/TextFormField";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
 
 const CompanyUpdateForm = () => {
 	// companyName: "",

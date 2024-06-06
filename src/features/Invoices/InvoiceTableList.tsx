@@ -37,17 +37,7 @@ export default function DataGridDemo() {
 
 	return (
 		<Box sx={{ height: "auto", width: "100%" }}>
-			<DataGrid
-				rows={invoiceData}
-				columns={columns}
-				initialState={{
-					pagination: { paginationModel: { pageSize: 10 } },
-				}}
-				pageSizeOptions={[5, 10, 25]}
-				checkboxSelection
-				disableColumnFilter
-				disableRowSelectionOnClick
-			/>
+			<DataGrid rows={invoiceData} columns={columns} />
 		</Box>
 	);
 }

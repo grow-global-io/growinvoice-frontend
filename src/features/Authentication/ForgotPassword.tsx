@@ -1,10 +1,10 @@
 import { Dialog, DialogContent, Button, Typography } from "@mui/material";
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import AppDialogFooter from "../../shared/components/Dialog/AppDialogFooter";
-import AppDialogHeader from "../../shared/components/Dialog/AppDialogHeader";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
-import { useDialog } from "../../shared/hooks/useDialog";
-import { useUserControllerForgotPassword } from "../../api/services/auth/users";
+import AppDialogFooter from "@shared/components/Dialog/AppDialogFooter";
+import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
+import { useDialog } from "@shared/hooks/useDialog";
+import { useUserControllerForgotPassword } from "@api/services/users";
 
 export default function ForgotPassword() {
 	const { open, handleClickOpen, handleClose } = useDialog();

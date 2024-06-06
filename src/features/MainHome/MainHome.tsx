@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import "./mainhome.css";
-import MainNavbar from "../../layout/navbar/Mainpage/MainNavbar";
+import MainNavbar from "@layout/navbar/Mainpage/MainNavbar";
 import HeroSecton from "./HeroSecton";
 import ProcessSection from "./ProcessSection";
 

@@ -1,4 +1,4 @@
-import MainHome from "../features/MainHome/MainHome";
+import MainHome from "@features/MainHome/MainHome";
 
 const MainHomePage = () => {
 	return <MainHome />;

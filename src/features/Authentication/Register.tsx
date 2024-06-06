@@ -1,11 +1,11 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { Formik, Field, Form } from "formik";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import * as yup from "yup";
-import BgImageSvg from "../../assets/bgpng.png";
 import { useNavigate } from "react-router-dom";
-import { useUserControllerCreateUser } from "../../api/services/auth/users";
-import { PhoneInputFormField } from "../../shared/components/FormFields/PhoneInputFormField";
+import { useUserControllerCreateUser } from "@api/services/users";
+import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
+import { Constants } from "@shared/constants";
 
 const Register = () => {
 	const navigation = useNavigate();
@@ -57,7 +57,7 @@ const Register = () => {
 		<Box
 			sx={{
 				position: "relative",
-				backgroundImage: `url(${BgImageSvg})`,
+				backgroundImage: `url(${Constants.customImages.BgImageSvg})`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",

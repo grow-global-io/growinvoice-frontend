@@ -1,28 +1,24 @@
 import { Grid } from "@mui/material";
-import OverviewCard from "../../shared/components/OverviewCard";
-
-import LeftDownArr from "./../../assets/img/left-down-arrow.png";
-import DueDateRed from "./../../assets/img/due-date-red.png";
-import DueDateBlue from "./../../assets/img/due-date-blue.png";
-import Stack from "./../../assets/img/stack.png";
+import OverviewCard from "@shared/components/OverviewCard";
+import { Constants } from "@shared/constants";
 
 const InvoiceExpenses = () => {
 	const data = [
 		{
 			text: "Total Outstanding Receivables",
-			img: LeftDownArr,
+			img: Constants.customImages.LeftDownArr,
 		},
 		{
 			text: "Due Today",
-			img: DueDateRed,
+			img: Constants.customImages.DueDateRed,
 		},
 		{
 			text: "Due Within 30 Days",
-			img: DueDateBlue,
+			img: Constants.customImages.DueDateBlue,
 		},
 		{
 			text: "Overdue Invoice",
-			img: Stack,
+			img: Constants.customImages.Stack,
 		},
 	];
 	return (

@@ -1,5 +1,5 @@
 import { AlertProps } from "@mui/material";
-import { useAlertStore } from "../../store/alert";
+import { useAlertStore } from "@store/alert";
 
 export class AlertService {
 	private static _instance: AlertService;

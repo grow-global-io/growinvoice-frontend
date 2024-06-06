@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, Typography } from "@mui/material";
-import AppDialogHeader from "../../shared/components/Dialog/AppDialogHeader";
+import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 
 const StartUp = ({ open, handleClose }: { open: boolean; handleClose: () => void }) => {
 	return (

@@ -436,9 +436,13 @@ const themeOptions: ThemeOptions = {
 		},
 		MuiDataGrid: {
 			defaultProps: {
-				components: { Toolbar: QuickSearchToolbar },
+				components: { toolbar: QuickSearchToolbar },
 				pageSizeOptions: [10, 25, 50, 100],
-				paginationModel: { page: 1, pageSize: 10 },
+				initialState: {
+					pagination: {
+						paginationModel: { pageSize: 10, page: 0 },
+					},
+				},
 				checkboxSelection: false,
 				sx(theme) {
 					return {

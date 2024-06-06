@@ -1,4 +1,4 @@
-import Overview from "../features/Dashboard/Overview";
+import Overview from "@features/Dashboard/Overview";
 
 const OveviewPage = () => {
 	return <Overview />;

@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { mountStoreDevtool } from "simple-zustand-devtools";
-import { environment } from "../environment";
-import { LoaderService } from "../shared/services/LoaderService";
-import { UserWithCompanyDto } from "../api/services/auth/models";
-import { authControllerStatus } from "../api/services/auth/auth";
+import { environment } from "@enviroment";
+import { LoaderService } from "@shared/services/LoaderService";
+import { UserWithCompanyDto } from "@api/services/models";
+import { authControllerStatus } from "@api/services/auth";
 
 interface AuthStore {
 	isLoggedIn: boolean;

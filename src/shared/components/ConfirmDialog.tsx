@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
-import { useConfirmDialogStore } from "../../store/confirmDialog";
+import { useConfirmDialogStore } from "@store/confirmDialog";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
 
 export default function ConfirmDialog() {
