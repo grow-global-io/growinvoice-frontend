@@ -12,75 +12,16 @@ import {
 	GridRowModes,
 	DataGrid,
 	GridColDef,
-	GridToolbarContainer,
 	GridActionsCellItem,
 	GridEventListener,
 	GridRowId,
 	GridRowModel,
-	GridRowEditStopReasons,
-	GridSlots,
+	GridRowParams,
+	MuiEvent,
 } from "@mui/x-data-grid";
-import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
-import { TextFormField } from "@shared/components/FormFields/TextFormField";
-import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
-import { Field, Formik, Form } from "formik";
-import * as Yup from "yup";
-import { Grid } from "@mui/material";
-
-const roles = ["Market", "Finance", "Development"];
-const randomRole = () => randomArrayItem(roles);
-
-const initialRows: GridRowsProp = [
-	{
-		id: randomId(),
-		product: "",
-		quantity: "",
-		price: "",
-		amount: "",
-		role: randomRole(),
-	},
-	{
-		id: randomId(),
-		product: "",
-		quantity: "",
-		price: "",
-		amount: "",
-		role: randomRole(),
-	},
-];
-
-interface EditToolbarProps {
-	setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-	setRowModesModel: (newModel: (oldModel: GridRowModesModel) => GridRowModesModel) => void;
-}
-
-function EditToolbar(props: EditToolbarProps) {
-	const { setRows, setRowModesModel } = props;
-
-	const handleClick = () => {
-		const id = randomId();
-		setRows((oldRows) => [...oldRows, { id, product: "", quantity: "", isNew: true }]);
-		setRowModesModel((oldModel) => ({
-			...oldModel,
-			[id]: { mode: GridRowModes.Edit, fieldToFocus: "product" },
-		}));
-	};
-
-	return (
-		<GridToolbarContainer>
-			<Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-				Add record
-			</Button>
-		</GridToolbarContainer>
-	);
-}
-
-const validationSchema = Yup.object().shape({
-	product: Yup.string().required("Product is required"),
-	quantity: Yup.number().required("Quantity is required").positive("Quantity must be positive"),
-	price: Yup.number().required("Price is required").positive("Price must be positive"),
-	amount: Yup.number().required("Amount is required").positive("Amount must be positive"),
-});
+import { Grid, Typography, useTheme } from "@mui/material";
+import GridSelectField from "@shared/components/DataGridFields/GridSelectField";
+import GridTextField from "@shared/components/DataGridFields/GridTextField";
 
 export default function FullFeaturedCrudGrid() {
 	const options = [
@@ -88,13 +29,23 @@ export default function FullFeaturedCrudGrid() {
 		{ value: "2", label: "Option 2" },
 		{ value: "3", label: "Option 3" },
 	];
-	const [rows, setRows] = React.useState(initialRows);
+	const [rows, setRows] = React.useState<GridRowsProp>([]);
 	const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+	const [isRowEditing, setIsRowEditing] = React.useState(false);
 
-	const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
-		if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-			event.defaultMuiPrevented = true;
-		}
+	React.useEffect(() => {
+		const editingRows = Object.values(rowModesModel).filter(
+			(row) => row.mode === GridRowModes.Edit,
+		);
+		setIsRowEditing(editingRows.length > 0);
+	}, [rowModesModel]);
+
+	const handleRowEditStop: GridEventListener<"rowEditStop"> = (_, event) => {
+		event.defaultMuiPrevented = true;
+	};
+
+	const handleRowEditStart = (_: GridRowParams, event: MuiEvent<React.SyntheticEvent>) => {
+		event.defaultMuiPrevented = true;
 	};
 
 	const handleEditClick = (id: GridRowId) => () => {
@@ -131,55 +82,76 @@ export default function FullFeaturedCrudGrid() {
 		setRowModesModel(newRowModesModel);
 	};
 
+	const handleAddRow = () => {
+		const randomInRange = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+		const id = rows.length + 2 + randomInRange;
+		setRows((oldRows) => [
+			...oldRows,
+			{
+				id,
+				product: "",
+				quantity: "",
+				price: "",
+				amount: "",
+				isNew: true,
+				isEditPosible: false,
+				isEditble: true,
+			},
+		]);
+		setRowModesModel((oldModel) => ({
+			...oldModel,
+			[id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+		}));
+	};
+
+	const theme = useTheme();
+
 	const columns: GridColDef[] = [
 		{
 			field: "product",
 			headerName: "Product",
 			flex: 1.5,
 			editable: true,
-			renderEditCell: () => (
-				<Grid sm={10}>
-					<Field
-						name="product"
-						component={AutocompleteField}
-						options={options}
-						placeholder="Select or add a product"
-					/>
-				</Grid>
+			renderEditCell: (params) => (
+				<GridSelectField
+					params={params}
+					valueOptions={options}
+					disabled={params.row.isEditPosible}
+				/>
 			),
+			renderCell: (params) => {
+				return <Typography variant="inherit">{params.value}</Typography>;
+			},
 		},
 		{
 			field: "quantity",
 			headerName: "Quantity",
 			flex: 0.8,
 			editable: true,
-			renderEditCell: () => (
-				<Grid sm={10}>
-					<Field name="quantity" component={TextFormField} type="number" />
-				</Grid>
-			),
+			renderEditCell: (params) => <GridTextField params={params} label="quantity" type="number" />,
+			renderCell: (params) => {
+				return <Typography variant="inherit">{params.value}</Typography>;
+			},
 		},
 		{
 			field: "price",
 			headerName: "Price",
 			flex: 0.8,
 			editable: true,
-			renderEditCell: () => (
-				<Grid sm={10}>
-					<Field name="price" component={TextFormField} />
-				</Grid>
-			),
+			renderEditCell: (params) => <GridTextField params={params} label="price" type="number" />,
+			renderCell: (params) => {
+				return <Typography variant="inherit">{params.value}</Typography>;
+			},
 		},
 		{
 			field: "amount",
 			headerName: "Amount",
 			flex: 0.8,
 			editable: true,
-			renderEditCell: () => (
-				<Grid sm={10}>
-					<Field name="amount" component={TextFormField} />
-				</Grid>
-			),
+			renderEditCell: (params) => <GridTextField params={params} label="Amount" type="number" />,
+			renderCell: (params) => {
+				return <Typography variant="inherit">{params.value}</Typography>;
+			},
 		},
 		{
 			field: "actions",
@@ -193,6 +165,7 @@ export default function FullFeaturedCrudGrid() {
 				if (isInEditMode) {
 					return [
 						<GridActionsCellItem
+							key={0}
 							icon={<SaveIcon />}
 							label="Save"
 							sx={{
@@ -201,6 +174,7 @@ export default function FullFeaturedCrudGrid() {
 							onClick={handleSaveClick(id)}
 						/>,
 						<GridActionsCellItem
+							key={1}
 							icon={<CancelIcon />}
 							label="Cancel"
 							className="textPrimary"
@@ -213,12 +187,14 @@ export default function FullFeaturedCrudGrid() {
 				return [
 					<GridActionsCellItem
 						icon={<EditIcon />}
+						key={0}
 						label="Edit"
 						className="textPrimary"
 						onClick={handleEditClick(id)}
 						color="inherit"
 					/>,
 					<GridActionsCellItem
+						key={1}
 						icon={<DeleteIcon />}
 						label="Delete"
 						onClick={handleDeleteClick(id)}
@@ -230,49 +206,64 @@ export default function FullFeaturedCrudGrid() {
 	];
 
 	return (
-		<Box sx={{ flex: 1 }}>
-			<Formik
-				initialValues={{ product: "", quantity: "", price: "", amount: "" }}
-				validationSchema={validationSchema}
-				onSubmit={(values) => {
-					// Handle form submission
-					console.log(values);
+		<Box>
+			<DataGrid
+				sx={{
+					minHeight: 300,
+					"& .MuiDataGrid-columnHeaderTitleContainer": {
+						fontSize: 14,
+						fontWeight: "bold",
+						color: theme.palette.text.primary,
+					},
+					"& .MuiDataGrid-cell": {
+						fontSize: 18,
+						color: theme.palette.text.primary,
+						display: "flex",
+						py: 1,
+						alignItems: "center",
+					},
+					"& .MuiDataGrid-columnHeaderTitle": {
+						fontWeight: 700,
+					},
 				}}
-			>
-				{({ handleSubmit }) => (
-					<Form onSubmit={handleSubmit}>
-						<Box
-							sx={{
-								height: "auto",
-								width: "100%",
-								"& .actions": {
-									color: "text.secondary",
-								},
-								"& .textPrimary": {
-									color: "text.primary",
-								},
-							}}
-						>
-							<DataGrid
-								rows={rows}
-								columns={columns}
-								editMode="row"
-								hideFooterPagination
-								rowModesModel={rowModesModel}
-								onRowModesModelChange={handleRowModesModelChange}
-								onRowEditStop={handleRowEditStop}
-								processRowUpdate={processRowUpdate}
-								slots={{
-									toolbar: EditToolbar as GridSlots["toolbar"],
+				rows={rows}
+				columns={columns}
+				editMode="row"
+				getRowHeight={() => "auto"}
+				rowModesModel={rowModesModel}
+				onRowModesModelChange={handleRowModesModelChange}
+				onRowEditStart={handleRowEditStart}
+				onRowEditStop={handleRowEditStop}
+				processRowUpdate={processRowUpdate}
+				slots={{
+					toolbar: null,
+					footer: () => {
+						return (
+							<Grid
+								container
+								py={2}
+								sx={{
+									backgroundColor: "rgba(230, 230, 230, 1)",
 								}}
-								slotProps={{
-									toolbar: { setRows, setRowModesModel },
-								}}
-							/>
-						</Box>
-					</Form>
-				)}
-			</Formik>
+							>
+								<Grid item xs={12} display="flex" justifyContent="center">
+									<Button
+										variant="contained"
+										startIcon={<AddIcon />}
+										onClick={handleAddRow}
+										disabled={isRowEditing}
+									>
+										Add record
+									</Button>
+								</Grid>
+							</Grid>
+						);
+					},
+				}}
+				slotProps={{
+					toolbar: { setRows, setRowModesModel },
+				}}
+			/>
 		</Box>
 	);
 }

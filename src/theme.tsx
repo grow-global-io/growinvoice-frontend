@@ -451,13 +451,16 @@ const themeOptions: ThemeOptions = {
 				sx(theme) {
 					return {
 						"& .MuiDataGrid-columnHeaderTitleContainer": {
-							fontSize: 12,
+							fontSize: 14,
 							fontWeight: "bold",
 							color: theme.palette.text.primary,
 						},
 						"& .MuiDataGrid-cell": {
 							fontSize: 14,
+							py: 1,
 							color: theme.palette.text.primary,
+							display: "flex",
+							alignItems: "center",
 						},
 						"& .MuiDataGrid-columnHeaderTitle": {
 							fontWeight: 700,

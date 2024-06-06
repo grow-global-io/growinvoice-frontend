@@ -127,12 +127,6 @@ const CreateInvoice = () => {
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
-								<Grid item xs={12}>
-									{/* <NoDataFound message="Product table will be here" /> */}
-								</Grid>
-								<Grid item xs={12} mb={3}>
-									<Divider />
-								</Grid>
 
 								<Grid item xs={12}>
 									<FullFeaturedCrudGrid />
