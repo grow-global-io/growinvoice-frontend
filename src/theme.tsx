@@ -52,6 +52,7 @@ const themeOptions: ThemeOptions = {
 			"200": "#c1c1c1",
 			"300": "#979797",
 			"400": "#7c828a",
+			"500": "#7D8398",
 		},
 		text: {
 			secondary: "#0a97b7",
