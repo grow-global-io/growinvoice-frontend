@@ -5,6 +5,7 @@ import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { Constants } from "@shared/constants";
+import FullFeaturedCrudGrid from "./ProductListDataGrid";
 
 const CreateInvoice = () => {
 	const initialValues = {
@@ -129,6 +130,14 @@ const CreateInvoice = () => {
 								<Grid item xs={12}>
 									{/* <NoDataFound message="Product table will be here" /> */}
 								</Grid>
+								<Grid item xs={12} mb={3}>
+									<Divider />
+								</Grid>
+
+								<Grid item xs={12}>
+									<FullFeaturedCrudGrid />
+								</Grid>
+
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>

@@ -52,6 +52,7 @@ const themeOptions: ThemeOptions = {
 			"200": "#c1c1c1",
 			"300": "#979797",
 			"400": "#7c828a",
+			"500": "#7D8398",
 		},
 		text: {
 			secondary: "#0a97b7",
@@ -436,7 +437,9 @@ const themeOptions: ThemeOptions = {
 		},
 		MuiDataGrid: {
 			defaultProps: {
-				components: { toolbar: QuickSearchToolbar },
+				components: {
+					Toolbar: (props) => (props.hasSearch ? <QuickSearchToolbar {...props} /> : null),
+				},
 				pageSizeOptions: [10, 25, 50, 100],
 				initialState: {
 					pagination: {

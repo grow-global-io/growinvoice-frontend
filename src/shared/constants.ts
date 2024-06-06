@@ -10,6 +10,9 @@ import DueDateRed from "@assets/img/due-date-red.png";
 import DueDateBlue from "@assets/img/due-date-blue.png";
 import Stack from "@assets/img/stack.png";
 import Logo from "@assets/logo.svg";
+import Eye from "@assets/img/eye.png";
+import GreenCheck from "@assets/img/green-check.png";
+import UnpaidSymbol from "@assets/img/unpaid-symbol.png";
 
 export class Constants {
 	static readonly customImages = {
@@ -25,5 +28,8 @@ export class Constants {
 		DueDateBlue,
 		Stack,
 		Logo,
+		Eye,
+		GreenCheck,
+		UnpaidSymbol,
 	};
 }
