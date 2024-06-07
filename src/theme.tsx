@@ -64,7 +64,7 @@ const themeOptions: ThemeOptions = {
 			default: "#fafafa",
 		},
 		action: {
-			active: "#fff",
+			active: "#979797",
 			activatedOpacity: 0.1,
 			selected: "#C0EDED",
 		},

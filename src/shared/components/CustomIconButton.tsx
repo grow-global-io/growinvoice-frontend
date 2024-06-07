@@ -5,7 +5,7 @@ export const CustomIconButton = ({
 	src,
 	onClick,
 	bgcolor = "primary.main",
-	iconColor = "action",
+	iconColor = "#fff",
 	title,
 	buttonType,
 	disabled,
@@ -13,7 +13,7 @@ export const CustomIconButton = ({
 	src: string | (OverridableComponent<SvgIconTypeMap> & { muiName: string });
 	onClick?: () => void;
 	bgcolor?: string;
-	iconColor?: "primary" | "secondary" | "action" | "disabled" | "error" | undefined;
+	iconColor?: "primary" | "secondary" | "action" | "disabled" | "error" | "#fff";
 	title?: string;
 	buttonType?: "delete" | "normal";
 	disabled?: boolean;
@@ -58,7 +58,11 @@ export const CustomIconButton = ({
 					width: "40px",
 				}}
 			>
-				<Icon color={iconColor} />
+				<Icon
+					sx={{
+						color: iconColor,
+					}}
+				/>
 			</IconButton>
 		);
 	}
