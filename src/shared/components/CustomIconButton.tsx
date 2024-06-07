@@ -58,9 +58,11 @@ export const CustomIconButton = ({
 					width: "40px",
 				}}
 			>
-				<Icon sx={{ 
-					color: iconColor,
-				 }} />
+				<Icon
+					sx={{
+						color: iconColor,
+					}}
+				/>
 			</IconButton>
 		);
 	}
