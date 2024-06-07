@@ -56,7 +56,7 @@ export default function CreateCustomer() {
 		>
 			<Grid container justifyContent={"space-between"}>
 				<Typography
-					variant="h3"
+					variant="h4"
 					color={"secondary.dark"}
 					sx={{
 						display: "flex",

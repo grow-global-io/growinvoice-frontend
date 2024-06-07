@@ -7,8 +7,8 @@ import { TextFormField } from '@shared/components/FormFields/TextFormField';
 import { AutocompleteField } from '@shared/components/FormFields/AutoComplete';
 const style = {
   bgcolor: "rgba(246, 250, 255, 1)",
-  padding:"15px",
-  borderRadius:1
+  padding: "15px",
+  borderRadius: 1
 };
 
 export default function CreateProduct() {
@@ -20,18 +20,19 @@ export default function CreateProduct() {
   });
 
   const initialValues = {
-    serviceName:"",
-    unit:"",
-    unitName:"",
-    hsnCode:"",
-    hsnCodeName:"",
-    hsnCodeTaxes:"",
-    taxes:"",
-    taxesPercentage:"",
-    taxesDescription:"",
-    description:""
-    
-   
+    productType:"",
+    serviceName: "",
+    unit: "",
+    unitName: "",
+    hsnCode: "",
+    hsnCodeName: "",
+    hsnCodeTaxes: "",
+    taxes: "",
+    taxesPercentage: "",
+    taxesDescription: "",
+    description: ""
+
+
   };
 
   const schema = yup.object().shape({});
@@ -51,7 +52,7 @@ export default function CreateProduct() {
     setState(prevState => ({ ...prevState, [box]: value }));
   };
 
-  const list = () => (
+  const List = () => (
     <Box
       sx={{ width: { sm: "400px" } }}
       role="presentation"
@@ -77,6 +78,16 @@ export default function CreateProduct() {
           {() => (
             <Form>
               <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  <Field
+                    name="productType"
+                    label="Type"
+                    component={AutocompleteField}
+                    options={options}
+                    required={true}
+                    placeholder={"Select"}
+                  />
+                </Grid>
                 <Grid item xs={12} sm={12}>
                   <Field
                     name="serviceName"
@@ -242,12 +253,12 @@ export default function CreateProduct() {
   return (
     <div>
       <Button onClick={() => toggleDrawer(true)}>Open Right Drawer</Button>
-       <Drawer
+      <Drawer
         anchor="right"
         open={state.right}
         onClose={() => toggleDrawer(false)}
-       >
-        {list()}
+      >
+        <List />
       </Drawer>
     </div>
   );
