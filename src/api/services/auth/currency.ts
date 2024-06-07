@@ -12,7 +12,12 @@ import type {
 	UseQueryOptions,
 	UseQueryResult,
 } from "@tanstack/react-query";
-import type { CurrenciesDto } from "./models";
+import type {
+	CountryDto,
+	CurrenciesDto,
+	CurrencyControllerFindStatesByCountryParams,
+	StateDto,
+} from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
@@ -61,6 +66,190 @@ export const useCurrencyControllerFindAll = <
 	>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 	const queryOptions = getCurrencyControllerFindAllQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const currencyControllerFindCountries = (signal?: AbortSignal) => {
+	return authInstance<CountryDto[]>({ url: `/api/currency/countries`, method: "GET", signal });
+};
+
+export const getCurrencyControllerFindCountriesQueryKey = () => {
+	return [`/api/currency/countries`] as const;
+};
+
+export const getCurrencyControllerFindCountriesQueryOptions = <
+	TData = Awaited<ReturnType<typeof currencyControllerFindCountries>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof currencyControllerFindCountries>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getCurrencyControllerFindCountriesQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof currencyControllerFindCountries>>> = ({
+		signal,
+	}) => currencyControllerFindCountries(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof currencyControllerFindCountries>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type CurrencyControllerFindCountriesQueryResult = NonNullable<
+	Awaited<ReturnType<typeof currencyControllerFindCountries>>
+>;
+export type CurrencyControllerFindCountriesQueryError = ErrorType<unknown>;
+
+export const useCurrencyControllerFindCountries = <
+	TData = Awaited<ReturnType<typeof currencyControllerFindCountries>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof currencyControllerFindCountries>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getCurrencyControllerFindCountriesQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const currencyControllerFindStates = (signal?: AbortSignal) => {
+	return authInstance<StateDto[]>({ url: `/api/currency/states`, method: "GET", signal });
+};
+
+export const getCurrencyControllerFindStatesQueryKey = () => {
+	return [`/api/currency/states`] as const;
+};
+
+export const getCurrencyControllerFindStatesQueryOptions = <
+	TData = Awaited<ReturnType<typeof currencyControllerFindStates>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof currencyControllerFindStates>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getCurrencyControllerFindStatesQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof currencyControllerFindStates>>> = ({
+		signal,
+	}) => currencyControllerFindStates(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof currencyControllerFindStates>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type CurrencyControllerFindStatesQueryResult = NonNullable<
+	Awaited<ReturnType<typeof currencyControllerFindStates>>
+>;
+export type CurrencyControllerFindStatesQueryError = ErrorType<unknown>;
+
+export const useCurrencyControllerFindStates = <
+	TData = Awaited<ReturnType<typeof currencyControllerFindStates>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof currencyControllerFindStates>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getCurrencyControllerFindStatesQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const currencyControllerFindStatesByCountry = (
+	params: CurrencyControllerFindStatesByCountryParams,
+	signal?: AbortSignal,
+) => {
+	return authInstance<StateDto[]>({
+		url: `/api/currency/statesByCountry`,
+		method: "GET",
+		params,
+		signal,
+	});
+};
+
+export const getCurrencyControllerFindStatesByCountryQueryKey = (
+	params: CurrencyControllerFindStatesByCountryParams,
+) => {
+	return [`/api/currency/statesByCountry`, ...(params ? [params] : [])] as const;
+};
+
+export const getCurrencyControllerFindStatesByCountryQueryOptions = <
+	TData = Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>,
+	TError = ErrorType<unknown>,
+>(
+	params: CurrencyControllerFindStatesByCountryParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>,
+				TError,
+				TData
+			>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getCurrencyControllerFindStatesByCountryQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>
+	> = ({ signal }) => currencyControllerFindStatesByCountry(params, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type CurrencyControllerFindStatesByCountryQueryResult = NonNullable<
+	Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>
+>;
+export type CurrencyControllerFindStatesByCountryQueryError = ErrorType<unknown>;
+
+export const useCurrencyControllerFindStatesByCountry = <
+	TData = Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>,
+	TError = ErrorType<unknown>,
+>(
+	params: CurrencyControllerFindStatesByCountryParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof currencyControllerFindStatesByCountry>>,
+				TError,
+				TData
+			>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getCurrencyControllerFindStatesByCountryQueryOptions(params, options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

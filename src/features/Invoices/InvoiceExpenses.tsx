@@ -5,7 +5,7 @@ import { Constants } from "@shared/constants";
 const InvoiceExpenses = () => {
 	const data = [
 		{
-			text: "Total Outstanding Receivables",
+			text: "Outstanding Receivables",
 			img: Constants.customImages.LeftDownArr,
 		},
 		{
@@ -23,8 +23,8 @@ const InvoiceExpenses = () => {
 	];
 	return (
 		<Grid container spacing={2}>
-			{data.map((item, index) => (
-				<Grid item xs={12} md={3} key={index}>
+			{data.map((item) => (
+				<Grid item xs={12} md={3} key={item.text}>
 					<OverviewCard name={item.text} img={item.img} />
 				</Grid>
 			))}

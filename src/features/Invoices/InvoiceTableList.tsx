@@ -1,11 +1,15 @@
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+	DataGrid,
+	GridColDef,
+	GridColumnHeaderParams,
+	GridRenderCellParams,
+} from "@mui/x-data-grid";
 import InvoiceListData from "../../data/InvoiceListData.json";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
-import "./Invoice.css";
 const fontWeight = "500";
-const HeaderStyle = (params: any) => {
+const HeaderStyle = (params: GridColumnHeaderParams) => {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
 			<Typography variant="h6" color="#000">
@@ -14,7 +18,7 @@ const HeaderStyle = (params: any) => {
 		</Box>
 	);
 };
-const CellStyle = (params: any, color = "grey.500") => {
+const CellStyle = (params: GridRenderCellParams, color = "grey.500") => {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
 			<Typography variant="h6" color={color} fontWeight={fontWeight}>
@@ -30,7 +34,7 @@ const columns: GridColDef[] = [
 		headerName: "Invoice Number",
 		flex: 1,
 		renderHeader: HeaderStyle,
-		renderCell: (params) => CellStyle(params, "#0D6EFD"),
+		renderCell: (params) => CellStyle(params, "secondary.main"),
 	},
 	{
 		field: "invoiceDate",
@@ -61,7 +65,7 @@ const columns: GridColDef[] = [
 						py: 1,
 					}}
 				>
-					<Typography variant="h6" color={"#fff"} fontWeight={fontWeight}>
+					<Typography variant="h6" color={"primary.contrastText"} fontWeight={fontWeight}>
 						{params.row.status}
 					</Typography>
 				</Box>
@@ -137,8 +141,8 @@ export default function DataGridDemo() {
 	const invoiceData = InvoiceListData;
 
 	return (
-		<Box sx={{ height: "auto", width: "100%" }}>
-			<DataGrid rows={invoiceData} columns={columns} checkboxSelection />
+		<Box>
+			<DataGrid autoHeight rows={invoiceData} columns={columns} />
 		</Box>
 	);
 }

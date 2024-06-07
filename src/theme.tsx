@@ -437,8 +437,9 @@ const themeOptions: ThemeOptions = {
 		},
 		MuiDataGrid: {
 			defaultProps: {
-				components: {
-					Toolbar: (props) => (props.hasSearch ? <QuickSearchToolbar {...props} /> : null),
+				// components: { toolbar: QuickSearchToolbar },
+				slots: {
+					toolbar: QuickSearchToolbar,
 				},
 				pageSizeOptions: [10, 25, 50, 100],
 				initialState: {
@@ -450,13 +451,16 @@ const themeOptions: ThemeOptions = {
 				sx(theme) {
 					return {
 						"& .MuiDataGrid-columnHeaderTitleContainer": {
-							fontSize: 12,
+							fontSize: 14,
 							fontWeight: "bold",
 							color: theme.palette.text.primary,
 						},
 						"& .MuiDataGrid-cell": {
 							fontSize: 14,
+							py: 1,
 							color: theme.palette.text.primary,
+							display: "flex",
+							alignItems: "center",
 						},
 						"& .MuiDataGrid-columnHeaderTitle": {
 							fontWeight: 700,
