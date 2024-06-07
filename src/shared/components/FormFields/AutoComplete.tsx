@@ -77,6 +77,9 @@ function AsyncAutoCompleteField({
 				options={data}
 				loading={isLoading}
 				onChange={(_, value) => {
+					if (value === null) {
+						form.setFieldValue(field.name, "");
+					}
 					if (value) {
 						form.setFieldValue(field.name, value.value);
 						onValueChange?.(value);
@@ -98,6 +101,7 @@ function AsyncAutoCompleteField({
 				}}
 				renderInput={(params) => (
 					<TextField
+						placeholder={label ? `Enter ${label?.toLowerCase()}` : undefined}
 						error={Boolean(errorText)}
 						helperText={errorText}
 						label={undefined}
