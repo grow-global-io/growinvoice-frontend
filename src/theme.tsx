@@ -64,7 +64,7 @@ const themeOptions: ThemeOptions = {
 			default: "#fafafa",
 		},
 		action: {
-			active: "#979797",
+			active: "#fff",
 			activatedOpacity: 0.1,
 			selected: "#C0EDED",
 		},
@@ -170,6 +170,10 @@ const themeOptions: ThemeOptions = {
 						fontSize: "14px",
 						fontWeight: "500",
 						lineHeight: "20px",
+					},
+					// text variant
+					"&.MuiButton-text": {
+						padding: "5px 0px",
 					},
 				},
 			},

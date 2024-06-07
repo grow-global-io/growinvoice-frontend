@@ -1,10 +1,13 @@
 import * as React from "react";
-import { Box, Drawer, Button, Typography, Grid } from "@mui/material";
+import { Box, Drawer, Button, Typography, Grid, IconButton } from "@mui/material";
 import { Constants } from "@shared/constants";
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+
 const style = {
 	bgcolor: "rgba(246, 250, 255, 1)",
 	padding: "15px",
@@ -50,8 +53,8 @@ export default function CreateProduct() {
 		setState((prevState) => ({ ...prevState, [box]: value }));
 	};
 
-	const List = () => (
-		<Box sx={{ width: { sm: "400px" } }} role="presentation" padding={2}>
+	const ProductForm = () => (
+		<Box sx={{ width: { sm: "400px" } }} padding={2}>
 			<Grid container justifyContent={"space-between"}>
 				<Typography
 					variant="h4"
@@ -64,58 +67,56 @@ export default function CreateProduct() {
 				>
 					<img src={Constants.customImages.ProductSymbol} alt="Invoice Icon" /> New Product
 				</Typography>
-				<img
-					src={Constants.customImages.CloseIcon}
-					alt="closeIcon"
+
+				<IconButton
+					sx={{
+						color: "secondary.dark",
+					}}
 					onClick={() => toggleDrawer(false)}
-					width={"30px"}
-					height={"30px"}
-				/>
+				>
+					<CloseIcon />
+				</IconButton>
 			</Grid>
 
 			<Box sx={{ mb: 2, mt: 2 }}>
 				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
 					{() => (
 						<Form>
-							<Grid container spacing={2}>
-								<Grid item xs={12} sm={12}>
+							<Grid container>
+								<Grid item xs={12}>
 									<Field
 										name="productType"
 										label="Type"
 										component={AutocompleteField}
 										options={options}
 										required={true}
-										placeholder={"Select"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={12}>
+								<Grid item xs={12}>
 									<Field
 										name="serviceName"
 										component={TextFormField}
 										label="Service Name"
 										required={true}
-										placeholder={"Enter Service Name"}
 									/>
 								</Grid>
 
-								<Grid item xs={12} sm={12}>
+								<Grid item xs={12}>
 									<Field
 										name="unit"
 										label="Unit"
 										component={AutocompleteField}
 										options={options}
 										required={true}
-										placeholder={"Select"}
 									/>
 									{!state.showUnitBox && (
-										<Typography
-											variant="h4"
-											color={"secondary.main"}
+										<Button
+											variant="text"
 											onClick={() => toggleBox("showUnitBox", true)}
-											sx={{ cursor: "pointer" }}
+											startIcon={<AddIcon />}
 										>
-											+Add Unit
-										</Typography>
+											Add Unit
+										</Button>
 									)}
 									{state.showUnitBox && (
 										<Box sx={style}>
@@ -130,11 +131,7 @@ export default function CreateProduct() {
 												<Button variant="contained" type="submit">
 													Create Product Unit
 												</Button>
-												<Button
-													variant="contained"
-													onClick={() => toggleBox("showUnitBox", false)}
-													sx={{ bgcolor: "secondary.dark", marginLeft: 2 }}
-												>
+												<Button variant="outlined" onClick={() => toggleBox("showUnitBox", false)}>
 													Cancel
 												</Button>
 											</Box>
@@ -142,7 +139,7 @@ export default function CreateProduct() {
 									)}
 								</Grid>
 
-								<Grid item xs={12} sm={12}>
+								<Grid item xs={12}>
 									<Field
 										name="hsnCode"
 										label="HSN Code(India)"
@@ -152,14 +149,13 @@ export default function CreateProduct() {
 										placeholder={"Select"}
 									/>
 									{!state.showHsnBox && (
-										<Typography
-											variant="h4"
-											color={"secondary.main"}
+										<Button
+											variant="text"
 											onClick={() => toggleBox("showHsnBox", true)}
-											sx={{ cursor: "pointer" }}
+											startIcon={<AddIcon />}
 										>
-											&#43;Add HSN
-										</Typography>
+											Add HSN
+										</Button>
 									)}
 									{state.showHsnBox && (
 										<Box sx={style}>
@@ -182,11 +178,7 @@ export default function CreateProduct() {
 												<Button variant="contained" type="submit">
 													Create Hsn Code
 												</Button>
-												<Button
-													variant="contained"
-													onClick={() => toggleBox("showHsnBox", false)}
-													sx={{ bgcolor: "secondary.dark", marginLeft: 2 }}
-												>
+												<Button variant="outlined" onClick={() => toggleBox("showHsnBox", false)}>
 													Cancel
 												</Button>
 											</Box>
@@ -194,7 +186,7 @@ export default function CreateProduct() {
 									)}
 								</Grid>
 
-								<Grid item xs={12} sm={12}>
+								<Grid item xs={12}>
 									<Field
 										name="taxes"
 										label="Taxes"
@@ -204,14 +196,13 @@ export default function CreateProduct() {
 										placeholder={"Select"}
 									/>
 									{!state.showTaxBox && (
-										<Typography
-											variant="h4"
-											color={"secondary.main"}
+										<Button
+											variant="text"
 											onClick={() => toggleBox("showTaxBox", true)}
-											sx={{ cursor: "pointer" }}
+											startIcon={<AddIcon />}
 										>
-											&#43;Add Taxes
-										</Typography>
+											Add Taxes
+										</Button>
 									)}
 									{state.showTaxBox && (
 										<Box sx={style}>
@@ -236,11 +227,7 @@ export default function CreateProduct() {
 												<Button variant="contained" type="submit">
 													Create Tax
 												</Button>
-												<Button
-													variant="contained"
-													onClick={() => toggleBox("showTaxBox", false)}
-													sx={{ bgcolor: "secondary.dark", marginLeft: 2 }}
-												>
+												<Button variant="outlined" onClick={() => toggleBox("showTaxBox", false)}>
 													Cancel
 												</Button>
 											</Box>
@@ -248,7 +235,7 @@ export default function CreateProduct() {
 									)}
 								</Grid>
 
-								<Grid item xs={12} sm={12}>
+								<Grid item xs={12}>
 									<Field
 										name="description"
 										component={TextFormField}
@@ -274,11 +261,13 @@ export default function CreateProduct() {
 	);
 
 	return (
-		<div>
-			<Button onClick={() => toggleDrawer(true)}>Open Right Drawer</Button>
+		<>
+			<Button variant="contained" onClick={() => toggleDrawer(true)} startIcon={<AddIcon />}>
+				Create New
+			</Button>
 			<Drawer anchor="right" open={state.right} onClose={() => toggleDrawer(false)}>
-				<List />
+				<ProductForm />
 			</Drawer>
-		</div>
+		</>
 	);
 }
