@@ -13,6 +13,7 @@ import Logo from "@assets/logo.svg";
 import Eye from "@assets/img/eye.png";
 import GreenCheck from "@assets/img/green-check.png";
 import UnpaidSymbol from "@assets/img/unpaid-symbol.png";
+
 import ProductSymbol from "@assets/img/new-product-symbol.png";
 import CustomerImg from "@assets/img/customer-img.png";
 import BillingAddressIcon from "@assets/img/billing-address-icon.png";
@@ -35,6 +36,7 @@ export class Constants {
 		Eye,
 		GreenCheck,
 		UnpaidSymbol,
+
 		ProductSymbol,
 		CustomerImg,
 		BillingAddressIcon,

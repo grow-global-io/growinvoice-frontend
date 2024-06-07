@@ -79,6 +79,8 @@ const InvoiceList = () => {
 						</Typography>
 						<DataGridDemo />
 					</TabPanel>
+
+					<DataGridDemo />
 				</Grid>
 			</Grid>
 		</>
