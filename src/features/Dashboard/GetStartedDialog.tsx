@@ -90,7 +90,7 @@ const GetStartedDialog = ({ open, handleClose }: { open: boolean; handleClose?: 
 	const initialValues: UpdateCurrencyCompanyDto = {
 		address: "",
 		city: "",
-		companyName: user?.company?.[0]?.name || "",
+		companyName: user?.company?.[0]?.name ?? "",
 		country: "",
 		currency_id: "",
 		logo: "",
@@ -114,68 +114,66 @@ const GetStartedDialog = ({ open, handleClose }: { open: boolean; handleClose?: 
 	};
 
 	return (
-		<>
-			<Dialog open={false} onClose={handleClose} fullWidth maxWidth={"sm"}>
-				<Formik
-					innerRef={formikRef}
-					initialValues={initialValues}
-					validationSchema={validationSchema}
-					onSubmit={handleSubmit}
-				>
-					{({ submitForm, values, errors }) => {
-						console.log(errors);
-						return (
-							<Form>
-								<DialogContent dividers style={{ maxHeight: "70vh", overflowY: "auto" }}>
-									<CustomStepperBox>
-										<Stepper
-											activeStep={activeStep}
-											alternativeLabel
-											connector={<CustomStepConnector />}
-										>
-											{steps.map((label) => (
-												<Step key={label}></Step>
-											))}
-										</Stepper>
-									</CustomStepperBox>
-									<Box textAlign={"center"} pt={3}>
-										{activeStep === 0 && <GetStartedInitialScreen />}
-										{activeStep === 1 && <CurrencyUpdateForm />}
-										{activeStep === 2 && <CompanyUpdateForm />}
-									</Box>
-								</DialogContent>
+		<Dialog open={open} onClose={handleClose} fullWidth maxWidth={"sm"}>
+			<Formik
+				innerRef={formikRef}
+				initialValues={initialValues}
+				validationSchema={validationSchema}
+				onSubmit={handleSubmit}
+			>
+				{({ submitForm, values, errors }) => {
+					console.log(errors);
+					return (
+						<Form>
+							<DialogContent dividers style={{ maxHeight: "70vh", overflowY: "auto" }}>
+								<CustomStepperBox>
+									<Stepper
+										activeStep={activeStep}
+										alternativeLabel
+										connector={<CustomStepConnector />}
+									>
+										{steps.map((label) => (
+											<Step key={label}></Step>
+										))}
+									</Stepper>
+								</CustomStepperBox>
+								<Box textAlign={"center"} pt={3}>
+									{activeStep === 0 && <GetStartedInitialScreen />}
+									{activeStep === 1 && <CurrencyUpdateForm />}
+									{activeStep === 2 && <CompanyUpdateForm />}
+								</Box>
+							</DialogContent>
 
-								<DialogActions
-									sx={{
-										justifyContent: "space-between",
-									}}
-								>
-									<Button variant="outlined" onClick={handleBack} disabled={activeStep === 0}>
-										Back
+							<DialogActions
+								sx={{
+									justifyContent: "space-between",
+								}}
+							>
+								<Button variant="outlined" onClick={handleBack} disabled={activeStep === 0}>
+									Back
+								</Button>
+
+								{activeStep !== steps.length - 2 && (
+									<Button
+										variant="contained"
+										onClick={() => {
+											handleNext(values?.currency_id);
+										}}
+									>
+										Next
 									</Button>
-
-									{activeStep !== steps.length - 2 && (
-										<Button
-											variant="contained"
-											onClick={() => {
-												handleNext(values?.currency_id);
-											}}
-										>
-											Next
-										</Button>
-									)}
-									{activeStep === steps.length - 2 && (
-										<Button variant="contained" onClick={submitForm}>
-											Finish
-										</Button>
-									)}
-								</DialogActions>
-							</Form>
-						);
-					}}
-				</Formik>
-			</Dialog>
-		</>
+								)}
+								{activeStep === steps.length - 2 && (
+									<Button variant="contained" onClick={submitForm}>
+										Finish
+									</Button>
+								)}
+							</DialogActions>
+						</Form>
+					);
+				}}
+			</Formik>
+		</Dialog>
 	);
 };
 

@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 
 const OverviewCard = ({ name, img }: { name: string; img: string }) => {
 	return (
