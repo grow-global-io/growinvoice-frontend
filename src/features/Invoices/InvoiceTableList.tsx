@@ -12,7 +12,11 @@ const fontWeight = "500";
 const HeaderStyle = (params: GridColumnHeaderParams) => {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
+
 			<Typography variant="h6" color="secondary.dark">
+
+			<Typography variant="h6" color="#000">
+
 				{params.colDef.headerName}
 			</Typography>
 		</Box>
