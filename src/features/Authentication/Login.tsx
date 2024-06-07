@@ -1,12 +1,12 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { Formik, Field, Form } from "formik";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import * as yup from "yup";
-import BgImageSvg from "../../assets/bgpng.png";
 import ForgotPassword from "./ForgotPassword";
-import { useUserControllerLoginUser } from "../../api/services/auth/users";
-import { useAuthStore } from "../../store/auth";
+import { useUserControllerLoginUser } from "@api/services/users";
+import { useAuthStore } from "@store/auth";
 import { useNavigate } from "react-router-dom";
+import { Constants } from "@shared/constants";
 
 const Login = () => {
 	const navigation = useNavigate();
@@ -36,7 +36,7 @@ const Login = () => {
 		<Box
 			sx={{
 				position: "relative",
-				backgroundImage: `url(${BgImageSvg})`,
+				backgroundImage: `url(${Constants.customImages.BgImageSvg})`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",

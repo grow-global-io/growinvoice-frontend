@@ -1,4 +1,4 @@
-import { useLoaderStore } from "../../store/loader";
+import { useLoaderStore } from "@store/loader";
 
 export class LoaderService {
 	private static _instance: LoaderService;

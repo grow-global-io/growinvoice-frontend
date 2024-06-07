@@ -7,16 +7,16 @@ import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import { useAuthStore } from "./store/auth";
-import { useAlertStore } from "./store/alert";
-import { useLoaderStore } from "./store/loader";
-import Loader from "./shared/components/Loader";
-import NotFoundPage from "./pages/NotFoundPage";
-import ConfirmDialog from "./shared/components/ConfirmDialog";
-import { useEffectOnce } from "./shared/hooks/useEffectOnce";
+import { useAuthStore } from "@store/auth";
+import { useAlertStore } from "@store/alert";
+import { useLoaderStore } from "@store/loader";
+import Loader from "@shared/components/Loader";
+import NotFoundPage from "@pages/NotFoundPage";
+import ConfirmDialog from "@shared/components/ConfirmDialog";
+import { useEffectOnce } from "@shared/hooks/useEffectOnce";
 import { AlertTitle } from "@mui/material";
-import Navbar from "./layout/navbar/Home/Navbar";
-import GetStartedDialog from "./features/Dashboard/GetStartedDialog";
+import Navbar from "@layout/navbar/Home/Navbar";
+import GetStartedDialog from "@features/Dashboard/GetStartedDialog";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();

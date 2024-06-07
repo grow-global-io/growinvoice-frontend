@@ -1,11 +1,12 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { Formik, Field, Form } from "formik";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import * as yup from "yup";
-import BgImageSvg from "../../assets/bgpng.png";
 import { useNavigate } from "react-router-dom";
-import { useUserControllerCreateUser } from "../../api/services/auth/users";
-import { PhoneInputFormField } from "../../shared/components/FormFields/PhoneInputFormField";
+import { useUserControllerCreateUser } from "@api/services/users";
+import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
+import { Constants } from "@shared/constants";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 const Register = () => {
 	const navigation = useNavigate();
@@ -30,7 +31,10 @@ const Register = () => {
 		fullname: yup.string().required("Full Name is required"),
 		companyname: yup.string().required("Company Name is required"),
 		email: yup.string().email().required("Email is required"),
-		phone: yup.string().required("Phone is required"),
+		phone: yup.string().test("is-phone", "Phone number is not valid", function (value) {
+			if (!value) return false;
+			return isValidPhoneNumber(value);
+		}),
 		password: yup
 			.string()
 			.min(7, "Password is at least 7 characters")
@@ -57,7 +61,7 @@ const Register = () => {
 		<Box
 			sx={{
 				position: "relative",
-				backgroundImage: `url(${BgImageSvg})`,
+				backgroundImage: `url(${Constants.customImages.BgImageSvg})`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",

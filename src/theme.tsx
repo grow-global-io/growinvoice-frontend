@@ -52,6 +52,7 @@ const themeOptions: ThemeOptions = {
 			"200": "#c1c1c1",
 			"300": "#979797",
 			"400": "#7c828a",
+			"500": "#7D8398",
 		},
 		text: {
 			secondary: "#0a97b7",
@@ -436,20 +437,30 @@ const themeOptions: ThemeOptions = {
 		},
 		MuiDataGrid: {
 			defaultProps: {
-				components: { Toolbar: QuickSearchToolbar },
+				// components: { toolbar: QuickSearchToolbar },
+				slots: {
+					toolbar: QuickSearchToolbar,
+				},
 				pageSizeOptions: [10, 25, 50, 100],
-				paginationModel: { page: 1, pageSize: 10 },
+				initialState: {
+					pagination: {
+						paginationModel: { pageSize: 10, page: 0 },
+					},
+				},
 				checkboxSelection: false,
 				sx(theme) {
 					return {
 						"& .MuiDataGrid-columnHeaderTitleContainer": {
-							fontSize: 12,
+							fontSize: 14,
 							fontWeight: "bold",
 							color: theme.palette.text.primary,
 						},
 						"& .MuiDataGrid-cell": {
 							fontSize: 14,
+							py: 1,
 							color: theme.palette.text.primary,
+							display: "flex",
+							alignItems: "center",
 						},
 						"& .MuiDataGrid-columnHeaderTitle": {
 							fontWeight: 700,

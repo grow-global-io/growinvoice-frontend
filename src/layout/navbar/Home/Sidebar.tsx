@@ -18,8 +18,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import logo from "../../../assets/logo.svg";
-import { useAuthStore } from "../../../store/auth";
+
+import { useAuthStore } from "@store/auth";
 import HomeIcon from "@mui/icons-material/Home";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import StoreIcon from "@mui/icons-material/Store";
@@ -27,6 +27,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Constants } from "@shared/constants";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
@@ -249,7 +250,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 							height: 64,
 						}}
 					>
-						<img src={logo} alt="logo" style={{ height: 64, width: 64 }} />
+						<img src={Constants.customImages.Logo} alt="logo" style={{ height: 64, width: 64 }} />
 						<Typography variant="h6" color={"#fff"}>
 							GROW INVOICE
 						</Typography>

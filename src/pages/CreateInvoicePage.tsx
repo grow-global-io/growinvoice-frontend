@@ -1,4 +1,4 @@
-import CreateInvoice from "../features/Invoices/CreateInvoice";
+import CreateInvoice from "@features/Invoices/CreateInvoice";
 
 const CreateInvoicePage = () => {
 	return <CreateInvoice />;

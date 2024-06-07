@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import InvoiceExpenses from "./InvoiceExpenses";
 import DataGridDemo from "./InvoiceTableList";
 
@@ -9,7 +9,11 @@ const InvoiceList = () => {
 				Invoices
 			</Typography>
 			<InvoiceExpenses />
-			<DataGridDemo />
+			<Grid container mt={2}>
+				<Grid item xs={12}>
+					<DataGridDemo />
+				</Grid>
+			</Grid>
 		</>
 	);
 };

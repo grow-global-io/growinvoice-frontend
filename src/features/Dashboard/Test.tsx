@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useDialog } from "../../shared/hooks/useDialog";
+import { useDialog } from "@shared/hooks/useDialog";
 import StartUp from "./StartUp";
 
 const Test = () => {

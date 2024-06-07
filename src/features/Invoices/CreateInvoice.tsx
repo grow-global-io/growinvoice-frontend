@@ -1,10 +1,11 @@
 import { Box, Typography, Grid, Button, Divider } from "@mui/material";
 import { Formik, Form, Field } from "formik";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
-import { DateFormField } from "../../shared/components/FormFields/DateFormField";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
+import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
-import InvoiceIcon from "./../../assets/img/invoice-icon.png";
-import { AutocompleteField } from "../../shared/components/FormFields/AutoComplete";
+import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
+import { Constants } from "@shared/constants";
+import FullFeaturedCrudGrid from "./ProductListDataGrid";
 
 const CreateInvoice = () => {
 	const initialValues = {
@@ -53,7 +54,7 @@ const CreateInvoice = () => {
 					gap: 2,
 				}}
 			>
-				<img src={InvoiceIcon} alt="Invoice Icon" /> New Invoices
+				<img src={Constants.customImages.invoiceIcon} alt="Invoice Icon" /> New Invoices
 			</Typography>
 			<Divider
 				sx={{
@@ -126,9 +127,11 @@ const CreateInvoice = () => {
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
+
 								<Grid item xs={12}>
-									{/* <NoDataFound message="Product table will be here" /> */}
+									<FullFeaturedCrudGrid />
 								</Grid>
+
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
@@ -247,13 +250,18 @@ const CreateInvoice = () => {
 								<Grid item xs={12} sm={6} display="flex" alignItems="center">
 									<Button variant="outlined">Preview</Button>
 								</Grid>
+								<Grid item xs={12} textAlign={"center"}>
+									<Button variant="contained" type="submit">
+										Save Invoice
+									</Button>
+								</Grid>
 							</Grid>
 
-							<Box mt={5} textAlign={"center"}>
+							{/* <Box mt={5} textAlign={"center"}>
 								<Button variant="contained" type="submit">
 									Save Invoice
 								</Button>
-							</Box>
+							</Box> */}
 						</Form>
 					)}
 				</Formik>

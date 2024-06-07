@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import lottie, { AnimationItem } from "lottie-web";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import loderJson from "../../assets/loader.json";
+import loderJson from "@assets/loader.json";
 
 export default function Loader() {
 	const container = useRef<HTMLDivElement>(null);

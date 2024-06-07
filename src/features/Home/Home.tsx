@@ -1,10 +1,7 @@
 import { Button, Typography } from "@mui/material";
-import {
-	getAuthControllerStatusQueryKey,
-	useAuthControllerGetUser,
-} from "../../api/services/auth/auth";
+import { getAuthControllerStatusQueryKey, useAuthControllerGetUser } from "@api/services/auth";
 import { useQueryClient } from "@tanstack/react-query";
-import Loader from "../../shared/components/Loader";
+import Loader from "@shared/components/Loader";
 
 const Home = () => {
 	const a = useAuthControllerGetUser({

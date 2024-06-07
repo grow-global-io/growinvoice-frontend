@@ -1,11 +1,11 @@
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import BgImageSvg from "../../assets/bgpng.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TextFormField } from "../../shared/components/FormFields/TextFormField";
-import NoDataFound from "../../shared/components/NoDataFound";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
+import NoDataFound from "@shared/components/NoDataFound";
 import * as yup from "yup";
-import { useUserControllerResetPassword } from "../../api/services/auth/users";
+import { useUserControllerResetPassword } from "@api/services/users";
+import { Constants } from "@shared/constants";
 
 const ResetPassword = () => {
 	const location = useLocation();
@@ -61,7 +61,7 @@ const ResetPassword = () => {
 		<Box
 			sx={{
 				position: "relative",
-				backgroundImage: `url(${BgImageSvg})`,
+				backgroundImage: `url(${Constants.customImages.BgImageSvg})`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",

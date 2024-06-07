@@ -1,4 +1,4 @@
-import CreateProduct from "../features/Products/CreateProduct";
+import CreateProduct from "@features/Products/CreateProduct";
 
 const CreateProductPage = () => {
 	return <CreateProduct />;

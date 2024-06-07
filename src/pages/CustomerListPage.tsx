@@ -1,4 +1,4 @@
-import CustomerList from "../features/Customer/CustomerList";
+import CustomerList from "@features/Customer/CustomerList";
 
 function CustomerListPage() {
 	return <CustomerList />;

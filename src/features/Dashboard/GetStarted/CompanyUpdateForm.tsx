@@ -1,21 +1,29 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { Field } from "formik";
-import { TextFormField } from "../../../shared/components/FormFields/TextFormField";
+import { Field, useFormikContext } from "formik";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
+import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
+import {
+	useCurrencyControllerFindCountries,
+	useCurrencyControllerFindStatesByCountry,
+} from "@api/services/currency";
+import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
+import { UpdateCurrencyCompanyDto } from "@api/services/models";
 
 const CompanyUpdateForm = () => {
-	// companyName: "",
-	// 	phoneNumber: "",
-	// 	country: "",
-	// 	state: "",
-	// 	city: "",
-	// 	address: "",
-	// 	zipCode: "",
-	// 	vat: "",
-	// 	logo: "",
+	const {
+		values,
+	}: {
+		values: UpdateCurrencyCompanyDto;
+	} = useFormikContext();
+	const countryFindAll = useCurrencyControllerFindCountries();
+	const statesFindAllByCountry = useCurrencyControllerFindStatesByCountry({
+		countryId: values.country || "",
+	});
+
 	return (
 		<Box>
 			<Typography variant="h3">Tell us about your company</Typography>
-			<Typography variant="h5" px={5} color={"secondary.dark"} fontWeight={500}>
+			<Typography variant="h6" color={"secondary.dark"} fontWeight={500}>
 				Provide some basic company details to get started.
 			</Typography>
 			<Grid container spacing={1} mt={2}>
@@ -23,22 +31,37 @@ const CompanyUpdateForm = () => {
 					<Field name="companyName" label="Company Name" component={TextFormField} />
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Field name="phoneNumber" label="Phone Number" component={TextFormField} />
+					<Field name="phoneNumber" label="Phone Number" component={PhoneInputFormField} />
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Field name="country" label="Country" component={TextFormField} />
+					<Field
+						name="country"
+						label="Country"
+						component={AutocompleteField}
+						options={countryFindAll.data?.map((item) => ({ label: item.name, value: item.id }))}
+						loading={countryFindAll.isLoading}
+					/>
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Field name="state" label="State" component={TextFormField} />
+					<Field
+						name="state"
+						label="State"
+						component={AutocompleteField}
+						options={statesFindAllByCountry.data?.map((item) => ({
+							label: item.name,
+							value: item.id,
+						}))}
+						loading={statesFindAllByCountry.isLoading}
+					/>
 				</Grid>
 				<Grid item xs={12} sm={6}>
 					<Field name="city" label="City" component={TextFormField} />
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Field name="address" label="Address" component={TextFormField} />
+					<Field name="zipCode" label="Zip Code" component={TextFormField} />
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Field name="zipCode" label="Zip Code" component={TextFormField} />
+					<Field name="address" label="Address" component={TextFormField} multiline rows={3} />
 				</Grid>
 				<Grid item xs={12} sm={6}>
 					<Field name="vat" label="VAT" component={TextFormField} />
