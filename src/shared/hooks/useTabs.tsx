@@ -5,18 +5,23 @@ export const useTabs = (searchParam = "tab") => {
 	const [tabValue, setTabValue] = React.useState(0);
 	const navigate = useNavigate();
 
+	const query = new URLSearchParams(window.location.search);
+	const tab = query.get(searchParam);
 	useEffect(() => {
-		const query = new URLSearchParams(window.location.search);
-		const tab = query.get(searchParam);
 		if (tab && !isNaN(parseInt(tab))) {
 			setTabValue(parseInt(tab));
 		}
-	}, []);
+	}, [tab]);
 
-	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-		console.log("handleChange", event);
+	const handleChange = (_: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
-		navigate(`?tab=${newValue}`);
+		const query = new URLSearchParams(window.location.search);
+		if (query.has(searchParam)) {
+			query.set(searchParam, newValue.toString());
+		} else {
+			query.append(searchParam, newValue.toString());
+		}
+		navigate(`?${query.toString()}`, { replace: true });
 	};
 
 	return {
