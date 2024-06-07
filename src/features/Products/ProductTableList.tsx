@@ -5,7 +5,7 @@ import {
 	GridColumnHeaderParams,
 	GridRenderCellParams,
 } from "@mui/x-data-grid";
-import ProductListData from "../../data/ProductListData.json"
+import ProductListData from "../../data/ProductListData.json";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 const fontWeight = "500";
@@ -50,15 +50,14 @@ const columns: GridColDef[] = [
 		renderHeader: HeaderStyle,
 		renderCell: CellStyle,
 	},
-    {
+	{
 		field: "createdAt",
 		headerName: "Created At",
 		flex: 1,
 		renderHeader: HeaderStyle,
 		renderCell: CellStyle,
-	
 	},
-    	{
+	{
 		field: "action",
 		headerName: "Action",
 		flex: 1,
@@ -67,19 +66,16 @@ const columns: GridColDef[] = [
 			<img src={Constants.customImages.Eye} alt="action" style={{ width: "40px" }} />
 		),
 	},
-	
-
 ];
 
 const ProductTableList = () => {
- 
 	const invoiceData = ProductListData;
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={invoiceData} columns={columns}  checkboxSelection/>
+			<DataGrid autoHeight rows={invoiceData} columns={columns} checkboxSelection />
 		</Box>
 	);
-}
+};
 
-export default ProductTableList
+export default ProductTableList;

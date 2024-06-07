@@ -38,6 +38,6 @@ export class Constants {
 		ProductSymbol,
 		CustomerImg,
 		BillingAddressIcon,
-		CloseIcon
+		CloseIcon,
 	};
 }

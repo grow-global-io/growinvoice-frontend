@@ -67,8 +67,7 @@ const themeOptions: ThemeOptions = {
 			active: "#979797",
 			activatedOpacity: 0.1,
 			selected: "#C0EDED",
-		}
-		
+		},
 	},
 	typography: {
 		fontFamily: '"Raleway", sans-serif',
