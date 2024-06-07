@@ -7,7 +7,7 @@ const GridSelectField = ({
 	valueOptions,
 	disabled = false,
 }: {
-	params: GridRenderEditCellParams<any, any, any>;
+	params: GridRenderEditCellParams;
 	valueOptions?: ListDto[];
 	disabled?: boolean;
 }) => {

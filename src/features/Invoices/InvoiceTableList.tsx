@@ -1,10 +1,15 @@
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+	DataGrid,
+	GridColDef,
+	GridColumnHeaderParams,
+	GridRenderCellParams,
+} from "@mui/x-data-grid";
 import InvoiceListData from "../../data/InvoiceListData.json";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 const fontWeight = "500";
-const HeaderStyle = (params: any) => {
+const HeaderStyle = (params: GridColumnHeaderParams) => {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
 			<Typography variant="h6" color="#000">
@@ -13,7 +18,7 @@ const HeaderStyle = (params: any) => {
 		</Box>
 	);
 };
-const CellStyle = (params: any, color = "grey.500") => {
+const CellStyle = (params: GridRenderCellParams, color = "grey.500") => {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
 			<Typography variant="h6" color={color} fontWeight={fontWeight}>

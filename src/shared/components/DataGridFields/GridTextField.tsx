@@ -7,7 +7,7 @@ const GridTextField = ({
 	label,
 	type = "text",
 }: {
-	params: GridRenderEditCellParams<any, any, any>;
+	params: GridRenderEditCellParams;
 	label: string;
 	type?: React.HTMLInputTypeAttribute;
 }) => {

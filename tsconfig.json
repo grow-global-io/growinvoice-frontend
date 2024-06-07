@@ -14,7 +14,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "allowJs": false,
-    "allowJs": false,
 
     /* Linting */
     "strict": true,
