@@ -11,7 +11,6 @@ export interface ProductUnitDto {
 	id: string;
 	isExist: boolean;
 	name: string;
-	symbol: string;
 	/** @nullable */
 	updatedAt: string | null;
 	user_id: string;

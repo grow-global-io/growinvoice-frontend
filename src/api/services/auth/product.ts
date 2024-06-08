@@ -20,6 +20,7 @@ import type {
 	ProductControllerCreate201,
 	ProductControllerUpdate200,
 	ProductDto,
+	ProductWithAllDataDto,
 	SuccessResponseDto,
 	UpdateProductDto,
 } from "./models";
@@ -92,7 +93,7 @@ export const useProductControllerCreate = <
 	return useMutation(mutationOptions);
 };
 export const productControllerFindAll = (signal?: AbortSignal) => {
-	return authInstance<ProductDto[]>({ url: `/api/product`, method: "GET", signal });
+	return authInstance<ProductWithAllDataDto[]>({ url: `/api/product`, method: "GET", signal });
 };
 
 export const getProductControllerFindAllQueryKey = () => {

@@ -7,7 +7,8 @@
  */
 
 export interface UpdateTaxDto {
-	name?: string;
-	rate?: number;
+	/** @nullable */
+	description?: string | null;
+	percentage?: number;
 	user_id?: string;
 }

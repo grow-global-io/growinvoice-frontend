@@ -8,6 +8,5 @@
 
 export interface UpdateProductUnitDto {
 	name?: string;
-	symbol?: string;
 	user_id?: string;
 }

@@ -8,6 +8,5 @@
 
 export interface CreateProductUnitDto {
 	name: string;
-	symbol: string;
 	user_id: string;
 }

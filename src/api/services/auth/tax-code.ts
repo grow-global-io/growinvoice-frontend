@@ -92,7 +92,7 @@ export const useTaxcodeControllerCreate = <
 	return useMutation(mutationOptions);
 };
 export const taxcodeControllerFindAll = (signal?: AbortSignal) => {
-	return authInstance<TaxDto>({ url: `/api/taxcode`, method: "GET", signal });
+	return authInstance<TaxDto[]>({ url: `/api/taxcode`, method: "GET", signal });
 };
 
 export const getTaxcodeControllerFindAllQueryKey = () => {

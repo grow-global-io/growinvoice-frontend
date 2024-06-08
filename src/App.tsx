@@ -17,6 +17,8 @@ import { useEffectOnce } from "@shared/hooks/useEffectOnce";
 import { AlertTitle } from "@mui/material";
 import Navbar from "@layout/navbar/Home/Navbar";
 import GetStartedDialog from "@features/Dashboard/GetStartedDialog";
+import { useCreateProductStore } from "@store/createProductStore";
+import { ProductDrawer } from "@features/Products/CreateProduct";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -68,6 +70,7 @@ function AppContainer() {
 function App() {
 	const [open, setOpen] = useState(false);
 	const [backdropOpen, setBackdropOpen] = useState(false);
+	const [openProductForm, setOpenProductForm] = useState(false);
 
 	const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
 		console.log("handleClose", event);
@@ -78,8 +81,13 @@ function App() {
 		setOpen(false);
 	};
 
+	const handleCloseProductForm = () => {
+		setOpenProductForm(false);
+	};
+
 	const alertRef = useRef(useAlertStore.getState());
 	const loaderRef = useRef(useLoaderStore.getState());
+	const createProduct = useRef(useCreateProductStore.getState());
 
 	useEffect(() => {
 		const unsubscribeAlert = useAlertStore.subscribe((state) => {
@@ -91,9 +99,15 @@ function App() {
 			setBackdropOpen(state.open);
 		});
 
+		const unsubscribeProductForm = useCreateProductStore.subscribe((state) => {
+			createProduct.current = state;
+			setOpenProductForm(state.open);
+		});
+
 		return () => {
 			unsubscribeAlert();
 			unsubscribeLoading();
+			unsubscribeProductForm();
 		};
 	}, []);
 
@@ -121,6 +135,7 @@ function App() {
 				<CircularProgress color="inherit" />
 			</Backdrop>
 			<ConfirmDialog />
+			<ProductDrawer open={openProductForm} handleClose={handleCloseProductForm} />
 		</>
 	);
 }
