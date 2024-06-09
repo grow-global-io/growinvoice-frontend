@@ -8,6 +8,7 @@
 import type { CreateProductDtoType } from "./createProductDtoType";
 
 export interface CreateProductDto {
+	currency_id: string;
 	/** @nullable */
 	description?: string | null;
 	hsnCode_id: string;

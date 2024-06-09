@@ -88,21 +88,21 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			menuItems: [],
 		},
 		{
-			path: "/product",
+			path: "/product/productlist",
 			icon: <StoreIcon />,
 			menuName: "Product",
 			menuItems: [
-				{ path: "/product/productlist", label: "Product List" },
-				{ path: "/product/createproduct", label: "Create Product" },
+				// { path: "/product/productlist", label: "Product List" },
+				// { path: "/product/createproduct", label: "Create Product" },
 			],
 		},
 		{
-			path: "/customer",
+			path: "/customer/customerlist",
 			icon: <PeopleIcon />,
 			menuName: "Customer",
 			menuItems: [
-				{ path: "/customer/customerlist", label: "Customer List" },
-				{ path: "/customer/createcustomer", label: "Create Customer" },
+				// { path: "/customer/customerlist", label: "Customer List" },
+				// { path: "/customer/createcustomer", label: "Create Customer" },
 			],
 		},
 		{
@@ -122,7 +122,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			return false;
 		}),
 	);
-	console.log(pathname);
+
 	useEffect(() => {
 		setMenuToggle(
 			menuList.map((menuItemMap) => {
@@ -163,15 +163,19 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				<ListItemButton
 					key={index}
 					sx={{
-						bgcolor: "inherit",
+						bgcolor: path === pathname ? "secondary.main" : "inherit",
 						borderRadius: "4px",
 						padding: "2px 16px",
-						"&:hover": { backgroundColor: "rgba(13, 110, 253, 0.1)" },
-						"&:hover .MuiListItemIcon-root": { color: "#000" },
-						"&:hover .MuiListItemText-primary": { color: "#000" },
-						"& .MuiListItemIcon-root": { color: color, minWidth: "auto" },
-						"& .MuiListItemText-primary": { color: color },
-						color: color,
+						"&:hover": {
+							backgroundColor: path === pathname ? "secondary.main" : "rgba(13, 110, 253, 0.1)",
+						},
+						"&:hover .MuiListItemIcon-root": { color: path === pathname ? "#fff" : "#000" },
+						"&:hover .MuiListItemText-primary": { color: path === pathname ? "#fff" : "#000" },
+						"& .MuiListItemIcon-root": {
+							color: path === pathname ? "#fff" : "#000",
+							minWidth: "auto",
+						},
+						"& .MuiListItemText-primary": { color: path === pathname ? "#fff" : "#000" },
 						border: "1px solid rgba(0, 0, 0, 0.1)",
 						marginTop: "5px",
 						borderWidth: "1px",
@@ -213,15 +217,19 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 										marginTop: "5px",
 										pl: 4,
 										bgcolor: item.path === pathname ? "secondary.main" : "inherit",
-										"&:hover": { backgroundColor: "rgba(13, 110, 253, 0.1)" },
-										"&:hover .MuiListItemText-primary": { color: "#000" },
+										"&:hover": {
+											backgroundColor:
+												item.path === pathname ? "secondary.main" : "rgba(13, 110, 253, 0.1)",
+										},
+										"&:hover .MuiListItemText-primary": {
+											color: item.path === pathname ? "#fff" : "#000",
+										},
 										"& .MuiListItemText-primary": {
 											color: item.path === pathname ? "#fff" : "#000",
 										},
 										borderRadius: "4px",
 									}}
 									onClick={() => {
-										console.log(item);
 										navigation(item.path);
 									}}
 								>

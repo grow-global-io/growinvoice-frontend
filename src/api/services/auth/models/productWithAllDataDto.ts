@@ -5,10 +5,13 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import type { ProductDtoType } from "./productDtoType";
+import type { CurrenciesDto } from "./currenciesDto";
+import type { ProductWithAllDataDtoType } from "./productWithAllDataDtoType";
+import type { ProductUnitDto } from "./productUnitDto";
 
-export interface ProductDto {
+export interface ProductWithAllDataDto {
 	createdAt: string;
+	currency?: CurrenciesDto;
 	currency_id: string;
 	/** @nullable */
 	description: string | null;
@@ -18,7 +21,8 @@ export interface ProductDto {
 	name: string;
 	price: number;
 	tax_id: string;
-	type: ProductDtoType;
+	type: ProductWithAllDataDtoType;
+	unit?: ProductUnitDto;
 	unit_id: string;
 	/** @nullable */
 	updatedAt: string | null;

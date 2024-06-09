@@ -8,10 +8,11 @@
 
 export interface TaxDto {
 	createdAt: string;
+	/** @nullable */
+	description: string | null;
 	id: string;
 	isExist: boolean;
-	name: string;
-	rate: number;
+	percentage: number;
 	/** @nullable */
 	updatedAt: string | null;
 	user_id: string;

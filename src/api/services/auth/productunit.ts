@@ -92,7 +92,7 @@ export const useProductunitControllerCreate = <
 	return useMutation(mutationOptions);
 };
 export const productunitControllerFindAll = (signal?: AbortSignal) => {
-	return authInstance<ProductUnitDto>({ url: `/api/productunit`, method: "GET", signal });
+	return authInstance<ProductUnitDto[]>({ url: `/api/productunit`, method: "GET", signal });
 };
 
 export const getProductunitControllerFindAllQueryKey = () => {

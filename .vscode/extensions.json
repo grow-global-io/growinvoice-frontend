@@ -1,0 +1,11 @@
+{
+	"recommendations": [
+		"nrwl.angular-console",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"SonarSource.sonarlint-vscode",
+		"aaron-bond.better-comments",
+		"naumovs.color-highlight",
+		"dsznajder.es7-react-js-snippets"
+	]
+}

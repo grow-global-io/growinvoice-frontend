@@ -494,4 +494,17 @@ const themeOptions: ThemeOptions = {
 	},
 };
 
-export const theme = createTheme(themeOptions);
+const customTheme = {
+	...themeOptions,
+	palette: {
+		custom: {
+			primary: "#0D6EFD",
+			secondary: "#31C4C3",
+			tertiary: "#FFC107",
+			quaternary: "#054c5c",
+		},
+		...themeOptions.palette,
+	},
+};
+
+export const theme = createTheme(customTheme);

@@ -6,9 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CreateTaxDto {
-	/** @nullable */
-	description?: string | null;
-	percentage: number;
-	user_id: string;
+export interface CreateShippingAddressDto {
+	address: string;
+	city: string;
+	country_id: string;
+	state_id: string;
+	zip: string;
 }

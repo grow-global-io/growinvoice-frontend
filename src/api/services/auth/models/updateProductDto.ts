@@ -8,6 +8,7 @@
 import type { UpdateProductDtoType } from "./updateProductDtoType";
 
 export interface UpdateProductDto {
+	currency_id?: string;
 	/** @nullable */
 	description?: string | null;
 	hsnCode_id?: string;
