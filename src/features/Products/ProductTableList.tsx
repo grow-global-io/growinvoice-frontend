@@ -96,6 +96,7 @@ const ProductTableList = () => {
 	return (
 		<Box>
 			<DataGrid autoHeight rows={productList?.data} columns={columns} />
+			<DataGrid autoHeight rows={productList?.data} columns={columns} />
 		</Box>
 	);
 };
