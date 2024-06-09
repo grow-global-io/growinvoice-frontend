@@ -7,7 +7,7 @@ function ProductList() {
 		<>
 			<Grid container spacing={2}>
 				<Grid item xs={12} display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
-					<Typography variant="h3">Product</Typography>
+					<Typography variant="h3">Products</Typography>
 					<CreateProduct />
 				</Grid>
 				<Grid item xs={12}>

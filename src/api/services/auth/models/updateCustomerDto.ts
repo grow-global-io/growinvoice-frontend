@@ -19,6 +19,7 @@ export interface UpdateCustomerDto {
 	/** @nullable */
 	phone?: string | null;
 	shippingAddress_id?: string;
+	user_id?: string;
 	/** @nullable */
 	website?: string | null;
 }

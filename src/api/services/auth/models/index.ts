@@ -7,6 +7,7 @@
  */
 
 export * from "./authControllerGetUserParams";
+export * from "./billingAddressDto";
 export * from "./companyControllerUpdate201";
 export * from "./companyControllerUpdate201AllOf";
 export * from "./companyDto";
@@ -24,8 +25,14 @@ export * from "./createUserCompany";
 export * from "./currencies";
 export * from "./currenciesDto";
 export * from "./currencyControllerFindStatesByCountryParams";
+export * from "./customerControllerCreate201";
+export * from "./customerControllerCreate201AllOf";
+export * from "./customerControllerUpdate200";
+export * from "./customerControllerUpdate200AllOf";
 export * from "./errorMessageDto";
 export * from "./forgotPasswordDto";
+export * from "./getCustomerWithAddressDto";
+export * from "./getCustomerWithAddressDtoOption";
 export * from "./hSNCodeDto";
 export * from "./hsncodeControllerCreate201";
 export * from "./hsncodeControllerCreate201AllOf";
@@ -47,6 +54,7 @@ export * from "./productunitControllerCreate201AllOf";
 export * from "./productunitControllerUpdate200";
 export * from "./productunitControllerUpdate200AllOf";
 export * from "./resetPasswordTokenDto";
+export * from "./shippingAddressDto";
 export * from "./stateDto";
 export * from "./successResponseDto";
 export * from "./taxDto";
