@@ -17,6 +17,7 @@ import { stringToListDto } from "@shared/models/ListDto";
 import {
 	getProductControllerFindAllQueryKey,
 	useProductControllerCreate,
+	useProductControllerUpdate,
 } from "@api/services/product";
 import { useProductunitControllerFindAll } from "@api/services/productunit";
 import { useHsncodeControllerFindAll } from "@api/services/hsncode";
@@ -43,21 +44,30 @@ const ProductForm = () => {
 	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const createProduct = useProductControllerCreate();
-	const { setOpenProductForm } = useCreateProductStore.getState();
+	const { setOpenProductForm, editValues } = useCreateProductStore.getState();
 
 	const productUnit = useProductunitControllerFindAll();
 	const hsnCodes = useHsncodeControllerFindAll();
 	const taxCodes = useTaxcodeControllerFindAll();
 	const currencyList = useCurrencyControllerFindAll();
 
+	const updateProduct = useProductControllerUpdate();
+
 	const handleSubmit = async (
 		values: CreateProductDto,
 		action: FormikHelpers<CreateProductDto>,
 	) => {
 		action.setSubmitting(true);
-		await createProduct.mutateAsync({
-			data: values,
-		});
+		if (editValues) {
+			await updateProduct.mutateAsync({
+				id: editValues.id,
+				data: values,
+			});
+		} else {
+			await createProduct.mutateAsync({
+				data: values,
+			});
+		}
 		action.resetForm();
 		queryClient.invalidateQueries({
 			queryKey: getProductControllerFindAllQueryKey(),
@@ -67,14 +77,14 @@ const ProductForm = () => {
 	};
 
 	const initialValues: CreateProductDto = {
-		type: "Good",
-		name: "",
-		unit_id: "",
-		hsnCode_id: "",
-		tax_id: "",
-		currency_id: "",
-		price: 0,
-		description: "",
+		type: editValues?.type ?? "Good",
+		name: editValues?.name ?? "",
+		unit_id: editValues?.unit_id ?? "",
+		hsnCode_id: editValues?.hsnCode_id ?? "",
+		tax_id: editValues?.tax_id ?? "",
+		currency_id: editValues?.currency_id ?? "",
+		price: editValues?.price ?? 0,
+		description: editValues?.description ?? "",
 		user_id: user?.id ?? "",
 	};
 
@@ -101,7 +111,6 @@ const ProductForm = () => {
 			<Grid container justifyContent={"space-between"}>
 				<Typography
 					variant="h4"
-					color={"secondary.dark"}
 					sx={{
 						display: "flex",
 						alignItems: "center",

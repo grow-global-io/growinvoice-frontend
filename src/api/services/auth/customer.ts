@@ -15,14 +15,21 @@ import type {
 	UseQueryOptions,
 	UseQueryResult,
 } from "@tanstack/react-query";
-import type { CreateCustomerWithAddressDto, UpdateCustomerDto } from "./models";
+import type {
+	CreateCustomerWithAddressDto,
+	CustomerControllerCreate201,
+	CustomerControllerUpdate200,
+	GetCustomerWithAddressDto,
+	SuccessResponseDto,
+	UpdateCustomerDto,
+} from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
 export const customerControllerCreate = (
 	createCustomerWithAddressDto: CreateCustomerWithAddressDto,
 ) => {
-	return authInstance<void>({
+	return authInstance<CustomerControllerCreate201>({
 		url: `/api/customer`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -87,7 +94,7 @@ export const useCustomerControllerCreate = <
 	return useMutation(mutationOptions);
 };
 export const customerControllerFindAll = (signal?: AbortSignal) => {
-	return authInstance<string>({ url: `/api/customer`, method: "GET", signal });
+	return authInstance<GetCustomerWithAddressDto[]>({ url: `/api/customer`, method: "GET", signal });
 };
 
 export const getCustomerControllerFindAllQueryKey = () => {
@@ -140,7 +147,11 @@ export const useCustomerControllerFindAll = <
 };
 
 export const customerControllerFindOne = (id: string, signal?: AbortSignal) => {
-	return authInstance<string>({ url: `/api/customer/${id}`, method: "GET", signal });
+	return authInstance<GetCustomerWithAddressDto>({
+		url: `/api/customer/${id}`,
+		method: "GET",
+		signal,
+	});
 };
 
 export const getCustomerControllerFindOneQueryKey = (id: string) => {
@@ -199,7 +210,7 @@ export const useCustomerControllerFindOne = <
 };
 
 export const customerControllerUpdate = (id: string, updateCustomerDto: UpdateCustomerDto) => {
-	return authInstance<string>({
+	return authInstance<CustomerControllerUpdate200>({
 		url: `/api/customer/${id}`,
 		method: "PATCH",
 		headers: { "Content-Type": "application/json" },
@@ -264,7 +275,7 @@ export const useCustomerControllerUpdate = <
 	return useMutation(mutationOptions);
 };
 export const customerControllerRemove = (id: string) => {
-	return authInstance<string>({ url: `/api/customer/${id}`, method: "DELETE" });
+	return authInstance<SuccessResponseDto>({ url: `/api/customer/${id}`, method: "DELETE" });
 };
 
 export const getCustomerControllerRemoveMutationOptions = <

@@ -26,7 +26,7 @@ export default function CreateProduct() {
 				}}
 				startIcon={<AddIcon />}
 			>
-				Create New
+				Create New Product
 			</Button>
 		</>
 	);

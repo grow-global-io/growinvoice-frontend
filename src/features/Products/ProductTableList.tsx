@@ -1,30 +1,30 @@
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef, GridColumnHeaderParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Chip, Typography } from "@mui/material";
-import { useProductControllerFindAll } from "@api/services/product";
+import {
+	getProductControllerFindAllQueryKey,
+	useProductControllerFindAll,
+	useProductControllerRemove,
+} from "@api/services/product";
 import Loader from "@shared/components/Loader";
 import { timeAgo } from "@shared/formatter";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import { useCreateProductStore } from "@store/createProductStore";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useQueryClient } from "@tanstack/react-query";
 
-const HeaderStyle = (params: GridColumnHeaderParams) => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant="h6" color="secondary.dark">
-				{params.colDef.headerName}
-			</Typography>
-		</Box>
-	);
-};
 const ProductTableList = () => {
+	const queryClient = useQueryClient();
+	const { updateProduct } = useCreateProductStore.getState();
 	const productList = useProductControllerFindAll();
+	const removeProduct = useProductControllerRemove();
 
 	const columns: GridColDef[] = [
 		{
 			field: "name",
 			headerName: "Product",
 			flex: 1,
-			renderHeader: HeaderStyle,
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color="secondary">
@@ -37,7 +37,6 @@ const ProductTableList = () => {
 			field: "unit",
 			headerName: "Unit",
 			flex: 1,
-			renderHeader: HeaderStyle,
 			renderCell: (params) => {
 				return <Typography textTransform={"capitalize"}>{params?.row?.unit?.name}</Typography>;
 			},
@@ -46,7 +45,6 @@ const ProductTableList = () => {
 			field: "price",
 			headerName: "Price",
 			flex: 1,
-			renderHeader: HeaderStyle,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -60,7 +58,6 @@ const ProductTableList = () => {
 			field: "createdAt",
 			headerName: "Created At",
 			flex: 1,
-			renderHeader: HeaderStyle,
 			renderCell: (params) => {
 				return <Typography>{timeAgo(params.value)}</Typography>;
 			},
@@ -70,9 +67,26 @@ const ProductTableList = () => {
 			headerName: "Action",
 			flex: 1,
 			type: "actions",
-			renderHeader: HeaderStyle,
 			getActions: (params) => [
-				<CustomIconButton key={params.row?.id} src={EditIcon} onClick={() => {}} />,
+				<CustomIconButton
+					key={params.row?.id}
+					src={EditIcon}
+					onClick={() => {
+						updateProduct(params.row);
+					}}
+				/>,
+				<CustomIconButton
+					key={params.row?.id}
+					src={DeleteIcon}
+					buttonType="delete"
+					iconColor="error"
+					onClick={async () => {
+						await removeProduct.mutateAsync({ id: params.row.id });
+						queryClient.invalidateQueries({
+							queryKey: getProductControllerFindAllQueryKey(),
+						});
+					}}
+				/>,
 			],
 		},
 	];

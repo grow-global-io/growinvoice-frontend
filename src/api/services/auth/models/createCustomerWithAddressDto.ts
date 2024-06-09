@@ -21,6 +21,7 @@ export interface CreateCustomerWithAddressDto {
 	/** @nullable */
 	phone?: string | null;
 	shippingDetails?: CreateShippingAddressDto;
+	user_id: string;
 	/** @nullable */
 	website?: string | null;
 }
