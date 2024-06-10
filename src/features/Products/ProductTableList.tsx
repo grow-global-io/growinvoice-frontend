@@ -49,11 +49,15 @@ const ProductTableList = () => {
 				return (
 					<Chip
 						label={`${params.row.currency.symbol} ${params.value}`}
+
 						style={{
 							color: "custom.productTblColor",
 							backgroundColor: "custom.productTbleBgColor",
 							fontWeight: "bold",
 						}}
+
+						style={{ color: "#32C371", backgroundColor: "#D6F3E2", fontWeight: "bold" }}
+
 					/>
 				);
 			},
@@ -100,7 +104,11 @@ const ProductTableList = () => {
 	return (
 		<Box>
 			<DataGrid autoHeight rows={productList?.data} columns={columns} />
+
 			{/* <DataGrid autoHeight rows={productList?.data} columns={columns} /> */}
+
+			<DataGrid autoHeight rows={productList?.data} columns={columns} />
+
 		</Box>
 	);
 };
