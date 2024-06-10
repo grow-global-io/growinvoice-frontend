@@ -6,4 +6,5 @@ export class RegexExp {
 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
 	static readonly htmlTags = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
 	static readonly fullNameRegex = /^[A-Za-z\s]+$/;
+	static readonly linkRegex = /^(ftp|http|https):\/\/[^ "]+$/;
 }

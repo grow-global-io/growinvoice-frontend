@@ -9,7 +9,7 @@ export class InterceptorService {
 	public addRequestInterceptor(): this {
 		this._axiosInstance.interceptors.request.use(
 			(config) => {
-				if (["post", "put", "delete"].includes(config.method || "")) {
+				if (["post", "put", "delete", "patch"].includes(config.method || "")) {
 					LoaderService.instance.showLoader();
 				}
 				const authToken = localStorage.getItem("authToken");
@@ -29,7 +29,7 @@ export class InterceptorService {
 	public addResponseInterceptor(): this {
 		this._axiosInstance.interceptors.response.use(
 			(response) => {
-				if (["post", "put", "delete"].includes(response.config.method || "")) {
+				if (["post", "put", "delete", "patch"].includes(response.config.method || "")) {
 					if (response.data?.message) {
 						AlertService.instance.successMessage(response.data.message);
 					}

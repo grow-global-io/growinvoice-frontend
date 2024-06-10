@@ -1,6 +1,15 @@
-import { Box, Grid, Typography, Divider, Button, IconButton } from "@mui/material";
+import {
+	Box,
+	Grid,
+	Typography,
+	Divider,
+	Button,
+	IconButton,
+	FormControl,
+	FormControlLabel,
+	Checkbox,
+} from "@mui/material";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
-import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormField";
 import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { Constants } from "@shared/constants";
@@ -18,45 +27,57 @@ import {
 	useCurrencyControllerFindCountries,
 } from "@api/services/currency";
 import StateFormField from "@shared/components/FormFields/StateFormField";
-import { useCustomerControllerCreate } from "@api/services/customer";
+import {
+	getCustomerControllerFindAllQueryKey,
+	getCustomerControllerFindOneQueryKey,
+	useCustomerControllerCreate,
+	useCustomerControllerUpdate,
+} from "@api/services/customer";
 import { useAuthStore } from "@store/auth";
+import { RegexExp } from "@shared/regex";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CustomerForm = () => {
+	const queryClient = useQueryClient();
 	const countryFindAll = useCurrencyControllerFindCountries();
 	const createCustomer = useCustomerControllerCreate();
 	const currencyList = useCurrencyControllerFindAll();
-
 	const { user } = useAuthStore();
+	const updateCustomer = useCustomerControllerUpdate();
 
-	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
+	const { setOpenCustomerForm, editValues } = useCreateCustomerStore.getState();
 	const initialValues: CreateCustomerWithAddressDto = {
-		currencies_id: "",
-		name: "",
-		option: "Freelancer",
+		currencies_id: editValues?.currencies_id ?? "",
+		name: editValues?.name ?? "",
+		option: editValues?.option ?? CreateCustomerWithAddressDtoOption.Freelancer,
 		user_id: user?.id ?? "",
 		billingDetails: {
-			address: "",
-			city: "",
-			country_id: "",
-			state_id: "",
-			zip: "",
+			address: editValues?.billingAddress?.address ?? "",
+			city: editValues?.billingAddress?.city ?? "",
+			country_id: editValues?.billingAddress?.country_id ?? "",
+			state_id: editValues?.billingAddress?.state_id ?? "",
+			zip: editValues?.billingAddress?.zip ?? "",
 		},
 		shippingDetails: {
-			address: "",
-			city: "",
-			country_id: "",
-			state_id: "",
-			zip: "",
+			address: editValues?.shippingAddress?.address ?? "",
+			city: editValues?.shippingAddress?.city ?? "",
+			country_id: editValues?.shippingAddress?.country_id ?? "",
+			state_id: editValues?.shippingAddress?.state_id ?? "",
+			zip: editValues?.shippingAddress?.zip ?? "",
 		},
-		display_name: "",
-		email: "",
-		phone: "",
-		website: "",
+		display_name: editValues?.display_name ?? "",
+		email: editValues?.email ?? "",
+		phone: editValues?.phone ?? "",
+		website: editValues?.website ?? "",
 	};
 
 	const schema: yup.Schema<CreateCustomerWithAddressDto> = yup.object({
 		currencies_id: yup.string().required("Currency is required"),
-		name: yup.string().required("Name is required"),
+		name: yup
+			.string()
+			.required("Name is required")
+			.matches(RegexExp.fullNameRegex, "Name is invalid"),
 		option: yup
 			.string()
 			.required("Option is required")
@@ -77,9 +98,15 @@ const CustomerForm = () => {
 			zip: yup.string().required("Zip is required"),
 		}),
 		display_name: yup.string().required("Display Name is required"),
-		email: yup.string().required("Email is required").email(),
-		phone: yup.string().required("Phone is required"),
-		website: yup.string().required("Website is required"),
+		email: yup.string().required("Email is required").email("Email is invalid"),
+		phone: yup
+			.string()
+			.required("Phone is required")
+			.test("is-phone", "Phone number is not valid", function (value) {
+				if (!value) return true;
+				return isValidPhoneNumber(value);
+			}),
+		website: yup.string().matches(RegexExp.linkRegex, "Website is invalid"),
 	});
 
 	const handleSubmit = async (
@@ -87,9 +114,23 @@ const CustomerForm = () => {
 		actions: FormikHelpers<CreateCustomerWithAddressDto>,
 	) => {
 		actions.setSubmitting(true);
-		await createCustomer.mutateAsync({
-			data: values,
+		if (editValues !== null) {
+			await updateCustomer.mutateAsync({
+				id: editValues.id,
+				data: values,
+			});
+			queryClient.invalidateQueries({
+				queryKey: getCustomerControllerFindOneQueryKey(editValues?.id ?? ""),
+			});
+		} else {
+			await createCustomer.mutateAsync({
+				data: values,
+			});
+		}
+		queryClient.invalidateQueries({
+			queryKey: getCustomerControllerFindAllQueryKey(),
 		});
+		actions.resetForm();
 		setOpenCustomerForm(false);
 		actions.setSubmitting(false);
 	};
@@ -119,32 +160,30 @@ const CustomerForm = () => {
 
 			<Box sx={{ mb: 2, mt: 2 }}>
 				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
-					{({ errors }) => {
-						console.log(errors);
+					{({ errors, values, setFieldValue }) => {
 						return (
 							<Form>
 								<Divider />
 
 								<Grid container spacing={2} bgcolor={"custom.lightgray"} my={1}>
-									<Grid container spacing={2} bgcolor={"rgba(217, 217, 217, 0.07)"} my={1}>
-										<Grid item xs={12} sm={8}>
-											<Field
-												name="option"
-												label="Customer Type"
-												component={AutocompleteField}
-												options={Object.values(CreateCustomerWithAddressDtoOption).map(
-													stringToListDto,
-												)}
-											/>
-										</Grid>
+									<Grid item xs={12} sm={8}>
+										<Field
+											name="option"
+											label="Customer Type"
+											component={AutocompleteField}
+											options={Object.values(CreateCustomerWithAddressDtoOption).map(
+												stringToListDto,
+											)}
+										/>
+									</Grid>
 
-										<Grid item xs={12} sm={6}>
-											<Field name="name" label="Customer Name" component={TextFormField} />
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field name="display_name" label="Display Name" component={TextFormField} />
-										</Grid>
-										{/* <Grid item xs={12} sm={8}>
+									<Grid item xs={12} sm={6}>
+										<Field name="name" label="Customer Name" component={TextFormField} />
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field name="display_name" label="Display Name" component={TextFormField} />
+									</Grid>
+									{/* <Grid item xs={12} sm={8}>
 									<Field
 										name="gstNumber"
 										label="GST Number"
@@ -152,27 +191,26 @@ const CustomerForm = () => {
 										type="number"
 									/>
 								</Grid> */}
-										<Grid item xs={12} sm={6}>
-											<Field name="email" label="Email" component={TextFormField} />
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field name="phone" label="Phone" component={PhoneInputFormField} />
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field name="website" label="Website" component={TextFormField} />
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="currencies_id"
-												label="Currency"
-												loading={currencyList.isLoading || currencyList.isFetching}
-												component={AutocompleteField}
-												options={currencyList.data?.map((currency) => ({
-													value: currency.id,
-													label: `${currency.short_code} - ${currency.name}`,
-												}))}
-											/>
-										</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field name="email" label="Email" component={TextFormField} />
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field name="phone" label="Phone" component={PhoneInputFormField} />
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field name="website" label="Website" component={TextFormField} />
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="currencies_id"
+											label="Currency"
+											loading={currencyList.isLoading || currencyList.isFetching}
+											component={AutocompleteField}
+											options={currencyList.data?.map((currency) => ({
+												value: currency.id,
+												label: `${currency.short_code} - ${currency.name}`,
+											}))}
+										/>
 									</Grid>
 								</Grid>
 								<Grid container spacing={2} my={1}>
@@ -251,11 +289,35 @@ const CustomerForm = () => {
 										Shipping Address
 									</Typography>
 									<Grid item xs={12} sm={6} textAlign={{ xs: "start", sm: "center" }}>
-										<Field
-											name="sameasBillAd"
-											component={CheckBoxFormField}
-											label="Same as billing address"
-										/>
+										<FormControl>
+											<FormControlLabel
+												disabled={
+													(errors.billingDetails !== undefined &&
+														errors.billingDetails !== null &&
+														Object.keys(errors.billingDetails).length > 0) ||
+													values?.billingDetails?.address === "" ||
+													values.billingDetails?.city === "" ||
+													values.billingDetails?.country_id === "" ||
+													values.billingDetails?.state_id === "" ||
+													values.billingDetails?.zip === ""
+												}
+												control={<Checkbox />}
+												onClick={(e: any) => {
+													if (e.target.checked) {
+														setFieldValue("shippingDetails", values.billingDetails);
+														return;
+													}
+													setFieldValue("shippingDetails", {
+														address: "",
+														city: "",
+														country_id: "",
+														state_id: "",
+														zip: "",
+													});
+												}}
+												label="Same as billing address"
+											/>
+										</FormControl>
 									</Grid>
 								</Grid>
 								<Grid item xs={12}>

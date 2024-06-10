@@ -13,12 +13,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useCreateProductStore } from "@store/createProductStore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useQueryClient } from "@tanstack/react-query";
+import { useConfirmDialogStore } from "@store/confirmDialog";
 
 const ProductTableList = () => {
 	const queryClient = useQueryClient();
 	const { updateProduct } = useCreateProductStore.getState();
 	const productList = useProductControllerFindAll();
 	const removeProduct = useProductControllerRemove();
+
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
 
 	const columns: GridColDef[] = [
 		{
@@ -85,9 +88,19 @@ const ProductTableList = () => {
 					buttonType="delete"
 					iconColor="error"
 					onClick={async () => {
-						await removeProduct.mutateAsync({ id: params.row.id });
-						queryClient.invalidateQueries({
-							queryKey: getProductControllerFindAllQueryKey(),
+						handleOpen({
+							title: "Delete Product",
+							message: "Are you sure you want to delete this product?",
+							onConfirm: async () => {
+								await removeProduct.mutateAsync({ id: params.row.id });
+								queryClient.invalidateQueries({
+									queryKey: getProductControllerFindAllQueryKey(),
+								});
+							},
+							onCancel: () => {
+								cleanUp();
+							},
+							confirmButtonText: "Delete",
 						});
 					}}
 				/>,
