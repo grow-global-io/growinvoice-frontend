@@ -302,8 +302,9 @@ const CustomerForm = () => {
 													values.billingDetails?.zip === ""
 												}
 												control={<Checkbox />}
-												onClick={(e: any) => {
-													if (e.target.checked) {
+												onClick={(e: React.MouseEvent<HTMLLabelElement, MouseEvent>) => {
+													const target = e.target as HTMLInputElement;
+													if (target.checked) {
 														setFieldValue("shippingDetails", values.billingDetails);
 														return;
 													}
