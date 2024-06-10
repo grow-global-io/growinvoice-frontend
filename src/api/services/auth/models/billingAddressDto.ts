@@ -6,14 +6,15 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface TaxDto {
+export interface BillingAddressDto {
+	address: string;
+	city: string;
+	country_id: string;
 	createdAt: string;
-	/** @nullable */
-	description: string | null;
 	id: string;
 	isExist: boolean;
-	percentage: number;
+	state_id: string;
 	/** @nullable */
 	updatedAt: string | null;
-	user_id: string;
+	zip: string;
 }

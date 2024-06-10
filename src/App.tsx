@@ -17,6 +17,10 @@ import { useEffectOnce } from "@shared/hooks/useEffectOnce";
 import { AlertTitle } from "@mui/material";
 import Navbar from "@layout/navbar/Home/Navbar";
 import GetStartedDialog from "@features/Dashboard/GetStartedDialog";
+import { useCreateProductStore } from "@store/createProductStore";
+import { ProductDrawer } from "@features/Products/CreateProduct";
+import { useCreateCustomerStore } from "@store/createCustomerStore";
+import { CustomerDrawer } from "@features/Customer/CreateCustomer";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -68,6 +72,8 @@ function AppContainer() {
 function App() {
 	const [open, setOpen] = useState(false);
 	const [backdropOpen, setBackdropOpen] = useState(false);
+	const [openProductForm, setOpenProductForm] = useState(false);
+	const [openCustomerForm, setOpenCustomerForm] = useState(false);
 
 	const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
 		console.log("handleClose", event);
@@ -78,8 +84,18 @@ function App() {
 		setOpen(false);
 	};
 
+	const handleCloseProductForm = () => {
+		setOpenProductForm(false);
+	};
+
+	const handleCloseCustomerForm = () => {
+		setOpenCustomerForm(false);
+	};
+
 	const alertRef = useRef(useAlertStore.getState());
 	const loaderRef = useRef(useLoaderStore.getState());
+	const createProduct = useRef(useCreateProductStore.getState());
+	const createCustomer = useRef(useCreateCustomerStore.getState());
 
 	useEffect(() => {
 		const unsubscribeAlert = useAlertStore.subscribe((state) => {
@@ -91,9 +107,21 @@ function App() {
 			setBackdropOpen(state.open);
 		});
 
+		const unsubscribeProductForm = useCreateProductStore.subscribe((state) => {
+			createProduct.current = state;
+			setOpenProductForm(state.open);
+		});
+
+		const unsubscribeCustomerForm = useCreateCustomerStore.subscribe((state) => {
+			createCustomer.current = state;
+			setOpenCustomerForm(state.open);
+		});
+
 		return () => {
 			unsubscribeAlert();
 			unsubscribeLoading();
+			unsubscribeProductForm();
+			unsubscribeCustomerForm();
 		};
 	}, []);
 
@@ -121,6 +149,8 @@ function App() {
 				<CircularProgress color="inherit" />
 			</Backdrop>
 			<ConfirmDialog />
+			<ProductDrawer open={openProductForm} handleClose={handleCloseProductForm} />
+			<CustomerDrawer open={openCustomerForm} handleClose={handleCloseCustomerForm} />
 		</>
 	);
 }

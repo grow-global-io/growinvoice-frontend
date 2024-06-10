@@ -171,6 +171,10 @@ const themeOptions: ThemeOptions = {
 						fontWeight: "500",
 						lineHeight: "20px",
 					},
+					// text variant
+					"&.MuiButton-text": {
+						padding: "5px 0px",
+					},
 				},
 			},
 		},
@@ -490,4 +494,17 @@ const themeOptions: ThemeOptions = {
 	},
 };
 
-export const theme = createTheme(themeOptions);
+const customTheme = {
+	...themeOptions,
+	palette: {
+		custom: {
+			primary: "#0D6EFD",
+			secondary: "#31C4C3",
+			tertiary: "#FFC107",
+			quaternary: "#054c5c",
+		},
+		...themeOptions.palette,
+	},
+};
+
+export const theme = createTheme(customTheme);

@@ -72,7 +72,6 @@ const CreateInvoice = () => {
 										label="Customer Name"
 										component={AutocompleteField}
 										options={options}
-										placeholder={"Select or add a customer"}
 									/>
 								</Grid>
 								<Grid item xs={12} mb={3}>
