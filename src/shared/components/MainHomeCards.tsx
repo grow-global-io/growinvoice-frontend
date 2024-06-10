@@ -16,7 +16,7 @@ const MainHomeCard = ({
 			<Box sx={{ width: "719px" }}>
 				<Typography
 					variant="h2"
-					sx={{ fontSize: "36px", fontWeight: "600", lineHeight: "54px", color: "#000" }}
+					sx={{ fontSize: "36px", fontWeight: "600", lineHeight: "54px", color: "secondary.dark" }}
 				>
 					{heading}
 				</Typography>
@@ -32,7 +32,7 @@ const MainHomeCard = ({
 				></Typography>
 				<Typography
 					variant="h6"
-					sx={{ fontSize: "24px", fontWeight: "400", lineHeight: "40px", color: "#000" }}
+					sx={{ fontSize: "24px", fontWeight: "400", lineHeight: "40px", color: "secondary.dark" }}
 				>
 					{text}
 				</Typography>

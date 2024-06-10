@@ -5,38 +5,36 @@ import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { Constants } from "@shared/constants";
-import FullFeaturedCrudGrid from "./ProductListDataGrid";
+import FullFeaturedCrudGrid from "@features/Invoices/ProductListDataGrid";
 
-const CreateInvoice = () => {
+const CreateQuotation = () => {
 	const initialValues = {
 		customerName: "",
-		invoiceNumber: "",
+		quotationNumber: "",
 		referenceNumber: "",
-		invoiceDate: "",
-		isRecurring: "",
-		invoiceDueDate: "",
+		quotationDate: "",
+		expirydate: "",
 		addNote: "",
-		invoiceTemplate: "",
-		paymentDetail: "",
+		privateNote: "",
 		taxes: "",
 		discount: "",
+		quotationTemplate: "",
 	};
 
 	const schema = yup.object().shape({
 		customerName: yup.string().required("Customer Name is required"),
-		invoiceNumber: yup.string().required("Invoice Number is required"),
-		referenceNumber: yup.string().required("Reference Number is required"),
-		invoiceDate: yup.date().required("Invoice Date is required"),
-		isRecurring: yup.string().required("Is Recurring is required"),
-		invoiceDueDate: yup.date().required("Invoice Due Date is required"),
+		quotationNumber: yup.number().required("Quotation Number is required"),
+		referenceNumber: yup.number().required("Reference Number is required"),
+		quotationDate: yup.date().required("Quotation Date is required"),
+		expirydate: yup.date().required("Expiry Date is required"),
 		addNote: yup.string(),
-		paymentDetail: yup.string().required(" Payment Detail is required"),
+		privateNote: yup.string(),
 		taxes: yup.number().required(" Taxes is required").min(0, "Taxes should be greater than 0"),
 		discount: yup
 			.number()
 			.required(" discount is required")
 			.min(0, "discount should be greater than 0"),
-		invoiceTemplate: yup.string().required("Invoice Template is required"),
+		quotationTemplate: yup.string().required("Quotation Template is required"),
 	});
 
 	const handleSubmit = () => {};
@@ -57,7 +55,7 @@ const CreateInvoice = () => {
 					gap: 2,
 				}}
 			>
-				<img src={Constants.customImages.invoiceIcon} alt="Invoice Icon" /> New Invoices
+				<img src={Constants.customImages.QuotationIcon} alt="Invoice Icon" /> New Quotation
 			</Typography>
 			<Divider
 				sx={{
@@ -75,21 +73,22 @@ const CreateInvoice = () => {
 										label="Customer Name"
 										component={AutocompleteField}
 										options={options}
+										placeholder={"Select or Add Customer"}
 									/>
 								</Grid>
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={5}>
 									<Field
-										name="invoiceNumber"
+										name="quotationNumber"
 										component={TextFormField}
-										label="Invoice Number"
+										label="Quotation Number"
 										required={true}
 										placeholder={"Enter invoice number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={5}>
 									<Field
 										name="referenceNumber"
 										component={TextFormField}
@@ -98,32 +97,23 @@ const CreateInvoice = () => {
 										placeholder={"Enter reference number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={5}>
 									<Field
-										name="invoiceDate"
+										name="quotationDate"
 										component={DateFormField}
-										label="Invoice Date"
+										label="Quotation Date"
 										required={true}
-										placeholder={"Select invoice date"}
+										placeholder={"Select quotation date"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+
+								<Grid item xs={12} sm={5}>
 									<Field
-										name="isRecurring"
-										label="Is Recurring"
-										component={AutocompleteField}
-										required={true}
-										options={options}
-										placeholder={"select"}
-									/>
-								</Grid>
-								<Grid item xs={12} sm={4}>
-									<Field
-										name="invoiceDueDate"
+										name="expirydate"
 										component={DateFormField}
-										label="Invoice Due Date"
+										label="Expiry At "
 										required={true}
-										placeholder={"Select invoice due date"}
+										placeholder={"Select"}
 									/>
 								</Grid>
 								<Grid item xs={12} mb={3}>
@@ -151,17 +141,18 @@ const CreateInvoice = () => {
 									<Field
 										name="addNote"
 										component={TextFormField}
-										label="Notes"
+										label="Add Notes"
 										required={true}
 										multiline
 										rows={5}
 									/>
 									<Field
-										name="paymentDetail"
-										label="Payment Details"
-										component={AutocompleteField}
+										name="privateNote"
+										component={TextFormField}
+										label=" Private Notes"
 										required={true}
-										options={options}
+										multiline
+										rows={5}
 									/>
 								</Grid>
 								<Grid item xs={12} sm={6}>
@@ -243,8 +234,8 @@ const CreateInvoice = () => {
 								</Grid>
 								<Grid item xs={12} sm={3.5}>
 									<Field
-										name="invoiceTemplate"
-										label="Invoice Template"
+										name="quotationTemplate"
+										label="Quotation Template"
 										component={AutocompleteField}
 										required={true}
 										options={options}
@@ -273,4 +264,4 @@ const CreateInvoice = () => {
 	);
 };
 
-export default CreateInvoice;
+export default CreateQuotation;

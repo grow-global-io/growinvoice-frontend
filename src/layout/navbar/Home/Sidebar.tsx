@@ -114,6 +114,15 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				{ path: "/invoice/createinvoice", label: "Create Invoice" },
 			],
 		},
+		{
+			path: "/quotation",
+			icon: <ReceiptIcon />,
+			menuName: "Quotation",
+			menuItems: [
+				{ path: "/quotation/quotationlist", label: "Quotation" },
+				{ path: "/quotation/createquotation", label: "Create Quotation" },
+			],
+		},
 	];
 
 	const [menuToggle, setMenuToggle] = useState(
@@ -157,7 +166,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				return newState;
 			});
 		};
-		const color = "#000";
+		const color = "secondary.dark";
 		return (
 			<>
 				<ListItemButton
@@ -169,13 +178,20 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						"&:hover": {
 							backgroundColor: path === pathname ? "secondary.main" : "rgba(13, 110, 253, 0.1)",
 						},
-						"&:hover .MuiListItemIcon-root": { color: path === pathname ? "#fff" : "#000" },
-						"&:hover .MuiListItemText-primary": { color: path === pathname ? "#fff" : "#000" },
+
+						"&:hover .MuiListItemIcon-root": {
+							color: path === pathname ? "custom.white" : "secondary.dark",
+						},
+						"&:hover .MuiListItemText-primary": {
+							color: path === pathname ? "custom.white" : "secondary.dark",
+						},
 						"& .MuiListItemIcon-root": {
-							color: path === pathname ? "#fff" : "#000",
+							color: path === pathname ? "custom.white" : "secondary.dark",
 							minWidth: "auto",
 						},
-						"& .MuiListItemText-primary": { color: path === pathname ? "#fff" : "#000" },
+						"& .MuiListItemText-primary": {
+							color: path === pathname ? "custom.white" : "secondary.dark",
+						},
 						border: "1px solid rgba(0, 0, 0, 0.1)",
 						marginTop: "5px",
 						borderWidth: "1px",
@@ -222,10 +238,10 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 												item.path === pathname ? "secondary.main" : "rgba(13, 110, 253, 0.1)",
 										},
 										"&:hover .MuiListItemText-primary": {
-											color: item.path === pathname ? "#fff" : "#000",
+											color: item.path === pathname ? "custom.white" : "secondary.dark",
 										},
 										"& .MuiListItemText-primary": {
-											color: item.path === pathname ? "#fff" : "#000",
+											color: item.path === pathname ? "custom.white" : "secondary.dark",
 										},
 										borderRadius: "4px",
 									}}
@@ -247,7 +263,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 		<div>
 			<Box
 				sx={{
-					backgroundColor: "#000",
+					backgroundColor: "secondary.dark",
 				}}
 			>
 				<Toolbar>
@@ -259,7 +275,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						}}
 					>
 						<img src={Constants.customImages.Logo} alt="logo" style={{ height: 64, width: 64 }} />
-						<Typography variant="h6" color={"#fff"}>
+						<Typography variant="h6" color={"custom.white"}>
 							GROW INVOICE
 						</Typography>
 					</Box>
@@ -281,7 +297,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				sx={{
 					width: { sm: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${drawerWidth}px` },
-					backgroundColor: "#000",
+					backgroundColor: "secondary.dark",
 				}}
 			>
 				<Toolbar
@@ -368,7 +384,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						"& .MuiDrawer-paper": {
 							boxSizing: "border-box",
 							width: drawerWidth,
-							backgroundColor: "rgba(246, 250, 255, 1)",
+							backgroundColor: "custom.lightBlue",
 						},
 					}}
 					open

@@ -1,18 +1,20 @@
 import { Grid, Tab, Tabs, Typography } from "@mui/material";
 import InvoiceExpenses from "./InvoiceExpenses";
 import DataGridDemo from "./InvoiceTableList";
+
 import { useTabs } from "@shared/hooks/useTabs";
 import TabPanel from "@shared/components/TabPanel";
 
 const InvoiceList = () => {
 	const { handleChange, tabValue } = useTabs("invoiceTab");
+
 	return (
 		<>
 			<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"} mb={"10px"}>
 				Invoices
 			</Typography>
 			<InvoiceExpenses />
-			<Grid container mt={2}>
+			<Grid container sx={{ width: { xs: "90vw", sm: "100%" } }} my={2}>
 				<Grid item xs={12}>
 					<Tabs
 						value={tabValue}
@@ -79,8 +81,6 @@ const InvoiceList = () => {
 						</Typography>
 						<DataGridDemo />
 					</TabPanel>
-
-					<DataGridDemo />
 				</Grid>
 			</Grid>
 		</>

@@ -11,6 +11,8 @@ import CustomerListPage from "@pages/CustomerListPage";
 import CreateCustomerPage from "@pages/CreateCustomerPage";
 import InvoiceListPage from "@pages/InvoiceListPage";
 import CreateInvoicePage from "@pages/CreateInvoicePage";
+import CreateQuotationPage from "@pages/CreateQuotationPage";
+import QuotationListPage from "@pages/QuotationListPage";
 
 export const unProtectedRoutes: Route[] = [
 	{
@@ -63,5 +65,13 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/invoice/createinvoice",
 		Component: CreateInvoicePage,
+	},
+	{
+		path: "/quotation/createquotation",
+		Component: CreateQuotationPage,
+	},
+	{
+		path: "/quotation/quotationlist",
+		Component: QuotationListPage,
 	},
 ];

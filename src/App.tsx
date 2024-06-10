@@ -141,7 +141,7 @@ function App() {
 			</Snackbar>
 			<Backdrop
 				sx={{
-					color: "#fff",
+					color: "custom.white",
 					zIndex: (theme) => Math.max.apply(Math, Object.values(theme.zIndex)) + 1,
 				}}
 				open={backdropOpen}
