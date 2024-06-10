@@ -519,7 +519,6 @@ const customTheme = {
 			darkOrange: "rgba(214, 162, 67, 1)",
 			tableHeaderBgColor: "rgba(230, 230, 230, 1)",
 			lightBlue: "rgba(246, 250, 255, 1)",
-
 		},
 		...themeOptions.palette,
 	},

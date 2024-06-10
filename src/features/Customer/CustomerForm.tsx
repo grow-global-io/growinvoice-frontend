@@ -77,11 +77,7 @@ const CustomerForm = () => {
 			zip: yup.string().required("Zip is required"),
 		}),
 		display_name: yup.string().required("Display Name is required"),
-
 		email: yup.string().required("Email is required").email(),
-
-		email: yup.string().required("Email is required"),
-
 		phone: yup.string().required("Phone is required"),
 		website: yup.string().required("Website is required"),
 	});
@@ -130,27 +126,25 @@ const CustomerForm = () => {
 								<Divider />
 
 								<Grid container spacing={2} bgcolor={"custom.lightgray"} my={1}>
+									<Grid container spacing={2} bgcolor={"rgba(217, 217, 217, 0.07)"} my={1}>
+										<Grid item xs={12} sm={8}>
+											<Field
+												name="option"
+												label="Customer Type"
+												component={AutocompleteField}
+												options={Object.values(CreateCustomerWithAddressDtoOption).map(
+													stringToListDto,
+												)}
+											/>
+										</Grid>
 
-								<Grid container spacing={2} bgcolor={"rgba(217, 217, 217, 0.07)"} my={1}>
-
-									<Grid item xs={12} sm={8}>
-										<Field
-											name="option"
-											label="Customer Type"
-											component={AutocompleteField}
-											options={Object.values(CreateCustomerWithAddressDtoOption).map(
-												stringToListDto,
-											)}
-										/>
-									</Grid>
-
-									<Grid item xs={12} sm={6}>
-										<Field name="name" label="Customer Name" component={TextFormField} />
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field name="display_name" label="Display Name" component={TextFormField} />
-									</Grid>
-									{/* <Grid item xs={12} sm={8}>
+										<Grid item xs={12} sm={6}>
+											<Field name="name" label="Customer Name" component={TextFormField} />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field name="display_name" label="Display Name" component={TextFormField} />
+										</Grid>
+										{/* <Grid item xs={12} sm={8}>
 									<Field
 										name="gstNumber"
 										label="GST Number"
@@ -158,26 +152,27 @@ const CustomerForm = () => {
 										type="number"
 									/>
 								</Grid> */}
-									<Grid item xs={12} sm={6}>
-										<Field name="email" label="Email" component={TextFormField} />
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field name="phone" label="Phone" component={PhoneInputFormField} />
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field name="website" label="Website" component={TextFormField} />
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="currencies_id"
-											label="Currency"
-											loading={currencyList.isLoading || currencyList.isFetching}
-											component={AutocompleteField}
-											options={currencyList.data?.map((currency) => ({
-												value: currency.id,
-												label: `${currency.short_code} - ${currency.name}`,
-											}))}
-										/>
+										<Grid item xs={12} sm={6}>
+											<Field name="email" label="Email" component={TextFormField} />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field name="phone" label="Phone" component={PhoneInputFormField} />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field name="website" label="Website" component={TextFormField} />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field
+												name="currencies_id"
+												label="Currency"
+												loading={currencyList.isLoading || currencyList.isFetching}
+												component={AutocompleteField}
+												options={currencyList.data?.map((currency) => ({
+													value: currency.id,
+													label: `${currency.short_code} - ${currency.name}`,
+												}))}
+											/>
+										</Grid>
 									</Grid>
 								</Grid>
 								<Grid container spacing={2} my={1}>

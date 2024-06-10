@@ -16,11 +16,7 @@ const validationSchema: Yup.Schema<CreateProductUnitDto> = Yup.object().shape({
 });
 
 const style = {
-
 	bgcolor: "custom.lightBlue",
-
-	bgcolor: "rgba(246, 250, 255, 1)",
-
 	padding: 2,
 	borderRadius: 1,
 	mb: 1,

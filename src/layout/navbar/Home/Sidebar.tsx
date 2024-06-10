@@ -192,15 +192,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						"& .MuiListItemText-primary": {
 							color: path === pathname ? "custom.white" : "secondary.dark",
 						},
-
-						"&:hover .MuiListItemIcon-root": { color: path === pathname ? "#fff" : "#000" },
-						"&:hover .MuiListItemText-primary": { color: path === pathname ? "#fff" : "#000" },
-						"& .MuiListItemIcon-root": {
-							color: path === pathname ? "#fff" : "#000",
-							minWidth: "auto",
-						},
-						"& .MuiListItemText-primary": { color: path === pathname ? "#fff" : "#000" },
-
 						border: "1px solid rgba(0, 0, 0, 0.1)",
 						marginTop: "5px",
 						borderWidth: "1px",
@@ -247,11 +238,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 												item.path === pathname ? "secondary.main" : "rgba(13, 110, 253, 0.1)",
 										},
 										"&:hover .MuiListItemText-primary": {
-
 											color: item.path === pathname ? "custom.white" : "secondary.dark",
-
-											color: item.path === pathname ? "#fff" : "#000",
-
 										},
 										"& .MuiListItemText-primary": {
 											color: item.path === pathname ? "custom.white" : "secondary.dark",
