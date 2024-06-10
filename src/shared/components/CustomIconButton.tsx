@@ -29,7 +29,11 @@ export const CustomIconButton = ({
 					borderRadius: 4,
 					p: 1,
 					"&:hover": {
+
 						bgcolor: "custom.BtnLightBgColor",
+
+						bgcolor: "#BCE2E6",
+
 					},
 					height: "40px",
 					width: "40px",
@@ -47,13 +51,21 @@ export const CustomIconButton = ({
 				onClick={onClick}
 				disabled={disabled}
 				sx={{
+
 					bgcolor: buttonType === "delete" ? "custom.BtnLightPinkBgColor" : bgcolor,
+
+					bgcolor: buttonType === "delete" ? "#EDBFBF" : bgcolor,
+
 
 					borderRadius: 4,
 					p: 1,
 					"&:hover": {
+
 						bgcolor:
 							buttonType === "delete" ? "custom.BtnMediumPinkBgColor" : "custom.BtnLightBgColor",
+
+						bgcolor: buttonType === "delete" ? "#FFBFBF" : "#BCE2E6",
+
 					},
 					height: "40px",
 					width: "40px",
