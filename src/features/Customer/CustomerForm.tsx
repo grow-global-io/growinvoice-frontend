@@ -77,7 +77,7 @@ const CustomerForm = () => {
 			zip: yup.string().required("Zip is required"),
 		}),
 		display_name: yup.string().required("Display Name is required"),
-		email: yup.string().required("Email is required"),
+		email: yup.string().required("Email is required").email(),
 		phone: yup.string().required("Phone is required"),
 		website: yup.string().required("Website is required"),
 	});
@@ -124,7 +124,7 @@ const CustomerForm = () => {
 						return (
 							<Form>
 								<Divider />
-								<Grid container spacing={2} bgcolor={"rgba(217, 217, 217, 0.07)"} my={1}>
+								<Grid container spacing={2} bgcolor={"custom.lightgray"} my={1}>
 									<Grid item xs={12} sm={8}>
 										<Field
 											name="option"

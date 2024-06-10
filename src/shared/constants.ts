@@ -18,6 +18,7 @@ import ProductSymbol from "@assets/img/new-product-symbol.png";
 import CustomerImg from "@assets/img/customer-img.png";
 import BillingAddressIcon from "@assets/img/billing-address-icon.png";
 import CloseIcon from "@assets/img/close-icon.png";
+import QuotationIcon from "@assets/img/quotation-icon.png";
 
 export class Constants {
 	static readonly customImages = {
@@ -41,5 +42,6 @@ export class Constants {
 		CustomerImg,
 		BillingAddressIcon,
 		CloseIcon,
+		QuotationIcon,
 	};
 }

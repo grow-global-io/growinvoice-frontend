@@ -1,19 +1,24 @@
-import { Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import InvoiceExpenses from "./InvoiceExpenses";
 import DataGridDemo from "./InvoiceTableList";
-import { useTabs } from "@shared/hooks/useTabs";
-import TabPanel from "@shared/components/TabPanel";
+// import { useTabs } from "@shared/hooks/useTabs";
+// import TabPanel from "@shared/components/TabPanel";
 
 const InvoiceList = () => {
-	const { handleChange, tabValue } = useTabs("invoiceTab");
+	// const { handleChange, tabValue } = useTabs("invoiceTab");
 	return (
 		<>
 			<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"} mb={"10px"}>
 				Invoices
 			</Typography>
 			<InvoiceExpenses />
-			<Grid container mt={2}>
+			<Grid container sx={{ width: { xs: "90vw", sm: "100%" } }} my={2}>
 				<Grid item xs={12}>
+					<DataGridDemo />
+				</Grid>
+			</Grid>
+			{/* <Grid container mt={2} sx={{ width: { xs: "90vw",sm:"100%" } }}>
+				<Grid item xs={12} overflow={"scroll"} sx={{ width:"100%" }}>
 					<Tabs
 						value={tabValue}
 						onChange={handleChange}
@@ -80,9 +85,9 @@ const InvoiceList = () => {
 						<DataGridDemo />
 					</TabPanel>
 
-					<DataGridDemo />
+					
 				</Grid>
-			</Grid>
+			</Grid> */}
 		</>
 	);
 };

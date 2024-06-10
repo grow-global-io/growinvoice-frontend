@@ -243,7 +243,7 @@ export default function FullFeaturedCrudGrid() {
 								container
 								py={2}
 								sx={{
-									backgroundColor: "rgba(230, 230, 230, 1)",
+									backgroundColor: "custom.tableHeaderBgColor",
 								}}
 							>
 								<Grid item xs={12} display="flex" justifyContent="center">

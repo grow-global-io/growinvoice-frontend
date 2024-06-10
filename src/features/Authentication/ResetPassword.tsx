@@ -80,7 +80,7 @@ const ResetPassword = () => {
 					left: 0,
 					width: "100%",
 					height: "100%",
-					backgroundColor: "rgba(0, 0, 0, 0.2)", // black overlay with 50% transparency
+					backgroundColor: "custom.lightDark", // black overlay with 50% transparency
 					zIndex: 1,
 				},
 			}}

@@ -5,14 +5,14 @@ import {
 	GridColumnHeaderParams,
 	GridRenderCellParams,
 } from "@mui/x-data-grid";
-import InvoiceListData from "../../data/InvoiceListData.json";
+import QuotationListData from "../../data/QuotationListData.json";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 const fontWeight = "500";
 const HeaderStyle = (params: GridColumnHeaderParams) => {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant={"h6"} color={"secondary.dark"}>
+			<Typography variant="h6" color="secondary.dark">
 				{params.colDef.headerName}
 			</Typography>
 		</Box>
@@ -30,22 +30,29 @@ const CellStyle = (params: GridRenderCellParams, color = "grey.500") => {
 
 const columns: GridColDef[] = [
 	{
-		field: "invoiceNumber",
-		headerName: "Invoice Number",
+		field: "quotationNumber",
+		headerName: "Quotation Number",
 		flex: 1,
 		renderHeader: HeaderStyle,
 		renderCell: (params) => CellStyle(params, "secondary.main"),
 	},
 	{
-		field: "invoiceDate",
-		headerName: "Invoice Date",
+		field: "date",
+		headerName: "Date",
 		flex: 1,
 		renderHeader: HeaderStyle,
 		renderCell: CellStyle,
 	},
 	{
-		field: "dueDate",
-		headerName: "Due Date",
+		field: "expiryDate",
+		headerName: "Expiry Date",
+		flex: 1,
+		renderHeader: HeaderStyle,
+		renderCell: CellStyle,
+	},
+	{
+		field: "customer",
+		headerName: "Customer",
 		flex: 1,
 		renderHeader: HeaderStyle,
 		renderCell: CellStyle,
@@ -73,55 +80,12 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "paidStatus",
-		headerName: "Paid Status",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: (params) => {
-			return (
-				<Box sx={{ flex: 0.8 }}>
-					<Box
-						bgcolor={
-							params.row.paidStatus == "Paid" ? "custom.lightGreenColor" : "custom.lightOrangeColor"
-						}
-						px={3}
-						borderRadius={"40px"}
-						py={"10px"}
-						display={"flex"}
-						justifyContent={"center"}
-						alignItems={"center"}
-						flex={1}
-					>
-						<img
-							src={
-								params.row.paidStatus == "Paid"
-									? Constants.customImages.GreenCheck
-									: Constants.customImages.UnpaidSymbol
-							}
-							width={"20px"}
-							alt={params.row.paidStatus == "Paid" ? "greenCheck" : "UnpaidSymbol"}
-						/>
-						<Typography
-							variant="h6"
-							color={params.row.paidStatus == "Paid" ? "custom.darkGreen" : "custom.darkOrange"}
-							ml={1}
-							fontWeight={fontWeight}
-						>
-							{params.row.paidStatus}
-						</Typography>
-					</Box>
-				</Box>
-			);
-		},
-	},
-	{
-		field: "amountDue",
-		headerName: "Amount Due",
+		field: "total",
+		headerName: "Total",
 		flex: 1,
 		renderHeader: HeaderStyle,
 		renderCell: CellStyle,
 	},
-
 	{
 		field: "action",
 		headerName: "Action",
@@ -133,12 +97,14 @@ const columns: GridColDef[] = [
 	},
 ];
 
-export default function DataGridDemo() {
-	const invoiceData = InvoiceListData;
+const QuotationTableList = () => {
+	const QuotationData = QuotationListData;
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={invoiceData} columns={columns} />
+			<DataGrid autoHeight rows={QuotationData} columns={columns} checkboxSelection />
 		</Box>
 	);
-}
+};
+
+export default QuotationTableList;
