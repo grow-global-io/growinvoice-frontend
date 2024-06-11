@@ -7,15 +7,14 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-// import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useUploadControllerUploadFile } from "@api/services/upload";
 
 export const FileUploadFormField: React.FC<
 	FieldProps & {
 		label: string;
-		fileName?: string;
-		storageDir?: string;
 		required?: boolean;
 		accept?: string;
 	}
@@ -25,6 +24,7 @@ export const FileUploadFormField: React.FC<
 	const [docTypeError, setDocTypeError] = React.useState<boolean>(false);
 	const [fileSizeError, setFileSizeError] = React.useState<boolean>(false);
 	// const { mutateAsync, isLoading } = useDoctorsControllerUploadedFile();
+	const { mutateAsync, isPending } = useUploadControllerUploadFile();
 
 	const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!event.target.files) return;
@@ -41,17 +41,12 @@ export const FileUploadFormField: React.FC<
 			setDocTypeError(true);
 			return;
 		}
-
-		// const _storageDir = props.storageDir ?? "MISC";
-		// const _fileName = props.fileName ?? file.name;
-		// const uploadRes = await mutateAsync({
-		// 	data: {
-		// 		file,
-		// 		path: _storageDir,
-		// 		filename: _fileName,
-		// 	},
-		// });
-		// form.setFieldValue(field.name, uploadRes.fileurl, true);
+		const uploadRes = await mutateAsync({
+			data: {
+				file,
+			},
+		});
+		form.setFieldValue(field.name, uploadRes.link, true);
 	};
 
 	return (
@@ -117,7 +112,7 @@ export const FileUploadFormField: React.FC<
 					File Link
 				</Link>
 			)}
-			{/* {isLoading && <CircularProgress size={20} color="secondary" />} */}
+			{isPending && <CircularProgress size={20} color="secondary" />}
 		</FormControl>
 	);
 };

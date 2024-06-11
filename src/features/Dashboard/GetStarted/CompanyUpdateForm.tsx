@@ -8,6 +8,7 @@ import {
 } from "@api/services/currency";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { UpdateCurrencyCompanyDto } from "@api/services/models";
+import { FileUploadFormField } from "@shared/components/FormFields/FileUploadFormField";
 
 const CompanyUpdateForm = () => {
 	const {
@@ -67,7 +68,7 @@ const CompanyUpdateForm = () => {
 					<Field name="vat" label="VAT" component={TextFormField} />
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<Field name="logo" label="Logo" component={TextFormField} />
+					<Field name="logo" label="Logo" component={FileUploadFormField} />
 				</Grid>
 			</Grid>
 		</Box>

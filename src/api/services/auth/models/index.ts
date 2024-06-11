@@ -71,6 +71,8 @@ export * from "./updateProductDto";
 export * from "./updateProductDtoType";
 export * from "./updateProductUnitDto";
 export * from "./updateTaxDto";
+export * from "./uploadControllerUploadFileBody";
+export * from "./uploadResponseDto";
 export * from "./user";
 export * from "./userControllerCreateUser201";
 export * from "./userControllerCreateUser201AllOf";
