@@ -37,6 +37,7 @@ import { useAuthStore } from "@store/auth";
 import { RegexExp } from "@shared/regex";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useQueryClient } from "@tanstack/react-query";
+import Loader from "@shared/components/Loader";
 
 const CustomerForm = () => {
 	const queryClient = useQueryClient();
@@ -134,6 +135,8 @@ const CustomerForm = () => {
 		setOpenCustomerForm(false);
 		actions.setSubmitting(false);
 	};
+
+	if (countryFindAll.isLoading || currencyList.isLoading) return <Loader />;
 
 	return (
 		<Box sx={{ width: { sm: "700px" } }} role="presentation" padding={2}>

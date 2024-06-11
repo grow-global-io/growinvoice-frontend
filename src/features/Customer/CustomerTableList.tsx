@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import {
 	getCustomerControllerFindAllQueryKey,
 	useCustomerControllerFindAll,
@@ -92,42 +92,53 @@ const CustomerTableList = () => {
 			flex: 1,
 			type: "actions",
 			getActions: (params) => [
-				<CustomIconButton
-					key={params.row?.id}
-					src={VisibilityIcon}
-					onClick={() => {
-						openCustomerView(params.row.id);
-					}}
-				/>,
-				<CustomIconButton
-					key={params.row?.id}
-					src={EditIcon}
-					onClick={() => {
-						updateCustomer(params.row);
-					}}
-				/>,
-				<CustomIconButton
-					key={params.row?.id}
-					src={DeleteIcon}
-					buttonType="delete"
-					iconColor="error"
-					onClick={async () => {
-						handleOpen({
-							title: "Delete Customer",
-							message: "Are you sure you want to delete this customer?",
-							onConfirm: async () => {
-								await removeCustomer.mutateAsync({ id: params.row.id });
-								queryClient.invalidateQueries({
-									queryKey: getCustomerControllerFindAllQueryKey(),
+				<Tooltip title="View Customer" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={VisibilityIcon}
+							onClick={() => {
+								openCustomerView(params.row.id);
+							}}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Edit Customer" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={EditIcon}
+							onClick={() => {
+								updateCustomer(params.row);
+							}}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Delete Customer" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							key={params.row?.id}
+							src={DeleteIcon}
+							buttonType="delete"
+							iconColor="error"
+							onClick={async () => {
+								handleOpen({
+									title: "Delete Customer",
+									message: "Are you sure you want to delete this customer?",
+									onConfirm: async () => {
+										await removeCustomer.mutateAsync({ id: params.row.id });
+										queryClient.invalidateQueries({
+											queryKey: getCustomerControllerFindAllQueryKey(),
+										});
+									},
+									onCancel: () => {
+										cleanUp();
+									},
+									confirmButtonText: "Delete",
 								});
-							},
-							onCancel: () => {
-								cleanUp();
-							},
-							confirmButtonText: "Delete",
-						});
-					}}
-				/>,
+							}}
+						/>
+						,
+					</Box>
+				</Tooltip>,
 			],
 		},
 	];
