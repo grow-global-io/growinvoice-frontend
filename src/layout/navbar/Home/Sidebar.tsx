@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import { useAuthStore } from "@store/auth";
 import HomeIcon from "@mui/icons-material/Home";
 import ReceiptIcon from "@mui/icons-material/Receipt";
@@ -28,6 +27,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Constants } from "@shared/constants";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
@@ -319,6 +319,14 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 					>
 						<MenuIcon />
 					</IconButton>
+					<Box
+						mx={{ xs: 0, sm: 2 }}
+						onClick={() => {
+							navigate("/setting/myprofile");
+						}}
+					>
+						<SettingsOutlinedIcon />
+					</Box>
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title="Open settings">
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

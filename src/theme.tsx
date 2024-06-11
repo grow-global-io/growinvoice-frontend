@@ -502,7 +502,7 @@ const customTheme = {
 			secondary: "#31C4C3",
 			tertiary: "#FFC107",
 			quaternary: "#054c5c",
-
+			greenCheck: "rgba(15, 187, 0, 1)",
 			white: "#fff",
 			tableBtnBgColor: "#121212",
 			productTblColor: "#32C371",
@@ -519,6 +519,7 @@ const customTheme = {
 			darkOrange: "rgba(214, 162, 67, 1)",
 			tableHeaderBgColor: "rgba(230, 230, 230, 1)",
 			lightBlue: "rgba(246, 250, 255, 1)",
+			settingSidebarBorder: "rgba(227, 224, 224, 1)",
 		},
 		...themeOptions.palette,
 	},
