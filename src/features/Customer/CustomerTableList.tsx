@@ -1,94 +1,145 @@
 import Box from "@mui/material/Box";
-import {
-	DataGrid,
-	GridColDef,
-	GridColumnHeaderParams,
-	GridRenderCellParams,
-} from "@mui/x-data-grid";
-import CustomerListData from "../../data/CustomerListData.json";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
-import { Constants } from "@shared/constants";
-const fontWeight = "500";
-const HeaderStyle = (params: GridColumnHeaderParams) => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant="h6" color="secondary.dark">
-				{params.colDef.headerName}
-			</Typography>
-		</Box>
-	);
-};
-const CellStyle = (params: GridRenderCellParams, color = "grey.500") => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant="h6" color={color} fontWeight={fontWeight}>
-				{params.value}
-			</Typography>
-		</Box>
-	);
-};
-
-const columns: GridColDef[] = [
-	{
-		field: "customerId",
-		headerName: "Customer Id",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: (params) => CellStyle(params, "secondary.main"),
-	},
-	{
-		field: "displayName",
-		headerName: "Display Name",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "contactEmail",
-		headerName: "Contact Email",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "invoice",
-		headerName: "Invoice",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-
-	{
-		field: "amountDue",
-		headerName: "Amount Due",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "createdAt",
-		headerName: "Created At",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "action",
-		headerName: "Action",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: () => (
-			<img src={Constants.customImages.Eye} alt="action" style={{ width: "40px" }} />
-		),
-	},
-];
+import {
+	getCustomerControllerFindAllQueryKey,
+	useCustomerControllerFindAll,
+	useCustomerControllerRemove,
+} from "@api/services/customer";
+import Loader from "@shared/components/Loader";
+import { CustomIconButton } from "@shared/components/CustomIconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import { useCreateCustomerStore } from "@store/createCustomerStore";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { useDialog } from "@shared/hooks/useDialog";
+import CustomerView from "./CustomerView";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const CustomerTableList = () => {
-	const CustomerData = CustomerListData;
+	const queryClient = useQueryClient();
+	const CustomerData = useCustomerControllerFindAll();
+	const { updateCustomer } = useCreateCustomerStore.getState();
+	const removeCustomer = useCustomerControllerRemove();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const [viewCustomerId, setViewCustomerId] = React.useState<string | null>(null);
+	const { handleClickOpen, handleClose, open } = useDialog();
+
+	const openCustomerView = (id: string) => {
+		setViewCustomerId(id);
+		handleClickOpen();
+	};
+
+	const columns: GridColDef[] = [
+		{
+			field: "name",
+			headerName: "Full Name",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography variant="h6" color="secondary" textTransform={"capitalize"}>
+						{params.value}
+					</Typography>
+				);
+			},
+		},
+		{
+			field: "display_name",
+			headerName: "Display Name",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography textTransform={"capitalize"}>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "email",
+			headerName: "Contact Email",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "phone",
+			headerName: "Contact Number",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "invoice",
+			headerName: "Invoice",
+			flex: 1,
+			renderCell: () => {
+				return <Typography>0</Typography>;
+			},
+		},
+
+		{
+			field: "amountDue",
+			headerName: "Amount Due",
+			flex: 1,
+			renderCell: () => {
+				return <Typography>0</Typography>;
+			},
+		},
+		{
+			field: "action",
+			headerName: "Action",
+			flex: 1,
+			type: "actions",
+			getActions: (params) => [
+				<CustomIconButton
+					key={params.row?.id}
+					src={VisibilityIcon}
+					onClick={() => {
+						openCustomerView(params.row.id);
+					}}
+				/>,
+				<CustomIconButton
+					key={params.row?.id}
+					src={EditIcon}
+					onClick={() => {
+						updateCustomer(params.row);
+					}}
+				/>,
+				<CustomIconButton
+					key={params.row?.id}
+					src={DeleteIcon}
+					buttonType="delete"
+					iconColor="error"
+					onClick={async () => {
+						handleOpen({
+							title: "Delete Customer",
+							message: "Are you sure you want to delete this customer?",
+							onConfirm: async () => {
+								await removeCustomer.mutateAsync({ id: params.row.id });
+								queryClient.invalidateQueries({
+									queryKey: getCustomerControllerFindAllQueryKey(),
+								});
+							},
+							onCancel: () => {
+								cleanUp();
+							},
+							confirmButtonText: "Delete",
+						});
+					}}
+				/>,
+			],
+		},
+	];
+
+	if (CustomerData.isLoading) {
+		return <Loader />;
+	}
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={CustomerData} columns={columns} checkboxSelection />
+			<DataGrid autoHeight rows={CustomerData.data} columns={columns} />
+			<CustomerView open={open} handleClose={handleClose} customerId={viewCustomerId ?? ""} />
 		</Box>
 	);
 };

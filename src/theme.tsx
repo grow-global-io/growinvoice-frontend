@@ -110,13 +110,13 @@ const themeOptions: ThemeOptions = {
 			letterspacing: "0rem",
 		},
 		body1: {
-			fontSize: "0.75rem",
+			fontSize: "0.8rem",
 			lineHeight: "1.7rem",
 			fontWeight: "normal",
 			letterspacing: "0rem",
 		},
 		body2: {
-			fontSize: "0.6rem",
+			fontSize: "0.7rem",
 			fontWeight: "normal",
 			lineHeight: "1.7rem",
 			letterspacing: "0rem",

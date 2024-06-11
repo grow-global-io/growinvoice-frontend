@@ -10,8 +10,8 @@ import type { GetCustomerWithAddressDtoOption } from "./getCustomerWithAddressDt
 import type { ShippingAddressDto } from "./shippingAddressDto";
 
 export interface GetCustomerWithAddressDto {
+	billingAddress?: BillingAddressDto;
 	billingAddress_id: string;
-	billingDetails?: BillingAddressDto;
 	createdAt: string;
 	currencies_id: string;
 	/** @nullable */
@@ -24,8 +24,8 @@ export interface GetCustomerWithAddressDto {
 	option: GetCustomerWithAddressDtoOption;
 	/** @nullable */
 	phone: string | null;
+	shippingAddress?: ShippingAddressDto;
 	shippingAddress_id: string;
-	shippingDetails?: ShippingAddressDto;
 	/** @nullable */
 	updatedAt: string | null;
 	user_id: string;

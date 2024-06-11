@@ -60,7 +60,7 @@ export default function ConfirmDialog() {
 							width: "100%",
 						}}
 					>
-						<Button variant="contained" color="primary" sx={{ mt: 2, mr: 2 }} type="submit">
+						<Button variant="contained" color="error" sx={{ mt: 2, mr: 2 }} type="submit">
 							{confirmButtonText}
 						</Button>
 						<Button
