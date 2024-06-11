@@ -13,6 +13,11 @@ import InvoiceListPage from "@pages/InvoiceListPage";
 import CreateInvoicePage from "@pages/CreateInvoicePage";
 import CreateQuotationPage from "@pages/CreateQuotationPage";
 import QuotationListPage from "@pages/QuotationListPage";
+import MyProfilePage from "@pages/MyProfilePage";
+import MemberShipPage from "@pages/MemberShipPage";
+import PreferencesPage from "@pages/PreferencesPage";
+import CompanyPage from "@pages/CompanyPage";
+import InvoicesPage from "@pages/InvoicesPage";
 
 export const unProtectedRoutes: Route[] = [
 	{
@@ -73,5 +78,25 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/quotation/quotationlist",
 		Component: QuotationListPage,
+	},
+	{
+		path: "/setting/myprofile",
+		Component: MyProfilePage,
+	},
+	{
+		path: "/setting/membership",
+		Component: MemberShipPage,
+	},
+	{
+		path: "/setting/company",
+		Component: CompanyPage,
+	},
+	{
+		path: "/setting/preferences",
+		Component: PreferencesPage,
+	},
+	{
+		path: "/setting/invoices",
+		Component: InvoicesPage,
 	},
 ];
