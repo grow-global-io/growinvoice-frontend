@@ -295,7 +295,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			<AppBar
 				position="fixed"
 				sx={{
-					width: { sm: `calc(100% - ${drawerWidth}px)` },
+					width: { md: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${drawerWidth}px` },
 					backgroundColor: "secondary.dark",
 				}}
@@ -315,7 +315,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						aria-label="open drawer"
 						edge="start"
 						onClick={handleDrawerToggle}
-						sx={{ mr: 2, display: { sm: "none" } }}
+						sx={{ mr: 2, display: { lg: "none" } }}
 					>
 						<MenuIcon />
 					</IconButton>
@@ -366,7 +366,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			</AppBar>
 			<Box
 				component="nav"
-				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+				sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}
 				aria-label="mailbox folders"
 			>
 				{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -379,7 +379,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						keepMounted: true, // Better open performance on mobile.
 					}}
 					sx={{
-						display: { xs: "block", sm: "none" },
+						display: { sx: "block", lg: "none" },
 						"& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
 					}}
 				>
@@ -388,7 +388,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				<Drawer
 					variant="permanent"
 					sx={{
-						display: { xs: "none", sm: "block" },
+						display: { xs: "none", lg: "block" },
 						"& .MuiDrawer-paper": {
 							boxSizing: "border-box",
 							width: drawerWidth,

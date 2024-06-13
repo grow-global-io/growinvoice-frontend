@@ -27,25 +27,25 @@ const Sidebar = () => {
 		},
 		{
 			menuName: "Products",
-			path: "",
+			path: "/setting/productunit",
 		},
 		{
 			menuName: "HSN Code",
-			path: "",
+			path: "/setting/hsncode",
 		},
 		{
 			menuName: "Tax Types",
-			path: "",
+			path: "/setting/taxtype",
 		},
 		{
 			menuName: "API Credentials",
-			path: "",
+			path: "/setting/apicredentials",
 		},
 	];
 
 	return (
 		<Box
-			width={{ sx: "100%", sm: "230px" }}
+			width={{ xs: "100%", lg: "230px" }}
 			height={"100%"}
 			display={"flex"}
 			flexDirection={"column"}

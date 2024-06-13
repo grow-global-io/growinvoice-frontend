@@ -29,11 +29,16 @@ const CreateQuotation = () => {
 		expirydate: yup.date().required("Expiry Date is required"),
 		addNote: yup.string(),
 		privateNote: yup.string(),
-		taxes: yup.number().required(" Taxes is required").min(0, "Taxes should be greater than 0"),
+		taxes: yup
+			.number()
+			.required(" Taxes is required")
+			.min(0, "Taxes should be greater than 0")
+			.max(99, "taxes should be less than 99"),
 		discount: yup
 			.number()
 			.required(" discount is required")
-			.min(0, "discount should be greater than 0"),
+			.min(0, "discount should be greater than 0")
+			.max(99, "discount should be less than 99"),
 		quotationTemplate: yup.string().required("Quotation Template is required"),
 	});
 
@@ -79,7 +84,7 @@ const CreateQuotation = () => {
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
-								<Grid item xs={12} sm={5}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="quotationNumber"
 										component={TextFormField}
@@ -88,7 +93,7 @@ const CreateQuotation = () => {
 										placeholder={"Enter invoice number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={5}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="referenceNumber"
 										component={TextFormField}
@@ -97,7 +102,7 @@ const CreateQuotation = () => {
 										placeholder={"Enter reference number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={5}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="quotationDate"
 										component={DateFormField}
@@ -107,7 +112,7 @@ const CreateQuotation = () => {
 									/>
 								</Grid>
 
-								<Grid item xs={12} sm={5}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="expirydate"
 										component={DateFormField}
@@ -133,7 +138,7 @@ const CreateQuotation = () => {
 									sm={6}
 									sx={{
 										pr: {
-											sm: "20%",
+											lg: "20%",
 											xs: 0,
 										},
 									}}

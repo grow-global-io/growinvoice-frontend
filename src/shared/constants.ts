@@ -24,7 +24,11 @@ import QuotationIcon from "@assets/img/quotation-icon.png";
 import OrangeNoticeIcon from "@assets/img/onrange-notice-icon.png";
 import redNoticeIcon from "@assets/img/red-notice-icon.png";
 import BlueLocationIcon from "@assets/img/bluelocationIcon.png";
-
+import Template1 from "@assets/img/template_1.png";
+import Template2 from "@assets/img/template_2.png";
+import Template3 from "@assets/img/template_3.jpg";
+import Template4 from "@assets/img/template_4.jpg";
+import TemplateIcon from "@assets/img/invoice-template-icon.png";
 export class Constants {
 	static readonly customImages = {
 		invoiceIcon,
@@ -53,5 +57,10 @@ export class Constants {
 		OrangeNoticeIcon,
 		redNoticeIcon,
 		BlueLocationIcon,
+		Template1,
+		Template2,
+		Template3,
+		Template4,
+		TemplateIcon,
 	};
 }
