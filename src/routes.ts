@@ -22,7 +22,10 @@ import ProductUnitPage from "@pages/ProductUnitPage";
 import HsnCodePage from "@pages/HsnCodePage";
 import TaxTypePage from "@pages/TaxTypePage";
 import ApiCredentialsPage from "@pages/ApiCredentialsPage";
+
 import InvoiceDetailPage from "@pages/InvoiceDetailPage";
+
+
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
