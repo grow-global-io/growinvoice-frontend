@@ -7,7 +7,7 @@ import {
 } from "@mui/x-data-grid";
 import QuotationListData from "../../data/QuotationListData.json";
 import { Typography } from "@mui/material";
-import { Constants } from "@shared/constants";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 const fontWeight = "500";
 const HeaderStyle = (params: GridColumnHeaderParams) => {
 	return (
@@ -92,7 +92,9 @@ const columns: GridColDef[] = [
 		flex: 1,
 		renderHeader: HeaderStyle,
 		renderCell: () => (
-			<img src={Constants.customImages.Eye} alt="action" style={{ width: "40px" }} />
+			<Box>
+				<VisibilityOutlinedIcon sx={{ fontSize: "30px" }} />
+			</Box>
 		),
 	},
 ];
