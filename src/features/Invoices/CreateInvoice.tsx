@@ -31,11 +31,16 @@ const CreateInvoice = () => {
 		invoiceDueDate: yup.date().required("Invoice Due Date is required"),
 		addNote: yup.string(),
 		paymentDetail: yup.string().required(" Payment Detail is required"),
-		taxes: yup.number().required(" Taxes is required").min(0, "Taxes should be greater than 0"),
+		taxes: yup
+			.number()
+			.required(" Taxes is required")
+			.min(0, "Taxes should be greater than 0")
+			.max(99, "taxes should be less than 99"),
 		discount: yup
 			.number()
 			.required(" discount is required")
-			.min(0, "discount should be greater than 0"),
+			.min(0, "discount should be greater than 0")
+			.max(99, "discount should be less than 99"),
 		invoiceTemplate: yup.string().required("Invoice Template is required"),
 	});
 
@@ -69,7 +74,7 @@ const CreateInvoice = () => {
 					{() => (
 						<Form>
 							<Grid container spacing={2}>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="customerName"
 										label="Customer Name"
@@ -80,7 +85,7 @@ const CreateInvoice = () => {
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="invoiceNumber"
 										component={TextFormField}
@@ -89,7 +94,7 @@ const CreateInvoice = () => {
 										placeholder={"Enter invoice number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="referenceNumber"
 										component={TextFormField}
@@ -98,7 +103,7 @@ const CreateInvoice = () => {
 										placeholder={"Enter reference number"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="invoiceDate"
 										component={DateFormField}
@@ -107,7 +112,7 @@ const CreateInvoice = () => {
 										placeholder={"Select invoice date"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="isRecurring"
 										label="Is Recurring"
@@ -117,7 +122,7 @@ const CreateInvoice = () => {
 										placeholder={"select"}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={4}>
+								<Grid item xs={12} sm={6} lg={4}>
 									<Field
 										name="invoiceDueDate"
 										component={DateFormField}
@@ -143,7 +148,7 @@ const CreateInvoice = () => {
 									sm={6}
 									sx={{
 										pr: {
-											sm: "20%",
+											lg: "20%",
 											xs: 0,
 										},
 									}}
@@ -259,12 +264,6 @@ const CreateInvoice = () => {
 									</Button>
 								</Grid>
 							</Grid>
-
-							{/* <Box mt={5} textAlign={"center"}>
-								<Button variant="contained" type="submit">
-									Save Invoice
-								</Button>
-							</Box> */}
 						</Form>
 					)}
 				</Formik>

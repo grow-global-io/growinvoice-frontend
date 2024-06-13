@@ -1,4 +1,14 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import {
+	Box,
+	Divider,
+	Grid,
+	Typography,
+	Radio,
+	RadioGroup,
+	FormControlLabel,
+	FormControl,
+} from "@mui/material";
+import { styled } from "@mui/system";
 import Sidebar from "./Sidebar";
 import { Formik, Field, Form } from "formik";
 import * as yup from "yup";
@@ -8,6 +18,11 @@ import SettingFormHeading from "./SettingFormHeading";
 import { RichTextEditor } from "@shared/components/FormFields/RichTextEditor";
 import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormField";
 
+const CustomFormControlLabel = styled(FormControlLabel)(({}) => ({
+	alignItems: "flex-start",
+	margin: 0,
+}));
+
 const Invoices = () => {
 	const initialValues = {
 		invoice_prefix: "",
@@ -15,7 +30,7 @@ const Invoices = () => {
 		reminder2: "",
 		overdue_reminder1: "",
 		overdue_reminder2: "",
-		company_address_format: `  
+		company_address_format: `
 {company.name} <br/>
 {company.billing.address_1}<br/>
 {company.billing.address_2}<br/>
@@ -50,6 +65,12 @@ GST NO: {company.vat_number`,
 	});
 
 	const handleSubmit = () => {};
+	const templateList = [
+		Constants.customImages.Template1,
+		Constants.customImages.Template2,
+		Constants.customImages.Template3,
+		Constants.customImages.Template4,
+	];
 
 	return (
 		<>
@@ -60,8 +81,8 @@ GST NO: {company.vat_number`,
 			</Box>
 			<Box
 				display="flex"
-				sx={{ flexDirection: { xs: "column", sm: "row" } }}
-				height={{ xs: "auto", sm: "75vh" }}
+				sx={{ flexDirection: { xs: "column", lg: "row" } }}
+				height={{ xs: "auto", lg: "75vh" }}
 			>
 				<Sidebar />
 				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
@@ -194,6 +215,31 @@ GST NO: {company.vat_number`,
 											component={RichTextEditor}
 											required={true}
 										/>
+									</Grid>
+									<Grid item xs={12} sm={12}>
+										<Divider />
+									</Grid>
+									<SettingFormHeading
+										heading="Invoice Templates"
+										icon={Constants.customImages.TemplateIcon}
+									/>
+
+									<Grid item xs={12} sm={12}>
+										<FormControl component="fieldset">
+											<RadioGroup row aria-label="invoice-template" name="invoice-template-group">
+												{templateList.map((item, index) => (
+													<Grid item xs={12} sm={3} key={index}>
+														<CustomFormControlLabel
+															value={`template${index + 1}`}
+															control={<Radio />}
+															label={
+																<img src={item} width={"100%"} alt={`Template ${index + 1}`} />
+															}
+														/>
+													</Grid>
+												))}
+											</RadioGroup>
+										</FormControl>
 									</Grid>
 								</Grid>
 							</Form>

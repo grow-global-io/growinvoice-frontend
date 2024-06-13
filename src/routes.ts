@@ -18,7 +18,10 @@ import MemberShipPage from "@pages/MemberShipPage";
 import PreferencesPage from "@pages/PreferencesPage";
 import CompanyPage from "@pages/CompanyPage";
 import InvoicesPage from "@pages/InvoicesPage";
-
+import ProductUnitPage from "@pages/ProductUnitPage";
+import HsnCodePage from "@pages/HsnCodePage";
+import TaxTypePage from "@pages/TaxTypePage";
+import ApiCredentialsPage from "@pages/ApiCredentialsPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -98,5 +101,21 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/setting/invoices",
 		Component: InvoicesPage,
+	},
+	{
+		path: "/setting/productunit",
+		Component: ProductUnitPage,
+	},
+	{
+		path: "/setting/hsncode",
+		Component: HsnCodePage,
+	},
+	{
+		path: "/setting/taxtype",
+		Component: TaxTypePage,
+	},
+	{
+		path: "/setting/apicredentials",
+		Component: ApiCredentialsPage,
 	},
 ];

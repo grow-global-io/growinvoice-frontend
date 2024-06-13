@@ -13,19 +13,13 @@ const Membership = () => {
 			</Box>
 			<Box
 				display="flex"
-				sx={{ flexDirection: { xs: "column", sm: "row" } }}
-				height={{ xs: "auto", sm: "75vh" }}
+				sx={{ flexDirection: { xs: "column", lg: "row" } }}
+				height={{ xs: "auto", lg: "75vh" }}
 			>
 				<Sidebar />
 
 				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
-					<Grid
-						container
-						spacing={2}
-						display={"flex"}
-						justifyContent={"center"}
-						sx={{ overflowY: "scroll" }}
-					>
+					<Grid container spacing={2} display={"flex"} justifyContent={"center"}>
 						<Grid item xs={12} sm={12} textAlign={"center"}>
 							<Typography variant="h4" fontWeight={600}>
 								You are currently using our demo plan trail version

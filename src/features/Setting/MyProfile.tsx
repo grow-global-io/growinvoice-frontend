@@ -50,8 +50,8 @@ const MyProfile = () => {
 			</Box>
 			<Box
 				display="flex"
-				sx={{ flexDirection: { xs: "column", sm: "row" } }}
-				height={{ xs: "auto", sm: "75vh" }}
+				sx={{ flexDirection: { xs: "column", lg: "row" } }}
+				height={{ xs: "auto", lg: "75vh" }}
 			>
 				<Sidebar />
 				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
