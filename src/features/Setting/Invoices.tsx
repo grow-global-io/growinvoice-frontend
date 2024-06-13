@@ -18,7 +18,7 @@ import SettingFormHeading from "./SettingFormHeading";
 import { RichTextEditor } from "@shared/components/FormFields/RichTextEditor";
 import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormField";
 
-const CustomFormControlLabel = styled(FormControlLabel)(({}) => ({
+const CustomFormControlLabel = styled(FormControlLabel)(() => ({
 	alignItems: "flex-start",
 	margin: 0,
 }));
