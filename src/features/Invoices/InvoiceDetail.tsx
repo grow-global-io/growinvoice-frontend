@@ -19,6 +19,7 @@ const styles = {
 	color: "secondary.dark",
 	fontWeight: 500,
 	textTransform: "capitalize",
+	my: { xs: 1 },
 };
 
 const InvoiceDetail = () => {
@@ -105,7 +106,9 @@ const InvoiceDetail = () => {
 					width: "100%",
 					bgcolor: "custom.transparentWhite",
 					display: "flex",
-					flexDirection: { xs: "column", sm: "row" },
+					// flexDirection: { xs: "column", sm: "row" },
+					flexWrap: { xs: "wrap" },
+					my: 2,
 				}}
 				variant="text"
 				aria-label="Basic button group"
