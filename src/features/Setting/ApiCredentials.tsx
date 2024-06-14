@@ -49,11 +49,11 @@ const ApiCredentials = () => {
 											To learn more, check the documentation:
 											<Typography
 												component="a"
-												href="https://growinvoice-94ee0dd2031b.herokuapp.com/docs"
+												href="https://launch.growinvoice.com/docs/api/v1/index.html"
 												color="custom.primary"
 												sx={{ ml: 1, wordBreak: "break-all" }}
 											>
-												https://growinvoice-94ee0dd2031b.herokuapp.com/docs
+												https://launch.growinvoice.com/docs/api/v1/index.html
 											</Typography>
 										</Typography>
 									</Grid>
