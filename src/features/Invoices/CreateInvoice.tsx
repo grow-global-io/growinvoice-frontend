@@ -1,45 +1,109 @@
-import { Box, Typography, Grid, Button, Divider } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import {
+	Box,
+	Typography,
+	Grid,
+	Button,
+	Divider,
+	InputAdornment,
+	Card,
+	CardContent,
+} from "@mui/material";
+import { Formik, Form, Field, FormikProps } from "formik";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { Constants } from "@shared/constants";
 import FullFeaturedCrudGrid from "./ProductListDataGrid";
+import { useAuthStore } from "@store/auth";
+import { useCustomerControllerFindAll } from "@api/services/customer";
+import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormField";
+import { stringToListDto } from "@shared/models/ListDto";
+import moment from "moment";
+import AddIcon from "@mui/icons-material/Add";
+import PaymentDetailsDrawer from "./PaymentDetailsDrawer";
+import { useDialog } from "@shared/hooks/useDialog";
+import { usePaymentdetailsControllerFindAll } from "@api/services/paymentdetails";
+import {
+	CreateInvoiceWithProductsRecurring,
+	OmitCreateInvoiceProductsDto,
+} from "@api/services/models";
+import { useEffect, useRef, useState } from "react";
+import { GridRowsProp } from "@mui/x-data-grid";
+import { useInvoiceControllerCreate } from "@api/services/invoice";
 
 const CreateInvoice = () => {
+	const [rows, setRows] = useState<GridRowsProp>([]);
+	const { open, handleClickOpen, handleClose } = useDialog();
+	const { user } = useAuthStore();
+	const customerData = useCustomerControllerFindAll();
+	const paymentData = usePaymentdetailsControllerFindAll();
+	const createInvoice = useInvoiceControllerCreate();
+
 	const initialValues = {
-		customerName: "",
-		invoiceNumber: "",
-		referenceNumber: "",
-		invoiceDate: "",
-		isRecurring: "",
-		invoiceDueDate: "",
-		addNote: "",
-		invoiceTemplate: "",
-		paymentDetail: "",
-		taxes: "",
-		discount: "",
+		customer_id: "",
+		user_id: user?.id ?? "",
+		invoice_number: "",
+		reference_number: "",
+		date: "",
+		due_date: "",
+		is_recurring: false,
+		notes: "",
+		paymentId: "",
+		sub_total: 0,
+		tax_id: "",
+		total: 0,
+		discountPercentage: 0,
+		recurring: "Daily",
+		product: [],
 	};
+	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 
 	const schema = yup.object().shape({
-		customerName: yup.string().required("Customer Name is required"),
-		invoiceNumber: yup.string().required("Invoice Number is required"),
-		referenceNumber: yup.string().required("Reference Number is required"),
-		invoiceDate: yup.date().required("Invoice Date is required"),
-		isRecurring: yup.string().required("Is Recurring is required"),
-		invoiceDueDate: yup.date().required("Invoice Due Date is required"),
-		addNote: yup.string(),
-		paymentDetail: yup.string().required(" Payment Detail is required"),
-		taxes: yup.number().required(" Taxes is required").min(0, "Taxes should be greater than 0"),
-		discount: yup
-			.number()
-			.required(" discount is required")
-			.min(0, "discount should be greater than 0"),
-		invoiceTemplate: yup.string().required("Invoice Template is required"),
+		customer_id: yup.string().required("Customer is required"),
+		invoice_number: yup.string().required("Invoice number is required"),
+		reference_number: yup.string().required("Reference number is required"),
+		date: yup.string().required("Invoice date is required"),
+		due_date: yup.string().required("Due date is required"),
+		is_recurring: yup.boolean().required("Is recurring is required"),
+		notes: yup.string(),
+		paymentId: yup.string().required("Payment details is required"),
+		sub_total: yup.number().required("Subtotal is required"),
+		tax_id: yup.string(),
+		total: yup.number().required("Total is required"),
+		discountPercentage: yup.number().required("Discount is required"),
+		recurring: yup
+			.string()
+			.required("Recurring is required")
+			.oneOf(Object.values(CreateInvoiceWithProductsRecurring), "Invalid Type"),
+		user_id: yup.string().required("User is required"),
 	});
 
-	const handleSubmit = () => {};
+	const handleSubmit = async (values: typeof initialValues) => {
+		console.log(values);
+		await createInvoice.mutateAsync({
+			data: {
+				...values,
+				recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+			},
+		});
+	};
+
+	useEffect(() => {
+		const formik = formikRef.current;
+		formik?.setFieldValue(
+			"product",
+			rows.map((row) => row as OmitCreateInvoiceProductsDto),
+		);
+		formik?.setFieldValue(
+			"sub_total",
+			rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0),
+		);
+		formik?.setFieldValue(
+			"total",
+			rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0),
+		);
+	}, [rows]);
 
 	const options = [
 		{ value: "1", label: "Option 1" },
@@ -65,16 +129,25 @@ const CreateInvoice = () => {
 				}}
 			/>
 			<Box sx={{ mb: 2, mt: 2 }}>
-				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
-					{() => (
+				<Formik
+					initialValues={initialValues}
+					validationSchema={schema}
+					onSubmit={handleSubmit}
+					innerRef={formikRef}
+				>
+					{({ values }) => (
 						<Form>
 							<Grid container spacing={2}>
 								<Grid item xs={12} sm={4}>
 									<Field
-										name="customerName"
+										name="customer_id"
 										label="Customer Name"
 										component={AutocompleteField}
-										options={options}
+										options={customerData?.data?.map((customer) => ({
+											value: customer.id,
+											label: customer.display_name,
+										}))}
+										loading={customerData.isLoading}
 									/>
 								</Grid>
 								<Grid item xs={12} mb={3}>
@@ -82,56 +155,56 @@ const CreateInvoice = () => {
 								</Grid>
 								<Grid item xs={12} sm={4}>
 									<Field
-										name="invoiceNumber"
+										name="invoice_number"
 										component={TextFormField}
 										label="Invoice Number"
-										required={true}
-										placeholder={"Enter invoice number"}
+										InputProps={{
+											startAdornment: <InputAdornment position="start">INV -</InputAdornment>,
+										}}
 									/>
 								</Grid>
 								<Grid item xs={12} sm={4}>
 									<Field
-										name="referenceNumber"
+										name="reference_number"
 										component={TextFormField}
 										label="Reference Number"
-										required={true}
-										placeholder={"Enter reference number"}
 									/>
 								</Grid>
 								<Grid item xs={12} sm={4}>
 									<Field
-										name="invoiceDate"
+										name="date"
 										component={DateFormField}
 										label="Invoice Date"
-										required={true}
-										placeholder={"Select invoice date"}
+										// minDate={new Date()}
 									/>
 								</Grid>
 								<Grid item xs={12} sm={4}>
 									<Field
-										name="isRecurring"
-										label="Is Recurring"
-										component={AutocompleteField}
-										required={true}
-										options={options}
-										placeholder={"select"}
-									/>
-								</Grid>
-								<Grid item xs={12} sm={4}>
-									<Field
-										name="invoiceDueDate"
+										name="due_date"
 										component={DateFormField}
 										label="Invoice Due Date"
-										required={true}
-										placeholder={"Select invoice due date"}
+										minDate={moment(values.date).add(1, "days").toDate()}
 									/>
 								</Grid>
+								<Grid item xs={12} sm={4} display={"flex"} alignItems={"center"}>
+									<Field name="is_recurring" label="Is Recurring" component={CheckBoxFormField} />
+								</Grid>
+								{values.is_recurring && (
+									<Grid item xs={12} sm={4}>
+										<Field
+											name="recurring"
+											label="Recurring"
+											component={AutocompleteField}
+											options={Object.keys(CreateInvoiceWithProductsRecurring).map(stringToListDto)}
+										/>
+									</Grid>
+								)}
 								<Grid item xs={12} mb={3}>
 									<Divider />
 								</Grid>
 
 								<Grid item xs={12} sx={{ width: { xs: "90vw", sm: "auto" } }}>
-									<FullFeaturedCrudGrid />
+									<FullFeaturedCrudGrid rows={rows} setRows={setRows} />
 								</Grid>
 
 								<Grid item xs={12} mb={3}>
@@ -148,105 +221,152 @@ const CreateInvoice = () => {
 										},
 									}}
 								>
+									<Field name="notes" component={TextFormField} label="Notes" multiline rows={5} />
 									<Field
-										name="addNote"
-										component={TextFormField}
-										label="Notes"
-										required={true}
-										multiline
-										rows={5}
-									/>
-									<Field
-										name="paymentDetail"
+										name="paymentId"
 										label="Payment Details"
 										component={AutocompleteField}
-										required={true}
-										options={options}
+										options={paymentData?.data?.map((payment) => ({
+											value: payment.id,
+											label: payment.paymentType,
+										}))}
+										loading={paymentData.isLoading}
 									/>
+									<Box>
+										<Button variant="text" startIcon={<AddIcon />} onClick={handleClickOpen}>
+											Add Payment
+										</Button>
+									</Box>
+									{values.paymentId ? (
+										<Box
+											sx={{
+												bgcolor: "custom.lightBlue",
+												padding: 2,
+												borderRadius: 1,
+												mb: 1,
+											}}
+										>
+											{paymentData?.data
+												?.filter((payment) => payment.id === values.paymentId)
+												.map((payment) => (
+													<Box key={payment.id}>
+														<Typography
+															variant="h5"
+															sx={{
+																textTransform: "uppercase",
+															}}
+														>
+															{payment.paymentType}
+														</Typography>
+														{payment.paymentType === "IndianBank" && (
+															<>
+																<Typography variant="subtitle1">
+																	Account Number: <b>{payment.account_no}</b>
+																</Typography>
+																<Typography variant="subtitle1">
+																	IFSC Code: <b>{payment.ifscCode}</b>
+																</Typography>
+															</>
+														)}
+														{payment.paymentType === "UPI" && (
+															<Typography variant="subtitle1">
+																UPI: <b>{payment.upiId}</b>
+															</Typography>
+														)}
+														{payment.paymentType === "EuropeanBank" && (
+															<>
+																<Typography variant="subtitle1">
+																	BIC Number: <b>{payment.bicNumber}</b>
+																</Typography>
+																<Typography variant="subtitle1">
+																	IBAN Number: <b>{payment.ibanNumber}</b>
+																</Typography>
+															</>
+														)}
+														{payment.paymentType === "Mollie" && (
+															<Typography variant="subtitle1">
+																Mollie ID: <b>{payment.mollieId}</b>
+															</Typography>
+														)}
+														{payment.paymentType === "Paypal" && (
+															<Typography variant="subtitle1">
+																Paypal ID: <b>{payment.paypalId}</b>
+															</Typography>
+														)}
+														{payment.paymentType === "Razorpay" && (
+															<Typography variant="subtitle1">
+																Razorpay ID: <b>{payment.razorpayId}</b>
+															</Typography>
+														)}
+														{payment.paymentType === "Stripe" && (
+															<Typography variant="subtitle1">
+																Stripe ID: <b>{payment.stripeId}</b>
+															</Typography>
+														)}
+														{payment.paymentType === "SwiftCode" && (
+															<Typography variant="subtitle1">
+																Swift Code: <b>{payment.swiftCode}</b>
+															</Typography>
+														)}
+													</Box>
+												))}
+										</Box>
+									) : (
+										<></>
+									)}
 								</Grid>
 								<Grid item xs={12} sm={6}>
-									<Grid
-										container
-										px={2}
-										py={3}
-										borderRadius={1}
-										sx={{ background: "custom.transparentWhite" }}
-									>
-										<Grid item xs={12} sm={6}>
-											<Typography variant="h5">Subtotal</Typography>
-										</Grid>
-										<Grid item xs={12} sm={6} textAlign={"right"}>
-											<Typography variant="h5">0.000</Typography>
-										</Grid>
-										<Grid item xs={12} sm={12} display={"flex"} alignItems={"center"}>
-											<Typography variant="h5">Taxes</Typography>
-											<Box
-												sx={{
-													width: "50%",
-													px: 2,
-												}}
+									<Card>
+										<CardContent>
+											<Grid
+												container
+												display={"flex"}
+												alignItems={"center"}
+												px={2}
+												py={3}
+												borderRadius={1}
+												sx={{ background: "custom.transparentWhite" }}
 											>
-												<Field
-													name="taxes"
-													component={TextFormField}
-													required={true}
-													backgroundColor={"custom.white"}
-													type="number"
-												/>
-											</Box>
-											<Box
-												sx={{
-													width: "100%",
-													display: "flex",
-													justifyContent: "flex-end",
-												}}
-											>
-												<Typography variant="h5">0.000</Typography>
-											</Box>
-										</Grid>
-										<Grid item xs={12} sm={12} display={"flex"} alignItems={"center"}>
-											<Typography variant="h5">Discount</Typography>
-											<Box
-												sx={{
-													width: "50%",
-													px: 2,
-												}}
-											>
-												<Field
-													name="discount"
-													type="number"
-													component={TextFormField}
-													required={true}
-													backgroundColor={"custom.white"}
-												/>
-											</Box>
-											<Box
-												sx={{
-													width: "100%",
-													display: "flex",
-													justifyContent: "flex-end",
-												}}
-											>
-												<Typography variant="h5">0.000</Typography>
-											</Box>
-										</Grid>
-										<Grid item xs={12}>
-											<Divider />
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Typography variant="h5">Total</Typography>
-										</Grid>
-										<Grid item xs={12} sm={6} textAlign={"right"}>
-											<Typography variant="h5">0.000</Typography>
-										</Grid>
-									</Grid>
+												<Grid item xs={12} sm={6}>
+													<Typography variant="h5">Subtotal</Typography>
+												</Grid>
+												<Grid item xs={12} sm={6} textAlign={"right"}>
+													<Field name="sub_total" component={TextFormField} type="number" />
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													<Typography variant="h5">Taxes</Typography>
+												</Grid>
+												<Grid item xs={12} sm={6} textAlign={"right"}>
+													<Field name="tax_id" component={TextFormField} type="number" />
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													<Typography variant="h5">Discount</Typography>
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													<Field
+														name="discountPercentage"
+														component={TextFormField}
+														type="number"
+													/>
+												</Grid>
+												<Grid item xs={12}>
+													<Divider />
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													<Typography variant="h5">Total</Typography>
+												</Grid>
+												<Grid item xs={12} sm={6} textAlign={"right"}>
+													<Field name="total" component={TextFormField} type="number" />
+												</Grid>
+											</Grid>
+										</CardContent>
+									</Card>
 								</Grid>
 								<Grid item xs={12} sm={3.5}>
 									<Field
 										name="invoiceTemplate"
 										label="Invoice Template"
 										component={AutocompleteField}
-										required={true}
 										options={options}
 									/>
 								</Grid>
@@ -259,16 +379,11 @@ const CreateInvoice = () => {
 									</Button>
 								</Grid>
 							</Grid>
-
-							{/* <Box mt={5} textAlign={"center"}>
-								<Button variant="contained" type="submit">
-									Save Invoice
-								</Button>
-							</Box> */}
 						</Form>
 					)}
 				</Formik>
 			</Box>
+			<PaymentDetailsDrawer open={open} handleClose={handleClose} />
 		</>
 	);
 };
