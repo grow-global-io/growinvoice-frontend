@@ -22,6 +22,7 @@ import ProductUnitPage from "@pages/ProductUnitPage";
 import HsnCodePage from "@pages/HsnCodePage";
 import TaxTypePage from "@pages/TaxTypePage";
 import ApiCredentialsPage from "@pages/ApiCredentialsPage";
+import InvoiceDetailPage from "@pages/InvoiceDetailPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -73,6 +74,10 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/invoice/createinvoice",
 		Component: CreateInvoicePage,
+	},
+	{
+		path: "/invoice/invoicedetail",
+		Component: InvoiceDetailPage,
 	},
 	{
 		path: "/quotation/createquotation",
