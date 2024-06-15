@@ -2640,3 +2640,11 @@ hr {
     padding: 27px 15px 27px 15px;
   }
 }/*# sourceMappingURL=style.css.map */
+
+@media screen and (max-width: 680px) {
+  .tm_container {
+    width: 85vw;
+    padding: 0px 0px;
+  }
+
+}
