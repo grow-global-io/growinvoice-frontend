@@ -9,12 +9,12 @@
 /**
  * @nullable
  */
-export type UpdateInvoiceDtoRecurring =
-	| (typeof UpdateInvoiceDtoRecurring)[keyof typeof UpdateInvoiceDtoRecurring]
+export type InvoiceWithAllDataDtoRecurring =
+	| (typeof InvoiceWithAllDataDtoRecurring)[keyof typeof InvoiceWithAllDataDtoRecurring]
 	| null;
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateInvoiceDtoRecurring = {
+export const InvoiceWithAllDataDtoRecurring = {
 	Daily: "Daily",
 	Weekly: "Weekly",
 	Monthly: "Monthly",

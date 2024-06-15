@@ -20,9 +20,9 @@ import type {
 	Invoice,
 	InvoiceControllerCreate201,
 	InvoiceControllerUpdate200,
-	InvoiceDto,
+	InvoiceWithAllDataDto,
 	SuccessResponseDto,
-	UpdateInvoiceDto,
+	UpdateInvoiceWithProducts,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
@@ -252,7 +252,7 @@ export const useInvoiceControllerFindPaidInvoices = <
 };
 
 export const invoiceControllerFindOne = (id: string, signal?: AbortSignal) => {
-	return authInstance<InvoiceDto>({ url: `/api/invoice/${id}`, method: "GET", signal });
+	return authInstance<InvoiceWithAllDataDto>({ url: `/api/invoice/${id}`, method: "GET", signal });
 };
 
 export const getInvoiceControllerFindOneQueryKey = (id: string) => {
@@ -310,12 +310,15 @@ export const useInvoiceControllerFindOne = <
 	return query;
 };
 
-export const invoiceControllerUpdate = (id: string, updateInvoiceDto: UpdateInvoiceDto) => {
+export const invoiceControllerUpdate = (
+	id: string,
+	updateInvoiceWithProducts: UpdateInvoiceWithProducts,
+) => {
 	return authInstance<InvoiceControllerUpdate200>({
 		url: `/api/invoice/${id}`,
 		method: "PATCH",
 		headers: { "Content-Type": "application/json" },
-		data: updateInvoiceDto,
+		data: updateInvoiceWithProducts,
 	});
 };
 
@@ -326,20 +329,20 @@ export const getInvoiceControllerUpdateMutationOptions = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof invoiceControllerUpdate>>,
 		TError,
-		{ id: string; data: UpdateInvoiceDto },
+		{ id: string; data: UpdateInvoiceWithProducts },
 		TContext
 	>;
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof invoiceControllerUpdate>>,
 	TError,
-	{ id: string; data: UpdateInvoiceDto },
+	{ id: string; data: UpdateInvoiceWithProducts },
 	TContext
 > => {
 	const { mutation: mutationOptions } = options ?? {};
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof invoiceControllerUpdate>>,
-		{ id: string; data: UpdateInvoiceDto }
+		{ id: string; data: UpdateInvoiceWithProducts }
 	> = (props) => {
 		const { id, data } = props ?? {};
 
@@ -352,7 +355,7 @@ export const getInvoiceControllerUpdateMutationOptions = <
 export type InvoiceControllerUpdateMutationResult = NonNullable<
 	Awaited<ReturnType<typeof invoiceControllerUpdate>>
 >;
-export type InvoiceControllerUpdateMutationBody = UpdateInvoiceDto;
+export type InvoiceControllerUpdateMutationBody = UpdateInvoiceWithProducts;
 export type InvoiceControllerUpdateMutationError = ErrorType<unknown>;
 
 export const useInvoiceControllerUpdate = <
@@ -362,13 +365,13 @@ export const useInvoiceControllerUpdate = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof invoiceControllerUpdate>>,
 		TError,
-		{ id: string; data: UpdateInvoiceDto },
+		{ id: string; data: UpdateInvoiceWithProducts },
 		TContext
 	>;
 }): UseMutationResult<
 	Awaited<ReturnType<typeof invoiceControllerUpdate>>,
 	TError,
-	{ id: string; data: UpdateInvoiceDto },
+	{ id: string; data: UpdateInvoiceWithProducts },
 	TContext
 > => {
 	const mutationOptions = getInvoiceControllerUpdateMutationOptions(options);

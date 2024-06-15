@@ -2,17 +2,32 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
-import { useInvoiceControllerFindAll } from "@api/services/invoice";
+import {
+	getInvoiceControllerFindAllQueryKey,
+	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
+	useInvoiceControllerFindAll,
+	useInvoiceControllerRemove,
+} from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
 import { Invoice } from "@api/services/models";
 import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
+import { useNavigate } from "react-router-dom";
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function InvoiceTableList() {
+	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 	const { user } = useAuthStore();
 	const invoiceData = useInvoiceControllerFindAll();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const removeInvoice = useInvoiceControllerRemove();
 
 	const columns: GridColDef<Invoice>[] = [
 		{
@@ -100,7 +115,51 @@ export default function InvoiceTableList() {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
-			renderCell: () => <CustomIconButton src={VisibilityIcon} onClick={() => {}} />,
+			type: "actions",
+			getActions: (params) => [
+				<CustomIconButton
+					key={params.row.id}
+					onClick={() => {
+						console.log("View Invoice");
+					}}
+					src={VisibilityIcon}
+				/>,
+				<CustomIconButton
+					key={params.row.id}
+					onClick={() => {
+						navigate(`/invoice/createinvoice/${params.row.id}`);
+					}}
+					src={EditIcon}
+				/>,
+				<CustomIconButton
+					key={params.row?.id}
+					src={DeleteIcon}
+					buttonType="delete"
+					iconColor="error"
+					onClick={async () => {
+						handleOpen({
+							title: "Delete Product",
+							message: "Are you sure you want to delete this product?",
+							onConfirm: async () => {
+								await removeInvoice.mutateAsync({ id: params.row.id });
+								queryClient.refetchQueries({
+									queryKey: getInvoiceControllerFindAllQueryKey(),
+								});
+								queryClient.refetchQueries({
+									queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+								});
+								queryClient.refetchQueries({
+									queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+								});
+							},
+							onCancel: () => {
+								cleanUp();
+							},
+							confirmButtonText: "Delete",
+						});
+					}}
+				/>,
+			],
 		},
 	];
 

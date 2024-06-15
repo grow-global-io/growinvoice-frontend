@@ -72,6 +72,10 @@ export const protectedRoutes: Route[] = [
 		Component: CreateInvoicePage,
 	},
 	{
+		path: "/invoice/createinvoice/:id",
+		Component: CreateInvoicePage,
+	},
+	{
 		path: "/quotation/createquotation",
 		Component: CreateQuotationPage,
 	},

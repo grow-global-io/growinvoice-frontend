@@ -5,9 +5,10 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import type { UpdateInvoiceDtoRecurring } from "./updateInvoiceDtoRecurring";
+import type { OmitCreateInvoiceProductsDto } from "./omitCreateInvoiceProductsDto";
+import type { UpdateInvoiceWithProductsRecurring } from "./updateInvoiceWithProductsRecurring";
 
-export interface UpdateInvoiceDto {
+export interface UpdateInvoiceWithProducts {
 	customer_id?: string;
 	date?: string;
 	/** @nullable */
@@ -18,8 +19,9 @@ export interface UpdateInvoiceDto {
 	/** @nullable */
 	notes?: string | null;
 	paymentId?: string;
+	product: OmitCreateInvoiceProductsDto[];
 	/** @nullable */
-	recurring?: UpdateInvoiceDtoRecurring;
+	recurring?: UpdateInvoiceWithProductsRecurring;
 	/** @nullable */
 	reference_number?: string | null;
 	sub_total?: number;

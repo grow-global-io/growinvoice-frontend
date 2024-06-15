@@ -31,12 +31,23 @@ import {
 } from "@api/services/models";
 import { useEffect, useRef, useState } from "react";
 import { GridRowsProp } from "@mui/x-data-grid";
-import { useInvoiceControllerCreate } from "@api/services/invoice";
+import {
+	getInvoiceControllerFindAllQueryKey,
+	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindOneQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
+	useInvoiceControllerCreate,
+	useInvoiceControllerFindOne,
+	useInvoiceControllerUpdate,
+} from "@api/services/invoice";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import CreateTaxes from "@features/Products/CreateTaxes";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
+import Loader from "@shared/components/Loader";
+import { useQueryClient } from "@tanstack/react-query";
 
-const CreateInvoice = () => {
+const CreateInvoice = ({ id }: { id?: string }) => {
+	const queryClient = useQueryClient();
 	const [rows, setRows] = useState<GridRowsProp>([]);
 	const { open, handleClickOpen, handleClose } = useDialog();
 	const { user } = useAuthStore();
@@ -46,23 +57,46 @@ const CreateInvoice = () => {
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
 	const [taxesCreateopen, setTaxesCreateOpen] = useState(false);
 	const taxCodes = useTaxcodeControllerFindAll();
+	const invoiceFindOne = useInvoiceControllerFindOne(id ?? "", {
+		query: {
+			enabled: id !== undefined,
+		},
+	});
+	const invoiceUpdate = useInvoiceControllerUpdate();
+
+	useEffect(() => {
+		if (invoiceFindOne.isSuccess) {
+			setRows(
+				invoiceFindOne?.data?.product?.map((product) => ({
+					id: product?.id,
+					product_id: product?.product_id,
+					quantity: product?.quantity,
+					price: product?.price,
+					total: product?.total,
+					isNew: true,
+					isEditPosible: false,
+					isEditble: true,
+				})) ?? [],
+			);
+		}
+	}, [invoiceFindOne.isSuccess]);
 
 	const initialValues = {
-		customer_id: "",
+		customer_id: invoiceFindOne?.data?.customer_id ?? "",
 		user_id: user?.id ?? "",
-		invoice_number: "",
-		reference_number: "",
-		date: "",
-		due_date: "",
-		is_recurring: false,
-		notes: "",
-		paymentId: "",
-		sub_total: 0,
-		tax_id: "",
-		total: 0,
-		discountPercentage: 0,
-		recurring: "Daily",
-		product: [],
+		invoice_number: invoiceFindOne?.data?.invoice_number.split("-")[1] ?? "",
+		reference_number: invoiceFindOne?.data?.reference_number ?? "",
+		date: invoiceFindOne?.data?.date ?? "",
+		due_date: invoiceFindOne?.data?.due_date ?? "",
+		is_recurring: invoiceFindOne?.data?.is_recurring ?? false,
+		notes: invoiceFindOne?.data?.notes ?? "",
+		paymentId: invoiceFindOne?.data?.paymentId ?? "",
+		sub_total: invoiceFindOne?.data?.sub_total ?? 0,
+		tax_id: invoiceFindOne?.data?.tax_id ?? "",
+		total: invoiceFindOne?.data?.total ?? 0,
+		discountPercentage: invoiceFindOne?.data?.discountPercentage ?? 0,
+		recurring: invoiceFindOne?.data?.recurring ?? CreateInvoiceWithProductsRecurring.Daily,
+		product: invoiceFindOne?.data?.product ?? [],
 	};
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 
@@ -98,30 +132,50 @@ const CreateInvoice = () => {
 	});
 
 	const handleSubmit = async (values: typeof initialValues) => {
-		console.log(values);
-		await createInvoice.mutateAsync({
-			data: {
-				...values,
-				recurring: values.recurring as CreateInvoiceWithProductsRecurring,
-			},
+		if (id) {
+			await invoiceUpdate.mutateAsync({
+				id,
+				data: {
+					...values,
+					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+				},
+			});
+		} else {
+			await createInvoice.mutateAsync({
+				data: {
+					...values,
+					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+				},
+			});
+		}
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindAllQueryKey(),
+		});
+		queryClient.invalidateQueries({
+			queryKey: getInvoiceControllerFindOneQueryKey(id ?? ""),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
 	};
 
 	useEffect(() => {
 		const formik = formikRef.current;
-
+		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
 		formik?.setFieldValue(
 			"product",
 			rows.map((row) => row as OmitCreateInvoiceProductsDto),
 		);
-		formik?.setFieldValue(
-			"sub_total",
-			rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0),
-		);
-		formik?.setFieldValue(
-			"total",
-			rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0),
-		);
+		formik?.setFieldValue("sub_total", subtotal);
+		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
+		const taxAmount =
+			subtotal *
+			(taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id)?.percentage ?? 0 / 100);
+			
+		formik?.setFieldValue("total", subtotal - discount + taxAmount);
 		if (rows?.length > 0) {
 			formik?.setFieldTouched("product", false);
 			formik?.setFieldError("product", undefined);
@@ -136,6 +190,8 @@ const CreateInvoice = () => {
 		{ value: "2", label: "Option 2" },
 		{ value: "3", label: "Option 3" },
 	];
+
+	if (invoiceFindOne.isLoading) return <Loader />;
 
 	return (
 		<>
@@ -161,7 +217,17 @@ const CreateInvoice = () => {
 					onSubmit={handleSubmit}
 					innerRef={formikRef}
 				>
-					{({ values, touched, errors }) => {
+					{({ values, touched, errors, setFieldValue }) => {
+						useEffect(() => {
+							if (values?.discountPercentage > 0 || values.tax_id) {
+								const tax = taxCodes.data?.find((tax) => tax.id === values.tax_id);
+								const discount = values?.sub_total * (values?.discountPercentage / 100);
+								const taxAmount = values?.sub_total * (tax?.percentage ?? 0 / 100);
+								setFieldValue("total", values?.sub_total - discount + taxAmount);
+							} else {
+								setFieldValue("total", values?.sub_total);
+							}
+						}, [values?.discountPercentage, values.tax_id]);
 						return (
 							<Form>
 								<Grid container spacing={2}>
@@ -382,7 +448,12 @@ const CreateInvoice = () => {
 														<Typography variant="h5">Subtotal</Typography>
 													</Grid>
 													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field name="sub_total" component={TextFormField} type="number" />
+														<Field
+															name="sub_total"
+															component={TextFormField}
+															type="number"
+															disabled
+														/>
 													</Grid>
 													<Grid item xs={12} sm={6}>
 														<Typography variant="h5">Taxes</Typography>

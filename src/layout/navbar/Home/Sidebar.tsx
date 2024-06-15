@@ -92,8 +92,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			icon: <StoreIcon />,
 			menuName: "Product",
 			menuItems: [
-				// { path: "/product/productlist", label: "Product List" },
-				// { path: "/product/createproduct", label: "Create Product" },
 			],
 		},
 		{
@@ -101,8 +99,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			icon: <PeopleIcon />,
 			menuName: "Customer",
 			menuItems: [
-				// { path: "/customer/customerlist", label: "Customer List" },
-				// { path: "/customer/createcustomer", label: "Create Customer" },
 			],
 		},
 		{
@@ -232,16 +228,17 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 									sx={{
 										marginTop: "5px",
 										pl: 4,
-										bgcolor: item.path === pathname ? "secondary.main" : "inherit",
+										bgcolor: pathname.startsWith(item?.path) ? "secondary.main" : "inherit",
 										"&:hover": {
-											backgroundColor:
-												item.path === pathname ? "secondary.main" : "rgba(13, 110, 253, 0.1)",
+											backgroundColor: pathname.startsWith(item?.path)
+												? "secondary.main"
+												: "rgba(13, 110, 253, 0.1)",
 										},
 										"&:hover .MuiListItemText-primary": {
-											color: item.path === pathname ? "custom.white" : "secondary.dark",
+											color: pathname.startsWith(item?.path) ? "custom.white" : "secondary.dark",
 										},
 										"& .MuiListItemText-primary": {
-											color: item.path === pathname ? "custom.white" : "secondary.dark",
+											color: pathname.startsWith(item?.path) ? "custom.white" : "secondary.dark",
 										},
 										borderRadius: "4px",
 									}}
