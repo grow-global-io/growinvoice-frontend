@@ -148,11 +148,11 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				},
 			});
 		}
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindAllQueryKey(),
-		});
 		queryClient.invalidateQueries({
 			queryKey: getInvoiceControllerFindOneQueryKey(id ?? ""),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindAllQueryKey(),
 		});
 		queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
