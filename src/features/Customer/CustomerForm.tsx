@@ -139,7 +139,7 @@ const CustomerForm = () => {
 	if (countryFindAll.isLoading || currencyList.isLoading) return <Loader />;
 
 	return (
-		<Box sx={{ width: { sm: "700px" } }} role="presentation" padding={2}>
+		<Box sx={{ width: { lg: "700px" } }} role="presentation" padding={2}>
 			<Grid container justifyContent={"space-between"}>
 				<Typography
 					variant="h4"
