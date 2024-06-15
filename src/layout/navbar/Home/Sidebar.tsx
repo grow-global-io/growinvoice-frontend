@@ -91,15 +91,13 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			path: "/product/productlist",
 			icon: <StoreIcon />,
 			menuName: "Product",
-			menuItems: [
-			],
+			menuItems: [],
 		},
 		{
 			path: "/customer/customerlist",
 			icon: <PeopleIcon />,
 			menuName: "Customer",
-			menuItems: [
-			],
+			menuItems: [],
 		},
 		{
 			path: "/invoice",

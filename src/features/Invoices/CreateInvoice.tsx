@@ -174,7 +174,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		const taxAmount =
 			subtotal *
 			(taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id)?.percentage ?? 0 / 100);
-			
+
 		formik?.setFieldValue("total", subtotal - discount + taxAmount);
 		if (rows?.length > 0) {
 			formik?.setFieldTouched("product", false);
