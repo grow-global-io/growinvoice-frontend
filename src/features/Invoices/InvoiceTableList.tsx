@@ -13,13 +13,13 @@ import Loader from "@shared/components/Loader";
 import { Invoice } from "@api/services/models";
 import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import { useNavigate } from "react-router-dom";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useQueryClient } from "@tanstack/react-query";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function InvoiceTableList() {
 	const queryClient = useQueryClient();
