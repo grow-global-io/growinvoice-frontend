@@ -6,10 +6,13 @@
  * OpenAPI spec version: 1.0
  */
 import type { CompanyDto } from "./companyDto";
+import type { UserWithCompanyDtoCurrency } from "./userWithCompanyDtoCurrency";
 
 export interface UserWithCompanyDto {
 	company?: CompanyDto[];
 	createdAt: string;
+	/** @nullable */
+	currency?: UserWithCompanyDtoCurrency;
 	/** @nullable */
 	currency_id: string | null;
 	email: string;

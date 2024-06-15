@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
-import { useInvoiceControllerFindAll } from "@api/services/invoice";
+import { useInvoiceControllerFindPaidInvoices } from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
 import { Invoice } from "@api/services/models";
 import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
@@ -10,9 +10,9 @@ import { useAuthStore } from "@store/auth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 
-export default function InvoiceTableList() {
+const InvoiceTablePaidList = () => {
 	const { user } = useAuthStore();
-	const invoiceData = useInvoiceControllerFindAll();
+	const invoiceData = useInvoiceControllerFindPaidInvoices();
 
 	const columns: GridColDef<Invoice>[] = [
 		{
@@ -111,4 +111,6 @@ export default function InvoiceTableList() {
 			<DataGrid autoHeight rows={invoiceData?.data} columns={columns} />
 		</Box>
 	);
-}
+};
+
+export default InvoiceTablePaidList;

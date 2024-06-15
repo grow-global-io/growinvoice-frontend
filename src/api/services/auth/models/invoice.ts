@@ -5,11 +5,16 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import type { InvoiceDtoPaidStatus } from "./invoiceDtoPaidStatus";
-import type { InvoiceDtoRecurring } from "./invoiceDtoRecurring";
+import type { Customer } from "./customer";
+import type { InvoicePaidStatus } from "./invoicePaidStatus";
+import type { PaymentDetails } from "./paymentDetails";
+import type { InvoiceRecurring } from "./invoiceRecurring";
+import type { InvoiceTax } from "./invoiceTax";
+import type { User } from "./user";
 
-export interface InvoiceDto {
+export interface Invoice {
 	createdAt: string;
+	customer?: Customer;
 	customer_id: string;
 	date: string;
 	/** @nullable */
@@ -21,17 +26,21 @@ export interface InvoiceDto {
 	isExist: boolean;
 	/** @nullable */
 	notes: string | null;
-	paid_status: InvoiceDtoPaidStatus;
+	paid_status: InvoicePaidStatus;
+	payment?: PaymentDetails;
 	paymentId: string;
 	/** @nullable */
-	recurring: InvoiceDtoRecurring;
+	recurring: InvoiceRecurring;
 	/** @nullable */
 	reference_number: string | null;
 	sub_total: number;
+	/** @nullable */
+	tax?: InvoiceTax;
 	/** @nullable */
 	tax_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;
+	user?: User;
 	user_id: string;
 }
