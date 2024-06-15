@@ -127,4 +127,20 @@ export const protectedRoutes: Route[] = [
 		path: "/setting/apicredentials",
 		Component: ApiCredentialsPage,
 	},
+	{
+		path: "/setting/productunit",
+		Component: ProductUnitPage,
+	},
+	{
+		path: "/setting/hsncode",
+		Component: HsnCodePage,
+	},
+	{
+		path: "/setting/taxtype",
+		Component: TaxTypePage,
+	},
+	{
+		path: "/setting/apicredentials",
+		Component: ApiCredentialsPage,
+	},
 ];
