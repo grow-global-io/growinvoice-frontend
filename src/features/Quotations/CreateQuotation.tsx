@@ -143,7 +143,14 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
 		formik?.setFieldValue(
 			"quotation",
-			rows.map((row) => row as OmitCreateQuotationProductsDto),
+			rows.map((row) => {
+				return {
+					product_id: row.product_id,
+					quantity: Number(row.quantity),
+					price: row.price,
+					total: row.total,
+				} as OmitCreateQuotationProductsDto;
+			}),
 		);
 		formik?.setFieldValue("sub_total", subtotal);
 		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
