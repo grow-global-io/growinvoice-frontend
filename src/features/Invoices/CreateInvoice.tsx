@@ -62,6 +62,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			enabled: id !== undefined,
 		},
 	});
+
 	const invoiceUpdate = useInvoiceControllerUpdate();
 
 	useEffect(() => {
@@ -98,6 +99,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		recurring: invoiceFindOne?.data?.recurring ?? CreateInvoiceWithProductsRecurring.Daily,
 		product: invoiceFindOne?.data?.product ?? [],
 	};
+
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 
 	const schema = yup.object().shape({

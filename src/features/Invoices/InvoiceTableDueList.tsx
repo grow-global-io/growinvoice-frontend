@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 import {
 	getInvoiceControllerFindAllQueryKey,
@@ -117,48 +117,57 @@ const InvoiceTableDueList = () => {
 			flex: 1,
 			type: "actions",
 			getActions: (params) => [
-				<CustomIconButton
-					key={params.row.id}
-					onClick={() => {
-						console.log("View Invoice");
-					}}
-					src={VisibilityIcon}
-				/>,
-				<CustomIconButton
-					key={params.row.id}
-					onClick={() => {
-						navigate(`/invoice/createinvoice/${params.row.id}`);
-					}}
-					src={EditIcon}
-				/>,
-				<CustomIconButton
-					key={params.row?.id}
-					src={DeleteIcon}
-					buttonType="delete"
-					iconColor="error"
-					onClick={async () => {
-						handleOpen({
-							title: "Delete Invoice",
-							message: "Are you sure you want to delete this invoice?",
-							onConfirm: async () => {
-								await removeInvoice.mutateAsync({ id: params.row.id });
-								queryClient.refetchQueries({
-									queryKey: getInvoiceControllerFindAllQueryKey(),
+				<Tooltip title="View Invoice" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							onClick={() => {
+								console.log("View Invoice");
+							}}
+							src={VisibilityIcon}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Edit Invoice" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							onClick={() => {
+								navigate(`/invoice/createinvoice/${params.row.id}`);
+							}}
+							src={EditIcon}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Delete Invoice" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={DeleteIcon}
+							buttonType="delete"
+							iconColor="error"
+							onClick={async () => {
+								handleOpen({
+									title: "Delete Invoice",
+									message: "Are you sure you want to delete this invoice?",
+									onConfirm: async () => {
+										await removeInvoice.mutateAsync({ id: params.row.id });
+										queryClient.refetchQueries({
+											queryKey: getInvoiceControllerFindAllQueryKey(),
+										});
+										queryClient.refetchQueries({
+											queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+										});
+										queryClient.refetchQueries({
+											queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+										});
+									},
+									onCancel: () => {
+										cleanUp();
+									},
+									confirmButtonText: "Delete",
 								});
-								queryClient.refetchQueries({
-									queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
-								});
-								queryClient.refetchQueries({
-									queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
-								});
-							},
-							onCancel: () => {
-								cleanUp();
-							},
-							confirmButtonText: "Delete",
-						});
-					}}
-				/>,
+							}}
+						/>
+					</Box>
+				</Tooltip>,
 			],
 		},
 	];

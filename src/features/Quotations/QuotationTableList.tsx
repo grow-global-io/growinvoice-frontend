@@ -1,110 +1,129 @@
 import Box from "@mui/material/Box";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Tooltip, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
-	DataGrid,
-	GridColDef,
-	GridColumnHeaderParams,
-	GridRenderCellParams,
-} from "@mui/x-data-grid";
-import QuotationListData from "../../data/QuotationListData.json";
-import { Typography } from "@mui/material";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-const fontWeight = "500";
-const HeaderStyle = (params: GridColumnHeaderParams) => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant="h6" color="secondary.dark">
-				{params.colDef.headerName}
-			</Typography>
-		</Box>
-	);
-};
-const CellStyle = (params: GridRenderCellParams, color = "grey.500") => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant="h6" color={color} fontWeight={fontWeight}>
-				{params.value}
-			</Typography>
-		</Box>
-	);
-};
-
-const columns: GridColDef[] = [
-	{
-		field: "quotationNumber",
-		headerName: "Quotation Number",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: (params) => CellStyle(params, "secondary.main"),
-	},
-	{
-		field: "date",
-		headerName: "Date",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "expiryDate",
-		headerName: "Expiry Date",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "customer",
-		headerName: "Customer",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "status",
-		headerName: "Status",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: (params) => {
-			return (
-				<Box
-					sx={{
-						bgcolor: "custom.tableBtnBgColor",
-						borderRadius: 1,
-						px: 5,
-						py: 1,
-					}}
-				>
-					<Typography variant="h6" color={"primary.contrastText"} fontWeight={fontWeight}>
-						{params.row.status}
-					</Typography>
-				</Box>
-			);
-		},
-	},
-	{
-		field: "total",
-		headerName: "Total",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: CellStyle,
-	},
-	{
-		field: "action",
-		headerName: "Action",
-		flex: 1,
-		renderHeader: HeaderStyle,
-		renderCell: () => (
-			<Box>
-				<VisibilityOutlinedIcon sx={{ fontSize: "30px" }} />
-			</Box>
-		),
-	},
-];
-
+	getQuotationControllerFindAllQueryKey,
+	useQuotationControllerFindAll,
+	useQuotationControllerRemove,
+} from "@api/services/quotation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@store/auth";
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
+import { Quotation } from "@api/services/models";
+import { CustomIconButton } from "@shared/components/CustomIconButton";
+import Loader from "@shared/components/Loader";
 const QuotationTableList = () => {
-	const QuotationData = QuotationListData;
+	const queryClient = useQueryClient();
+	const navigate = useNavigate();
+	const { user } = useAuthStore();
+	const quationdata = useQuotationControllerFindAll();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const removeQuotation = useQuotationControllerRemove();
+	const columns: GridColDef<Quotation>[] = [
+		{
+			field: "quatation_number",
+			headerName: "Quation Number",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography variant="h6" color={"secondary"}>
+						{params.value}
+					</Typography>
+				);
+			},
+		},
+		{
+			field: "date",
+			headerName: "Quotaion Date",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "expiry_at",
+			headerName: "Expiry AT",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+
+		{
+			field: "total",
+			headerName: "Total",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
+				);
+			},
+		},
+		{
+			field: "action",
+			headerName: "Action",
+			flex: 1,
+			type: "actions",
+			getActions: (params) => [
+				<Tooltip title="View Quotation" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							onClick={() => {
+								console.log("View Invoice");
+							}}
+							src={VisibilityIcon}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Edit Quotation" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							onClick={() => {
+								navigate(`/quotation/createquotation/${params.row.id}`);
+							}}
+							src={EditIcon}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Delete Quotation" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={DeleteIcon}
+							buttonType="delete"
+							iconColor="error"
+							onClick={async () => {
+								handleOpen({
+									title: "Delete Invoice",
+									message: "Are you sure you want to delete this invoice?",
+									onConfirm: async () => {
+										await removeQuotation.mutateAsync({ id: params.row.id });
+										queryClient.refetchQueries({
+											queryKey: getQuotationControllerFindAllQueryKey(),
+										});
+									},
+									onCancel: () => {
+										cleanUp();
+									},
+									confirmButtonText: "Delete",
+								});
+							}}
+						/>
+					</Box>
+				</Tooltip>,
+			],
+		},
+	];
+
+	if (quationdata.isLoading) return <Loader />;
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={QuotationData} columns={columns} checkboxSelection />
+			<DataGrid autoHeight rows={quationdata?.data} columns={columns} />
 		</Box>
 	);
 };
