@@ -6,10 +6,12 @@ const GridSelectField = ({
 	params,
 	valueOptions,
 	disabled = false,
+	onChangeValue,
 }: {
 	params: GridRenderEditCellParams;
 	valueOptions?: ListDto[];
 	disabled?: boolean;
+	onChangeValue?: (event: SelectChangeEvent) => void;
 }) => {
 	const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.defaultPrevented) {
@@ -24,6 +26,7 @@ const GridSelectField = ({
 			field: params.field,
 			value: event.target.value,
 		});
+		onChangeValue?.(event);
 	};
 	const optionsValues = valueOptions;
 

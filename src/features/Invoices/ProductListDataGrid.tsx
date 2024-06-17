@@ -19,19 +19,22 @@ import {
 	GridRowParams,
 	MuiEvent,
 } from "@mui/x-data-grid";
-import { Grid, Typography, useTheme } from "@mui/material";
+import { Grid, SelectChangeEvent, Typography, useTheme } from "@mui/material";
 import GridSelectField from "@shared/components/DataGridFields/GridSelectField";
 import GridTextField from "@shared/components/DataGridFields/GridTextField";
+import { useProductControllerFindAll } from "@api/services/product";
+import { currencyFormatter } from "@shared/formatter";
 
-export default function FullFeaturedCrudGrid() {
-	const options = [
-		{ value: "1", label: "Option 1" },
-		{ value: "2", label: "Option 2" },
-		{ value: "3", label: "Option 3" },
-	];
-	const [rows, setRows] = React.useState<GridRowsProp>([]);
+export default function FullFeaturedCrudGrid({
+	rows,
+	setRows,
+}: {
+	rows: GridRowsProp;
+	setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+}) {
 	const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 	const [isRowEditing, setIsRowEditing] = React.useState(false);
+	const productList = useProductControllerFindAll();
 
 	React.useEffect(() => {
 		const editingRows = Object.values(rowModesModel).filter(
@@ -89,10 +92,10 @@ export default function FullFeaturedCrudGrid() {
 			...oldRows,
 			{
 				id,
-				product: "",
+				product_id: "",
 				quantity: "",
 				price: "",
-				amount: "",
+				total: "",
 				isNew: true,
 				isEditPosible: false,
 				isEditble: true,
@@ -108,19 +111,46 @@ export default function FullFeaturedCrudGrid() {
 
 	const columns: GridColDef[] = [
 		{
-			field: "product",
+			field: "product_id",
 			headerName: "Product",
 			flex: 1.5,
 			editable: true,
-			renderEditCell: (params) => (
-				<GridSelectField
-					params={params}
-					valueOptions={options}
-					disabled={params.row.isEditPosible}
-				/>
-			),
+			renderEditCell: (params) => {
+				const handleProductChange = (event: SelectChangeEvent) => {
+					const value = event.target.value as string;
+					params.api.setEditCellValue({
+						id: params.id,
+						field: "quantity",
+						value: 1,
+					});
+					params.api.setEditCellValue({
+						id: params.id,
+						field: "price",
+						value: productList?.data?.find((product) => product.id === value)?.price,
+					});
+					params.api.setEditCellValue({
+						id: params.id,
+						field: "total",
+						value: productList?.data?.find((product) => product.id === value)?.price,
+					});
+				};
+				return (
+					<GridSelectField
+						params={params}
+						valueOptions={productList?.data?.map((product) => {
+							return {
+								value: product.id,
+								label: product.name,
+							};
+						})}
+						onChangeValue={handleProductChange}
+						disabled={params.row.isEditPosible}
+					/>
+				);
+			},
 			renderCell: (params) => {
-				return <Typography variant="inherit">{params.value}</Typography>;
+				const productName = productList?.data?.find((product) => product.id === params.value)?.name;
+				return <Typography>{productName}</Typography>;
 			},
 		},
 		{
@@ -128,9 +158,30 @@ export default function FullFeaturedCrudGrid() {
 			headerName: "Quantity",
 			flex: 0.8,
 			editable: true,
-			renderEditCell: (params) => <GridTextField params={params} label="quantity" type="number" />,
+			renderEditCell: (params) => {
+				const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+					const value = event.target.value as string;
+					const price = productList?.data?.find(
+						(product) => product.id === params.row.product_id,
+					)?.price;
+					params.api.setEditCellValue({
+						id: params.id,
+						field: "total",
+						value: price ? Number(value) * price : 0,
+					});
+				};
+				return (
+					<GridTextField
+						params={params}
+						label="quantity"
+						type="number"
+						onChangeValue={onChangeValue}
+						disabled={params.row.price === "" || params.row.product_id === ""}
+					/>
+				);
+			},
 			renderCell: (params) => {
-				return <Typography variant="inherit">{params.value}</Typography>;
+				return <Typography>{params.value}</Typography>;
 			},
 		},
 		{
@@ -138,19 +189,44 @@ export default function FullFeaturedCrudGrid() {
 			headerName: "Price",
 			flex: 0.8,
 			editable: true,
-			renderEditCell: (params) => <GridTextField params={params} label="price" type="number" />,
+			renderEditCell: (params) => (
+				<GridTextField
+					params={params}
+					label="price"
+					type="number"
+					disabled={params.row.quantity === "" || params.row.product_id === ""}
+				/>
+			),
 			renderCell: (params) => {
-				return <Typography variant="inherit">{params.value}</Typography>;
+				return (
+					<Typography>
+						{currencyFormatter(
+							params.value,
+							productList?.data?.find((product) => product.id === params.row.product_id)?.currency
+								?.short_code ?? "USD",
+						)}
+					</Typography>
+				);
 			},
 		},
 		{
-			field: "amount",
+			field: "total",
 			headerName: "Amount",
 			flex: 0.8,
 			editable: true,
-			renderEditCell: (params) => <GridTextField params={params} label="Amount" type="number" />,
+			renderEditCell: (params) => (
+				<GridTextField params={params} label="Amount" type="number" disabled={true} />
+			),
 			renderCell: (params) => {
-				return <Typography variant="inherit">{params.value}</Typography>;
+				return (
+					<Typography>
+						{currencyFormatter(
+							params.value,
+							productList?.data?.find((product) => product.id === params.row.product_id)?.currency
+								?.short_code ?? "USD",
+						)}
+					</Typography>
+				);
 			},
 		},
 		{

@@ -6,10 +6,14 @@ const GridTextField = ({
 	params,
 	label,
 	type = "text",
+	onChangeValue,
+	disabled = false,
 }: {
 	params: GridRenderEditCellParams;
 	label: string;
 	type?: React.HTMLInputTypeAttribute;
+	disabled?: boolean;
+	onChangeValue?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
 	const apiRef = useGridApiContext();
 
@@ -22,6 +26,7 @@ const GridTextField = ({
 			},
 			event,
 		);
+		onChangeValue?.(event);
 	};
 
 	return (
@@ -32,6 +37,7 @@ const GridTextField = ({
 			fullWidth
 			error={params.error}
 			type={type}
+			disabled={disabled}
 		/>
 	);
 };

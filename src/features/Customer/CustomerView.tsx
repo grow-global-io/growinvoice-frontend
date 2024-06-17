@@ -1,7 +1,8 @@
 import { useCustomerControllerFindOne } from "@api/services/customer";
-import { Box, Dialog, DialogContent, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import Loader from "@shared/components/Loader";
+import { useCreateCustomerStore } from "@store/createCustomerStore";
 
 const CustomerView = ({
 	open,
@@ -12,6 +13,7 @@ const CustomerView = ({
 	handleClose: () => void;
 	customerId: string;
 }) => {
+	const { updateCustomer } = useCreateCustomerStore.getState();
 	const { data, isLoading } = useCustomerControllerFindOne(customerId, {
 		query: {
 			enabled: !!customerId && customerId !== "",
@@ -72,6 +74,21 @@ const CustomerView = ({
 					</>
 				)}
 			</DialogContent>
+			<DialogActions>
+				<Button onClick={handleClose} variant="outlined">
+					Close
+				</Button>
+				<Button
+					onClick={() => {
+						if (!data) return;
+						updateCustomer(data);
+						handleClose();
+					}}
+					variant="contained"
+				>
+					Edit
+				</Button>
+			</DialogActions>
 		</Dialog>
 	);
 };

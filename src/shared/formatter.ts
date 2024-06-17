@@ -262,3 +262,15 @@ export function timeAgo(isoString: string): string {
 		return `${days} ${days === 1 ? "day" : "days"} ago`;
 	}
 }
+
+export const currencyFormatter = (money: number, currency?: string) => {
+	try {
+		return new Intl.NumberFormat("en-US", {
+			style: "currency",
+			currency: currency ?? "INR",
+		}).format(money);
+	} catch (error) {
+		console.error(error);
+		return money;
+	}
+};

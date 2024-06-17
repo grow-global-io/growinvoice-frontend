@@ -1,93 +1,73 @@
 import Box from "@mui/material/Box";
-import {
-	DataGrid,
-	GridColDef,
-	GridColumnHeaderParams,
-	GridRenderCellParams,
-} from "@mui/x-data-grid";
-import InvoiceListData from "../../data/InvoiceListData.json";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
-const fontWeight = "500";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import {
+	getInvoiceControllerFindAllQueryKey,
+	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
+	useInvoiceControllerFindAll,
+	useInvoiceControllerRemove,
+} from "@api/services/invoice";
+import Loader from "@shared/components/Loader";
+import { Invoice } from "@api/services/models";
+import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
+import { useAuthStore } from "@store/auth";
+import EditIcon from "@mui/icons-material/Edit";
+import { CustomIconButton } from "@shared/components/CustomIconButton";
 import { useNavigate } from "react-router-dom";
-const HeaderStyle = (params: GridColumnHeaderParams) => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant={"h6"} color={"secondary.dark"}>
-				{params.colDef.headerName}
-			</Typography>
-		</Box>
-	);
-};
-const CellStyle = (params: GridRenderCellParams, color = "grey.500") => {
-	return (
-		<Box sx={{ display: "flex", alignItems: "center" }}>
-			<Typography variant="h6" color={color} fontWeight={fontWeight}>
-				{params.value}
-			</Typography>
-		</Box>
-	);
-};
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useQueryClient } from "@tanstack/react-query";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-export default function DataGridDemo() {
-	const invoiceData = InvoiceListData;
+export default function InvoiceTableList() {
+	const queryClient = useQueryClient();
 	const navigate = useNavigate();
-	const columns: GridColDef[] = [
+	const { user } = useAuthStore();
+	const invoiceData = useInvoiceControllerFindAll();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const removeInvoice = useInvoiceControllerRemove();
+
+	const columns: GridColDef<Invoice>[] = [
 		{
-			field: "invoiceNumber",
+			field: "invoice_number",
 			headerName: "Invoice Number",
 			flex: 1,
-			renderHeader: HeaderStyle,
-			renderCell: (params) => CellStyle(params, "secondary.main"),
-		},
-		{
-			field: "invoiceDate",
-			headerName: "Invoice Date",
-			flex: 1,
-			renderHeader: HeaderStyle,
-			renderCell: CellStyle,
-		},
-		{
-			field: "dueDate",
-			headerName: "Due Date",
-			flex: 1,
-			renderHeader: HeaderStyle,
-			renderCell: CellStyle,
-		},
-		{
-			field: "status",
-			headerName: "Status",
-			flex: 1,
-			renderHeader: HeaderStyle,
 			renderCell: (params) => {
 				return (
-					<Box
-						sx={{
-							bgcolor: "custom.tableBtnBgColor",
-							borderRadius: 1,
-							px: 5,
-							py: 1,
-						}}
-					>
-						<Typography variant="h6" color={"primary.contrastText"} fontWeight={fontWeight}>
-							{params.row.status}
-						</Typography>
-					</Box>
+					<Typography variant="h6" color={"secondary"}>
+						{params.value}
+					</Typography>
 				);
 			},
 		},
 		{
-			field: "paidStatus",
+			field: "date",
+			headerName: "Invoice Date",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "due_date",
+			headerName: "Due Date",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "paid_status",
 			headerName: "Paid Status",
 			flex: 1,
-			renderHeader: HeaderStyle,
 			renderCell: (params) => {
 				return (
 					<Box sx={{ flex: 0.8 }}>
 						<Box
 							bgcolor={
-								params.row.paidStatus == "Paid"
+								params.row.paid_status == "Paid"
 									? "custom.lightGreenColor"
 									: "custom.lightOrangeColor"
 							}
@@ -101,20 +81,19 @@ export default function DataGridDemo() {
 						>
 							<img
 								src={
-									params.row.paidStatus == "Paid"
+									params.row.paid_status == "Paid"
 										? Constants.customImages.GreenCheck
 										: Constants.customImages.UnpaidSymbol
 								}
 								width={"20px"}
-								alt={params.row.paidStatus == "Paid" ? "greenCheck" : "UnpaidSymbol"}
+								alt={params.row.paid_status == "Paid" ? "greenCheck" : "UnpaidSymbol"}
 							/>
 							<Typography
 								variant="h6"
-								color={params.row.paidStatus == "Paid" ? "custom.darkGreen" : "custom.darkOrange"}
+								color={params.row.paid_status == "Paid" ? "custom.darkGreen" : "custom.darkOrange"}
 								ml={1}
-								fontWeight={fontWeight}
 							>
-								{params.row.paidStatus}
+								{params.row.paid_status}
 							</Typography>
 						</Box>
 					</Box>
@@ -122,33 +101,73 @@ export default function DataGridDemo() {
 			},
 		},
 		{
-			field: "amountDue",
-			headerName: "Amount Due",
+			field: "total",
+			headerName: "Total",
 			flex: 1,
-			renderHeader: HeaderStyle,
-			renderCell: CellStyle,
+			renderCell: (params) => {
+				return (
+					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
+				);
+			},
 		},
 
 		{
 			field: "action",
 			headerName: "Action",
 			flex: 1,
-			renderHeader: HeaderStyle,
-			renderCell: () => (
-				<Box
+			type: "actions",
+			getActions: (params) => [
+				<CustomIconButton
+					key={params.row.id}
 					onClick={() => {
-						navigate("/invoice/invoicedetail");
+						console.log("View Invoice");
 					}}
-				>
-					<VisibilityOutlinedIcon sx={{ fontSize: "30px" }} />
-				</Box>
-			),
+					src={VisibilityIcon}
+				/>,
+				<CustomIconButton
+					key={params.row.id}
+					onClick={() => {
+						navigate(`/invoice/createinvoice/${params.row.id}`);
+					}}
+					src={EditIcon}
+				/>,
+				<CustomIconButton
+					key={params.row?.id}
+					src={DeleteIcon}
+					buttonType="delete"
+					iconColor="error"
+					onClick={async () => {
+						handleOpen({
+							title: "Delete Product",
+							message: "Are you sure you want to delete this product?",
+							onConfirm: async () => {
+								await removeInvoice.mutateAsync({ id: params.row.id });
+								queryClient.refetchQueries({
+									queryKey: getInvoiceControllerFindAllQueryKey(),
+								});
+								queryClient.refetchQueries({
+									queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+								});
+								queryClient.refetchQueries({
+									queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+								});
+							},
+							onCancel: () => {
+								cleanUp();
+							},
+							confirmButtonText: "Delete",
+						});
+					}}
+				/>,
+			],
 		},
 	];
 
+	if (invoiceData.isLoading) return <Loader />;
+
 	return (
 		<Box>
-			<DataGrid autoHeight rows={invoiceData} columns={columns} />
+			<DataGrid autoHeight rows={invoiceData?.data} columns={columns} />
 		</Box>
 	);
 }

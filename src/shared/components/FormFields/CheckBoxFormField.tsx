@@ -14,7 +14,10 @@ export const CheckBoxFormField: React.FC<
 
 	return (
 		<FormControl error={!!errorText}>
-			<FormControlLabel control={<Checkbox {...field} {...props} />} label={label} />
+			<FormControlLabel
+				control={<Checkbox checked={field?.value} {...field} {...props} />}
+				label={label}
+			/>
 			{errorText && <FormHelperText>{errorText}</FormHelperText>}
 		</FormControl>
 	);
