@@ -300,7 +300,6 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											name="notes"
 											component={TextFormField}
 											label="Add Notes"
-											required={true}
 											multiline
 											rows={5}
 										/>
@@ -308,7 +307,6 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											name="private_notes"
 											component={TextFormField}
 											label=" Private Notes"
-											required={true}
 											multiline
 											rows={5}
 										/>
