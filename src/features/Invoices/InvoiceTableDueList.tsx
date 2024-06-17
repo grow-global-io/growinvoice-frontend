@@ -138,8 +138,8 @@ const InvoiceTableDueList = () => {
 					iconColor="error"
 					onClick={async () => {
 						handleOpen({
-							title: "Delete Product",
-							message: "Are you sure you want to delete this product?",
+							title: "Delete Invoice",
+							message: "Are you sure you want to delete this invoice?",
 							onConfirm: async () => {
 								await removeInvoice.mutateAsync({ id: params.row.id });
 								queryClient.refetchQueries({
