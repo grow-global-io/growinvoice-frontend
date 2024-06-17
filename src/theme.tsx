@@ -520,6 +520,7 @@ const customTheme = {
 			tableHeaderBgColor: "rgba(230, 230, 230, 1)",
 			lightBlue: "rgba(246, 250, 255, 1)",
 			settingSidebarBorder: "rgba(227, 224, 224, 1)",
+			greyrgba: "rgba(125, 131, 152, 0.1)",
 		},
 		...themeOptions.palette,
 	},

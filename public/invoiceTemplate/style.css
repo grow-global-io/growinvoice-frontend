@@ -1450,7 +1450,7 @@ hr {
   padding: 20px 15px;
 }
 
-@media (min-width: 500px) {
+/* @media (min-width: 500px) {
   .tm_invoice.tm_style1.tm_type2 {
     position: relative;
     overflow: hidden;
@@ -1580,7 +1580,7 @@ hr {
     height: 200px;
     width: 200px;
   }
-}
+} */
 .tm_invoice.tm_style1.tm_type3 {
   position: relative;
   overflow: hidden;
@@ -1796,7 +1796,7 @@ hr {
   border-color: #252526;
 }
 
-@media (min-width: 1000px) {
+ @media (min-width: 1000px) {
   .tm_invoice_btns {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1909,7 +1909,7 @@ hr {
   .tm_invoice_btn.tm_color2:hover {
     background-color: rgba(52, 199, 89, 0.2);
   }
-}
+} 
 @media (max-width: 999px) {
   .tm_invoice_btns {
     display: -webkit-inline-box;
@@ -1980,7 +1980,7 @@ hr {
     background-color: rgba(52, 199, 89, 0.2);
   }
 }
-@media (max-width: 767px) {
+/* @media (max-width: 767px) {
   .tm_col_4 {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -2157,8 +2157,8 @@ hr {
             transform: translateY(-50%);
     line-height: 1em;
   }
-}
-@media (max-width: 500px) {
+} */
+/* @media (max-width: 500px) {
   .tm_border_none_sm {
     border: none !important;
   }
@@ -2300,7 +2300,7 @@ hr {
   .tm_invoice.tm_style3 .tm_table.tm_style1 {
     margin-bottom: 10px;
   }
-}
+} */
 /*--------------------------------------------------------------
   Will apply only print window
 ----------------------------------------------------------------*/
@@ -2643,7 +2643,7 @@ hr {
 
 @media screen and (max-width: 680px) {
   .tm_container {
-    width: 85vw;
+    width: 880px;
     padding: 0px 0px;
   }
 

@@ -6,8 +6,11 @@ import * as yup from "yup";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { Constants } from "@shared/constants";
 import FullFeaturedCrudGrid from "@features/Invoices/ProductListDataGrid";
+import { GridRowsProp } from "@mui/x-data-grid";
+import { useState } from "react";
 
 const CreateQuotation = () => {
+	const [rows, setRows] = useState<GridRowsProp>([]);
 	const initialValues = {
 		customerName: "",
 		quotationNumber: "",
@@ -126,7 +129,7 @@ const CreateQuotation = () => {
 								</Grid>
 
 								<Grid item xs={12} sx={{ width: { xs: "90vw", sm: "auto" } }}>
-									<FullFeaturedCrudGrid />
+									<FullFeaturedCrudGrid rows={rows} setRows={setRows} />
 								</Grid>
 
 								<Grid item xs={12} mb={3}>

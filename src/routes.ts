@@ -80,6 +80,10 @@ export const protectedRoutes: Route[] = [
 		Component: InvoiceDetailPage,
 	},
 	{
+		path: "/invoice/createinvoice/:id",
+		Component: CreateInvoicePage,
+	},
+	{
 		path: "/quotation/createquotation",
 		Component: CreateQuotationPage,
 	},
@@ -106,6 +110,22 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/setting/invoices",
 		Component: InvoicesPage,
+	},
+	{
+		path: "/setting/productunit",
+		Component: ProductUnitPage,
+	},
+	{
+		path: "/setting/hsncode",
+		Component: HsnCodePage,
+	},
+	{
+		path: "/setting/taxtype",
+		Component: TaxTypePage,
+	},
+	{
+		path: "/setting/apicredentials",
+		Component: ApiCredentialsPage,
 	},
 	{
 		path: "/setting/productunit",

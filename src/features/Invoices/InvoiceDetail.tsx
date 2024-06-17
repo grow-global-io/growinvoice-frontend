@@ -11,7 +11,7 @@ import {
 	CreateOutlined,
 	PaymentsOutlined,
 } from "@mui/icons-material";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const styles = {
 	py: 1,
@@ -134,7 +134,9 @@ const InvoiceDetail = () => {
 					</MenuItem>
 				))}
 			</Menu>
-			<div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+			<Box sx={{ width: { xs: "85vw", sm: "auto" }, overflowX: { xs: "scroll", sm: "visible" } }}>
+				<div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+			</Box>
 		</>
 	);
 };

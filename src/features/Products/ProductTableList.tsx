@@ -7,7 +7,7 @@ import {
 	useProductControllerRemove,
 } from "@api/services/product";
 import Loader from "@shared/components/Loader";
-import { timeAgo } from "@shared/formatter";
+import { currencyFormatter, timeAgo } from "@shared/formatter";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import { useCreateProductStore } from "@store/createProductStore";
@@ -51,7 +51,7 @@ const ProductTableList = () => {
 			renderCell: (params) => {
 				return (
 					<Chip
-						label={`${params.row.currency.symbol} ${params.value}`}
+						label={`${currencyFormatter(params.value, params.row.currency.short_code)}`}
 						style={{
 							color: "custom.productTblColor",
 							backgroundColor: "custom.productTbleBgColor",

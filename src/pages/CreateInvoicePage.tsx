@@ -1,7 +1,9 @@
 import CreateInvoice from "@features/Invoices/CreateInvoice";
+import { useParams } from "react-router-dom";
 
 const CreateInvoicePage = () => {
-	return <CreateInvoice />;
+	const { id } = useParams<{ id?: string }>();
+	return <CreateInvoice id={id} />;
 };
 
 export default CreateInvoicePage;
