@@ -84,7 +84,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 	const initialValues = {
 		customer_id: invoiceFindOne?.data?.customer_id ?? "",
 		user_id: user?.id ?? "",
-		invoice_number: invoiceFindOne?.data?.invoice_number.split("-")[1] ?? "",
+		invoice_number: invoiceFindOne?.data?.invoice_number ?? "",
 		reference_number: invoiceFindOne?.data?.reference_number ?? "",
 		date: invoiceFindOne?.data?.date ?? "",
 		due_date: invoiceFindOne?.data?.due_date ?? "",
