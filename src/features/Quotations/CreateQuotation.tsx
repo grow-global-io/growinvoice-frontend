@@ -9,7 +9,7 @@ import {
 	Card,
 	CardContent,
 } from "@mui/material";
-import { Formik, Form, Field, FormikProps } from "formik";
+import { Formik, Form, Field, FormikProps, FormikHelpers } from "formik";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
@@ -112,7 +112,10 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 			.min(1, "At least one product is required"),
 	});
 
-	const handleSubmit = async (values: typeof initialValues) => {
+	const handleSubmit = async (
+		values: typeof initialValues,
+		actions: FormikHelpers<typeof initialValues>,
+	) => {
 		if (id) {
 			await quotationUpdate.mutateAsync({
 				id,
@@ -136,6 +139,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindAllQueryKey(),
 		});
+		actions.resetForm();
 	};
 
 	useEffect(() => {
