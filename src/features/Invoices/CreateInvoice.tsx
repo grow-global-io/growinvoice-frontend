@@ -9,7 +9,7 @@ import {
 	CardContent,
 	FormHelperText,
 } from "@mui/material";
-import { Formik, Form, Field, FormikProps } from "formik";
+import { Formik, Form, Field, FormikProps, FormikHelpers } from "formik";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
@@ -133,7 +133,10 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		user_id: yup.string().required("User is required"),
 	});
 
-	const handleSubmit = async (values: typeof initialValues) => {
+	const handleSubmit = async (
+		values: typeof initialValues,
+		actions: FormikHelpers<typeof initialValues>,
+	) => {
 		if (id) {
 			await invoiceUpdate.mutateAsync({
 				id,
@@ -162,6 +165,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
+		actions.resetForm();
 	};
 
 	useEffect(() => {
@@ -169,7 +173,14 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
 		formik?.setFieldValue(
 			"product",
-			rows.map((row) => row as OmitCreateInvoiceProductsDto),
+			rows.map((row) => {
+				return {
+					product_id: row.product_id,
+					quantity: Number(row.quantity),
+					price: row.price,
+					total: row.total,
+				} as OmitCreateInvoiceProductsDto;
+			}),
 		);
 		formik?.setFieldValue("sub_total", subtotal);
 		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
