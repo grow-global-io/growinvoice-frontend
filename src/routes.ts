@@ -88,6 +88,10 @@ export const protectedRoutes: Route[] = [
 		Component: CreateQuotationPage,
 	},
 	{
+		path: "/quotation/createquotation/:id",
+		Component: CreateQuotationPage,
+	},
+	{
 		path: "/quotation/quotationlist",
 		Component: QuotationListPage,
 	},

@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Chip, Typography } from "@mui/material";
+import { Chip, Tooltip, Typography } from "@mui/material";
 import {
 	getProductControllerFindAllQueryKey,
 	useProductControllerFindAll,
@@ -75,35 +75,41 @@ const ProductTableList = () => {
 			flex: 1,
 			type: "actions",
 			getActions: (params) => [
-				<CustomIconButton
-					key={params.row?.id}
-					src={EditIcon}
-					onClick={() => {
-						updateProduct(params.row);
-					}}
-				/>,
-				<CustomIconButton
-					key={params.row?.id}
-					src={DeleteIcon}
-					buttonType="delete"
-					iconColor="error"
-					onClick={async () => {
-						handleOpen({
-							title: "Delete Product",
-							message: "Are you sure you want to delete this product?",
-							onConfirm: async () => {
-								await removeProduct.mutateAsync({ id: params.row.id });
-								queryClient.invalidateQueries({
-									queryKey: getProductControllerFindAllQueryKey(),
+				<Tooltip title="Edit Product" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={EditIcon}
+							onClick={() => {
+								updateProduct(params.row);
+							}}
+						/>
+					</Box>
+				</Tooltip>,
+				<Tooltip title="Delete Product" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={DeleteIcon}
+							buttonType="delete"
+							iconColor="error"
+							onClick={async () => {
+								handleOpen({
+									title: "Delete Product",
+									message: "Are you sure you want to delete this product?",
+									onConfirm: async () => {
+										await removeProduct.mutateAsync({ id: params.row.id });
+										queryClient.invalidateQueries({
+											queryKey: getProductControllerFindAllQueryKey(),
+										});
+									},
+									onCancel: () => {
+										cleanUp();
+									},
+									confirmButtonText: "Delete",
 								});
-							},
-							onCancel: () => {
-								cleanUp();
-							},
-							confirmButtonText: "Delete",
-						});
-					}}
-				/>,
+							}}
+						/>
+					</Box>
+				</Tooltip>,
 			],
 		},
 	];
