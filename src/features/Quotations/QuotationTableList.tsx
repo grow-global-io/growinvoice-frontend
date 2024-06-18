@@ -74,7 +74,7 @@ const QuotationTableList = () => {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								console.log("View Invoice");
+								navigate(`/quotation/quotationdetail`);
 							}}
 							src={VisibilityIcon}
 						/>

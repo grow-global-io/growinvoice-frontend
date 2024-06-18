@@ -177,14 +177,15 @@ const CustomerForm = () => {
 											options={Object.values(CreateCustomerWithAddressDtoOption).map(
 												stringToListDto,
 											)}
+											required={true}
 										/>
 									</Grid>
 
 									<Grid item xs={12} sm={6}>
-										<Field name="name" label="Customer Name" component={TextFormField} />
+										<Field name="name" label="Customer Name" component={TextFormField} required={true}/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Field name="display_name" label="Display Name" component={TextFormField} />
+										<Field name="display_name" label="Display Name" component={TextFormField}  required={true}/>
 									</Grid>
 									{/* <Grid item xs={12} sm={8}>
 									<Field
@@ -195,10 +196,10 @@ const CustomerForm = () => {
 									/>
 								</Grid> */}
 									<Grid item xs={12} sm={6}>
-										<Field name="email" label="Email" component={TextFormField} />
+										<Field name="email" label="Email" component={TextFormField} required={true}/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Field name="phone" label="Phone" component={PhoneInputFormField} />
+										<Field name="phone" label="Phone" component={PhoneInputFormField} required={true}/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field name="website" label="Website" component={TextFormField} />
@@ -213,6 +214,7 @@ const CustomerForm = () => {
 												value: currency.id,
 												label: `${currency.short_code} - ${currency.name}`,
 											}))}
+											required={true}
 										/>
 									</Grid>
 								</Grid>
@@ -243,6 +245,7 @@ const CustomerForm = () => {
 														value: item.id,
 													}))}
 													loading={countryFindAll.isLoading}
+													required={true}
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
@@ -258,11 +261,12 @@ const CustomerForm = () => {
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
-												<Field name="billingDetails.city" component={TextFormField} label="City" />
+												<Field name="billingDetails.city" component={TextFormField} label="City" required={true}/>
 												<Field
 													name="billingDetails.zip"
 													component={TextFormField}
 													label="Zip Code"
+													required={true}
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
@@ -272,6 +276,7 @@ const CustomerForm = () => {
 													label="Address"
 													multiline
 													rows={6}
+													required={true}
 												/>
 											</Grid>
 										</Grid>
@@ -336,6 +341,7 @@ const CustomerForm = () => {
 													value: item.id,
 												}))}
 												loading={countryFindAll.isLoading}
+												required={true}
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
@@ -348,14 +354,16 @@ const CustomerForm = () => {
 												countryFieldName="shippingDetails.country_id"
 												stateFieldName="shippingDetails.state_id"
 												stateLabel="State"
+												
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
-											<Field name="shippingDetails.city" component={TextFormField} label="City" />
+											<Field name="shippingDetails.city" component={TextFormField} label="City" required={true}/>
 											<Field
 												name="shippingDetails.zip"
 												component={TextFormField}
 												label="Zip Code"
+												required={true}
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
@@ -365,6 +373,7 @@ const CustomerForm = () => {
 												label="Address"
 												multiline
 												rows={6}
+												required={true}
 											/>
 										</Grid>
 									</Grid>

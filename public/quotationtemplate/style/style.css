@@ -1,0 +1,148 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 26px;
+    font-family: sans-serif;
+    font-weight: 500;
+}
+.main_heading{
+    font-size: 22px;
+    font-weight: bolder;
+}
+.second_heading{
+    font-size: 16px;
+    font-weight: 600;
+}
+.subheading{
+    font-size: 16px;
+    font-weight: bold;
+}
+.para{
+    font-size: 14px;
+}
+a{
+    text-decoration: none;
+    color: black;
+
+}
+.header{
+    text-align: center;
+    border-bottom:  2px solid #e8e8e8;
+    padding: 20px 0;
+}
+.header h1{
+    font-size: 30px;
+    font-weight: bolder;
+    color: #308af3;
+    text-transform: capitalize;
+}
+.quotation_template_con{
+    padding: 20px 10% 10% 20px;
+}
+.quotation_from_con{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+.quotation_from_detail{
+    text-align: end;
+}
+.shipping_detail_con{
+    margin: 30px 0 50px 0;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+}
+.ship_to_con{
+    margin-left: 20px;
+}
+
+
+.invoice_table {
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 2px solid #e8e8e8;
+}
+
+.invoice_table th,
+.invoice_table td {
+
+    padding: 8px;
+    text-align: left;
+}
+.invoice_table th{
+    font-size: 19px;
+    font-weight: 600;
+}
+
+
+
+.invoice_table th:nth-child(1) {
+    width: 5%;
+}
+
+.invoice_table th:nth-child(2) {
+    width: 40%;
+}
+
+.invoice_table th:nth-child(3) {
+    width: 20%;
+}
+
+.invoice_table th:nth-child(4) {
+    width: 20%;
+}
+
+.invoice_table th:nth-child(5) {
+    width: 20%;
+}
+.disply_right{
+    display: flex;
+    justify-content: end;
+    margin: 30px 0;
+}
+.total_amount_main_con{
+    width: 300px;
+    border-left: 2px solid #e8e8e8;
+    border-right: 2px solid #e8e8e8;
+    border-bottom: 2px solid #e8e8e8;
+
+    padding:5px 2px;
+}
+.total_amount_head{
+    border-bottom:  2px solid #e8e8e8;
+   
+}
+.total_sub_con{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  
+  
+}
+.total_sub_con_para{
+    font-weight:bold !important;
+    font-size: 14px;
+    
+}
+.height-full{
+    height: 70vh;
+    width: 100%;
+}
+.footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: "center";
+    border-top:  2px solid #e8e8e8;
+    padding: 20px;
+}
+
+@media screen and (max-width: 680px) {
+    .quotation_main_con {
+      width: 1200px;
+
+    }
+  
+  }

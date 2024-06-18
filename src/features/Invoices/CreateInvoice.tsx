@@ -254,6 +254,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												label: customer.display_name,
 											}))}
 											loading={customerData.isLoading}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} alignItems={"center"} display={"flex"}>
@@ -278,6 +279,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											InputProps={{
 												startAdornment: <InputAdornment position="start">INV -</InputAdornment>,
 											}}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4}>
@@ -285,6 +287,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											name="reference_number"
 											component={TextFormField}
 											label="Reference Number"
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4}>
@@ -293,6 +296,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											component={DateFormField}
 											label="Invoice Date"
 											// minDate={new Date()}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4}>
@@ -301,6 +305,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											component={DateFormField}
 											label="Invoice Due Date"
 											minDate={moment(values.date).add(1, "days").toDate()}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} display={"flex"} alignItems={"center"}>
@@ -315,6 +320,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												options={Object.keys(CreateInvoiceWithProductsRecurring).map(
 													stringToListDto,
 												)}
+												required={true}
 											/>
 										</Grid>
 									)}
@@ -361,6 +367,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												label: payment.paymentType,
 											}))}
 											loading={paymentData.isLoading}
+											required={true}
 										/>
 										<Box>
 											<Button variant="text" startIcon={<AddIcon />} onClick={handleClickOpen}>
@@ -466,6 +473,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															component={TextFormField}
 															type="number"
 															disabled
+															required={true}
 														/>
 													</Grid>
 													<Grid item xs={12} sm={6}>
@@ -504,6 +512,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															name="discountPercentage"
 															component={TextFormField}
 															type="number"
+															required={true}
 														/>
 													</Grid>
 													<Grid item xs={12}>
@@ -513,7 +522,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 														<Typography variant="h5">Total</Typography>
 													</Grid>
 													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field name="total" component={TextFormField} type="number" />
+														<Field name="total" component={TextFormField} type="number" required={true}/>
 													</Grid>
 												</Grid>
 											</CardContent>
@@ -525,6 +534,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											label="Invoice Template"
 											component={AutocompleteField}
 											options={options}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} display="flex" alignItems="center">
