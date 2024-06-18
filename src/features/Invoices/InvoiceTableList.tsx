@@ -120,9 +120,9 @@ export default function InvoiceTableList() {
 				<Tooltip title="View Invoice" key={params.row?.id}>
 					<Box>
 						<CustomIconButton
-								onClick={() => {
-									navigate("/invoice/invoicedetail")
-								}}
+							onClick={() => {
+								navigate("/invoice/invoicedetail");
+							}}
 							src={VisibilityIcon}
 						/>
 					</Box>

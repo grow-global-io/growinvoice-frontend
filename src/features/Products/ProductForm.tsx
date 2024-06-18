@@ -145,7 +145,12 @@ const ProductForm = () => {
 									/>
 								</Grid>
 								<Grid item xs={12}>
-									<Field name="name" component={TextFormField} label="Service Name" required={true}/>
+									<Field
+										name="name"
+										component={TextFormField}
+										label="Service Name"
+										required={true}
+									/>
 								</Grid>
 								<Field
 									name="currency_id"
@@ -225,7 +230,13 @@ const ProductForm = () => {
 								</Grid>
 
 								<Grid item xs={12}>
-									<Field name="price" component={TextFormField} label="Price" type="number"  required={true}/>
+									<Field
+										name="price"
+										component={TextFormField}
+										label="Price"
+										type="number"
+										required={true}
+									/>
 								</Grid>
 
 								<Grid item xs={12}>

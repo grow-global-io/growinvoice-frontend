@@ -268,7 +268,12 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
-										<Field name="date" component={DateFormField} label="Quotation Date" required={true}/>
+										<Field
+											name="date"
+											component={DateFormField}
+											label="Quotation Date"
+											required={true}
+										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
 										<Field
@@ -389,7 +394,12 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 														<Typography variant="h5">Total</Typography>
 													</Grid>
 													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field name="total" component={TextFormField} type="number" required={true}/>
+														<Field
+															name="total"
+															component={TextFormField}
+															type="number"
+															required={true}
+														/>
 													</Grid>
 												</Grid>
 											</CardContent>

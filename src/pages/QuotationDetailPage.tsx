@@ -1,7 +1,7 @@
-import QuotationDetail from "@features/Quotations/QuotationDetail"
+import QuotationDetail from "@features/Quotations/QuotationDetail";
 
 const QuotationDetailPage = () => {
-  return <QuotationDetail/>
-}
+	return <QuotationDetail />;
+};
 
-export default QuotationDetailPage
+export default QuotationDetailPage;

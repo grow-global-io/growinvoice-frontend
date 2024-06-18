@@ -182,10 +182,20 @@ const CustomerForm = () => {
 									</Grid>
 
 									<Grid item xs={12} sm={6}>
-										<Field name="name" label="Customer Name" component={TextFormField} required={true}/>
+										<Field
+											name="name"
+											label="Customer Name"
+											component={TextFormField}
+											required={true}
+										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Field name="display_name" label="Display Name" component={TextFormField}  required={true}/>
+										<Field
+											name="display_name"
+											label="Display Name"
+											component={TextFormField}
+											required={true}
+										/>
 									</Grid>
 									{/* <Grid item xs={12} sm={8}>
 									<Field
@@ -196,10 +206,15 @@ const CustomerForm = () => {
 									/>
 								</Grid> */}
 									<Grid item xs={12} sm={6}>
-										<Field name="email" label="Email" component={TextFormField} required={true}/>
+										<Field name="email" label="Email" component={TextFormField} required={true} />
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Field name="phone" label="Phone" component={PhoneInputFormField} required={true}/>
+										<Field
+											name="phone"
+											label="Phone"
+											component={PhoneInputFormField}
+											required={true}
+										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field name="website" label="Website" component={TextFormField} />
@@ -261,7 +276,12 @@ const CustomerForm = () => {
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
-												<Field name="billingDetails.city" component={TextFormField} label="City" required={true}/>
+												<Field
+													name="billingDetails.city"
+													component={TextFormField}
+													label="City"
+													required={true}
+												/>
 												<Field
 													name="billingDetails.zip"
 													component={TextFormField}
@@ -354,11 +374,15 @@ const CustomerForm = () => {
 												countryFieldName="shippingDetails.country_id"
 												stateFieldName="shippingDetails.state_id"
 												stateLabel="State"
-												
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
-											<Field name="shippingDetails.city" component={TextFormField} label="City" required={true}/>
+											<Field
+												name="shippingDetails.city"
+												component={TextFormField}
+												label="City"
+												required={true}
+											/>
 											<Field
 												name="shippingDetails.zip"
 												component={TextFormField}

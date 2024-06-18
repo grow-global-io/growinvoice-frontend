@@ -522,7 +522,12 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 														<Typography variant="h5">Total</Typography>
 													</Grid>
 													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field name="total" component={TextFormField} type="number" required={true}/>
+														<Field
+															name="total"
+															component={TextFormField}
+															type="number"
+															required={true}
+														/>
 													</Grid>
 												</Grid>
 											</CardContent>

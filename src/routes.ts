@@ -98,7 +98,7 @@ export const protectedRoutes: Route[] = [
 	},
 	{
 		path: "/quotation/quotationdetail",
-		Component:QuotationDetailPage,
+		Component: QuotationDetailPage,
 	},
 	{
 		path: "/setting/myprofile",
