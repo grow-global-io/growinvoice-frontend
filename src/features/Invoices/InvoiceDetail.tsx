@@ -58,37 +58,37 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		var cWidth = ref?.clientWidth || 0;
 		var cHeight = ref?.clientHeight || 0;
 		var topLeftMargin = 0;
-		var pdfWidth = cWidth + topLeftMargin * 2;
-		var pdfHeight = pdfWidth * 1.5 + topLeftMargin * 2;
-		var canvasImageWidth = cWidth;
-		var canvasImageHeight = cHeight;
-		var totalPDFPages = Math.ceil(cHeight / pdfHeight) - 1;
+		const pdfWidth = 210; // A4 width in mm
+		const pdfHeight = 297; // A4 height in mm
+		const aspectRatio = cWidth / cHeight;
+		const dpi = 300; // high resolution
+		const totalPDFPages = Math.ceil(cHeight / (pdfHeight * (dpi / 96)));
 		console.log(totalPDFPages);
 		if (ref) {
-			const canvas = await html2canvas(ref, { allowTaint: true });
+			const canvas = await html2canvas(ref, {
+				allowTaint: true,
+				scale: dpi / 96,
+				width: cWidth,
+				height: cHeight,
+				useCORS: true,
+			});
 			canvas.getContext("2d");
 			const imgData = canvas.toDataURL("image/png", 1.0);
-			var pdf = new jsPDF("p", "pt", [pdfWidth, pdfHeight]);
-			pdf.addImage(
-				imgData,
-				"PNG",
-				topLeftMargin,
-				topLeftMargin,
-				canvasImageWidth,
-				canvasImageHeight,
-			);
-			for (var i = 1; i <= totalPDFPages; i++) {
-				pdf.addPage([pdfWidth, pdfHeight], "p");
-				pdf.addImage(
-					imgData,
-					"PNG",
-					topLeftMargin,
-					-(pdfHeight * i) + topLeftMargin * 0,
-					cWidth,
-					cHeight,
-				);
-			}
-			pdf.save("download.pdf");
+			// var pdf = new jsPDF("p", "pt", [pdfWidth, pdfHeight]);
+			// pdf.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, canvasWidth, canvasHeight);
+			// for (var i = 1; i <= totalPDFPages; i++) {
+			// 	pdf.addPage([pdfWidth, pdfHeight], "p");
+			// 	pdf.addImage(
+			// 		imgData,
+			// 		"PNG",
+			// 		topLeftMargin,
+			// 		-(pdfHeight * i) + topLeftMargin * 0,
+			// 		cWidth,
+			// 		cHeight,
+			// 	);
+			// }
+			doc.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, pdfWidth, pdfWidth / aspectRatio);
+			doc.save("download.pdf");
 			return doc;
 		}
 	};
