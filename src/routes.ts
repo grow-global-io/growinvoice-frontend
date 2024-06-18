@@ -23,6 +23,7 @@ import HsnCodePage from "@pages/HsnCodePage";
 import TaxTypePage from "@pages/TaxTypePage";
 import ApiCredentialsPage from "@pages/ApiCredentialsPage";
 import InvoiceDetailPage from "@pages/InvoiceDetailPage";
+import QuotationDetailPage from "@pages/QuotationDetailPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -94,6 +95,10 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/quotation/quotationlist",
 		Component: QuotationListPage,
+	},
+	{
+		path: "/quotation/quotationdetail",
+		Component: QuotationDetailPage,
 	},
 	{
 		path: "/setting/myprofile",

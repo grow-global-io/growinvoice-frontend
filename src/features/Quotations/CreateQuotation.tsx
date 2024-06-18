@@ -231,6 +231,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 												label: customer.display_name,
 											}))}
 											loading={customerData.isLoading}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} alignItems={"center"} display={"flex"}>
@@ -255,6 +256,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											InputProps={{
 												startAdornment: <InputAdornment position="start">QTN -</InputAdornment>,
 											}}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
@@ -262,10 +264,16 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											name="reference_number"
 											component={TextFormField}
 											label="Reference Number"
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
-										<Field name="date" component={DateFormField} label="Quotation Date" />
+										<Field
+											name="date"
+											component={DateFormField}
+											label="Quotation Date"
+											required={true}
+										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
 										<Field
@@ -273,6 +281,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											component={DateFormField}
 											label="Expiry At"
 											minDate={moment(values.date).add(1, "days").toDate()}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} mb={3}>
@@ -336,6 +345,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															component={TextFormField}
 															type="number"
 															disabled
+															required={true}
 														/>
 													</Grid>
 													<Grid item xs={12} sm={6}>
@@ -374,6 +384,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															name="discountPercentage"
 															component={TextFormField}
 															type="number"
+															required={true}
 														/>
 													</Grid>
 													<Grid item xs={12}>
@@ -383,7 +394,12 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 														<Typography variant="h5">Total</Typography>
 													</Grid>
 													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field name="total" component={TextFormField} type="number" />
+														<Field
+															name="total"
+															component={TextFormField}
+															type="number"
+															required={true}
+														/>
 													</Grid>
 												</Grid>
 											</CardContent>
@@ -395,6 +411,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											label="Invoice Template"
 											component={AutocompleteField}
 											options={options}
+											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} display="flex" alignItems="center">

@@ -1,0 +1,35 @@
+.quotation_main_info{
+    display: flex;
+    width: 100%;
+ margin-bottom: 50px;
+}
+.quotation_main_info div{
+    width: 33.33%;
+    text-align: start !important;
+}
+.template_2_header{
+    color: white !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #308af3;
+}
+.template_2_header h1{
+    font-size: 30px;
+    font-weight: bolder;
+    text-transform: capitalize;
+
+}
+.template_3_header{
+    background-color: transparent;
+    color: black !important;
+    border-bottom:  2px solid #e8e8e8;
+}
+.template_3_header h1{
+    color: #308af3 !important;
+
+}
+.template_2_table_header th{
+    color: #308af3 !important;
+}

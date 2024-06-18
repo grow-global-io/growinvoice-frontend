@@ -141,10 +141,16 @@ const ProductForm = () => {
 										label="Type"
 										component={AutocompleteField}
 										options={Object.values(CreateProductDtoType).map(stringToListDto)}
+										required={true}
 									/>
 								</Grid>
 								<Grid item xs={12}>
-									<Field name="name" component={TextFormField} label="Service Name" />
+									<Field
+										name="name"
+										component={TextFormField}
+										label="Service Name"
+										required={true}
+									/>
 								</Grid>
 								<Field
 									name="currency_id"
@@ -167,6 +173,7 @@ const ProductForm = () => {
 											value: unit.id,
 											label: unit.name,
 										}))}
+										required={true}
 									/>
 									{!openProductUnitForm && (
 										<Button variant="text" onClick={handleProductUnitOpen} startIcon={<AddIcon />}>
@@ -190,6 +197,7 @@ const ProductForm = () => {
 												value: item?.id,
 											};
 										})}
+										required={true}
 									/>
 									{!openHsnCodeForm && (
 										<Button variant="text" onClick={handleHsnCodeOpen} startIcon={<AddIcon />}>
@@ -211,6 +219,7 @@ const ProductForm = () => {
 												value: item?.id,
 											};
 										})}
+										required={true}
 									/>
 									{!openTaxesForm && (
 										<Button variant="text" onClick={handleTaxesOpen} startIcon={<AddIcon />}>
@@ -221,7 +230,13 @@ const ProductForm = () => {
 								</Grid>
 
 								<Grid item xs={12}>
-									<Field name="price" component={TextFormField} label="Price" type="number" />
+									<Field
+										name="price"
+										component={TextFormField}
+										label="Price"
+										type="number"
+										required={true}
+									/>
 								</Grid>
 
 								<Grid item xs={12}>
