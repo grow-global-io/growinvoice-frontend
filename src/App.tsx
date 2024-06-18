@@ -56,7 +56,12 @@ function AppContainer() {
 	return (
 		<Navbar>
 			<GetStartedDialog
-				open={user?.company?.[0]?.address === null || user?.company?.[0]?.address === ""}
+				open={
+					user?.company?.length === 0 ||
+					user?.company?.[0]?.country_id === "" ||
+					user?.company?.[0]?.address === null ||
+					user?.company?.[0]?.address === ""
+				}
 			/>
 			<Routes>
 				<Route path="*" element={<NotFoundPage />} />

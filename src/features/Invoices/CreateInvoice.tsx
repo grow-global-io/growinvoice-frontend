@@ -45,8 +45,10 @@ import CreateTaxes from "@features/Products/CreateTaxes";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 import Loader from "@shared/components/Loader";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
+	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const [rows, setRows] = useState<GridRowsProp>([]);
 	const { open, handleClickOpen, handleClose } = useDialog();
@@ -80,7 +82,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				})) ?? [],
 			);
 		}
-	}, [invoiceFindOne.isSuccess]);
+	}, [invoiceFindOne.isSuccess || invoiceFindOne?.isRefetching]);
 
 	const initialValues = {
 		customer_id: invoiceFindOne?.data?.customer_id ?? "",
@@ -153,7 +155,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				},
 			});
 		}
-		queryClient.invalidateQueries({
+		queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindOneQueryKey(id ?? ""),
 		});
 		queryClient.refetchQueries({
@@ -166,6 +168,9 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
 		actions.resetForm();
+		setRows([]);
+		navigate("/invoice/createinvoice");
+		navigate("/invoice/invoicelist");
 	};
 
 	useEffect(() => {
@@ -182,13 +187,11 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				} as OmitCreateInvoiceProductsDto;
 			}),
 		);
+		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
 		formik?.setFieldValue("sub_total", subtotal);
 		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
-		const taxAmount =
-			subtotal *
-			(taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id)?.percentage ?? 0 / 100);
-
-		formik?.setFieldValue("total", subtotal - discount + taxAmount);
+		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
+		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
 		if (rows?.length > 0) {
 			formik?.setFieldTouched("product", false);
 			formik?.setFieldError("product", undefined);
@@ -204,7 +207,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		{ value: "3", label: "Option 3" },
 	];
 
-	if (invoiceFindOne.isLoading) return <Loader />;
+	if (invoiceFindOne.isLoading || invoiceFindOne?.isRefetching || invoiceFindOne?.isFetching)
+		return <Loader />;
 
 	return (
 		<>
@@ -232,11 +236,17 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				>
 					{({ values, touched, errors, setFieldValue }) => {
 						useEffect(() => {
-							if (values?.discountPercentage > 0 || values.tax_id) {
+							console.log(values?.tax_id);
+							if (
+								values?.discountPercentage > 0 ||
+								values.tax_id !== "" ||
+								values.tax_id !== undefined ||
+								values.tax_id !== null
+							) {
 								const tax = taxCodes.data?.find((tax) => tax.id === values.tax_id);
 								const discount = values?.sub_total * (values?.discountPercentage / 100);
-								const taxAmount = values?.sub_total * (tax?.percentage ?? 0 / 100);
-								setFieldValue("total", values?.sub_total - discount + taxAmount);
+								const taxPercentage = values?.sub_total * (Number(tax?.percentage ?? 0) / 100);
+								setFieldValue("total", values?.sub_total - discount + taxPercentage);
 							} else {
 								setFieldValue("total", values?.sub_total);
 							}

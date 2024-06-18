@@ -24,6 +24,8 @@ import GridSelectField from "@shared/components/DataGridFields/GridSelectField";
 import GridTextField from "@shared/components/DataGridFields/GridTextField";
 import { useProductControllerFindAll } from "@api/services/product";
 import { currencyFormatter } from "@shared/formatter";
+import { useCreateProductStore } from "@store/createProductStore";
+import CreateProduct from "@features/Products/CreateProduct";
 
 export default function FullFeaturedCrudGrid({
 	rows,
@@ -190,12 +192,7 @@ export default function FullFeaturedCrudGrid({
 			flex: 0.8,
 			editable: true,
 			renderEditCell: (params) => (
-				<GridTextField
-					params={params}
-					label="price"
-					type="number"
-					disabled={params.row.quantity === "" || params.row.product_id === ""}
-				/>
+				<GridTextField params={params} label="price" type="number" disabled={true} />
 			),
 			renderCell: (params) => {
 				return (
@@ -312,7 +309,22 @@ export default function FullFeaturedCrudGrid({
 				onRowEditStop={handleRowEditStop}
 				processRowUpdate={processRowUpdate}
 				slots={{
-					toolbar: null,
+					toolbar: () => {
+						return (
+							<Box
+								sx={{
+									display: "flex",
+									justifyContent: "space-between",
+									p: 2,
+									borderBottom: "1px solid",
+									borderColor: "divider",
+								}}
+							>
+								<Typography variant="h5">Add Products:</Typography>
+								<CreateProduct />
+							</Box>
+						);
+					},
 					footer: () => {
 						return (
 							<Grid
