@@ -29,6 +29,8 @@
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "formik": "^2.4.6",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "localforage": "^1.10.0",
     "lottie-web": "^5.12.2",
     "match-sorter": "^6.3.4",

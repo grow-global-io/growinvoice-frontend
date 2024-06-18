@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Menu from "@mui/material/Menu";
@@ -12,6 +12,11 @@ import {
 	PaymentsOutlined,
 } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@shared/components/Loader";
+import NoDataFound from "@shared/components/NoDataFound";
 
 const styles = {
 	py: 1,
@@ -22,32 +27,73 @@ const styles = {
 	my: { xs: 1 },
 };
 
-const InvoiceDetail = () => {
+const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [htmlContent, setHtmlContent] = useState<string>("");
+	const invoiceRef = useRef<HTMLDivElement | null>(null);
+	const shadowContainerRef = useRef<HTMLDivElement | null>(null);
+
+	const getHtmlText = useQuery({
+		enabled: !!invoiceId,
+		queryKey: ["invoice", invoiceId],
+		queryFn: async () => {
+			const response = await fetch(
+				"https://growinvoice-94ee0dd2031b.herokuapp.com/api/invoice/test/" + invoiceId,
+			);
+			const data = await response.text();
+			return data;
+		},
+	});
 
 	useEffect(() => {
-		fetch("./../../../public/invoiceTemplate/general_3.html")
-			.then((response) => response.text())
-			.then((data) => setHtmlContent(data));
+		if (shadowContainerRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
+			const shadowRoot =
+				shadowContainerRef.current.shadowRoot ||
+				shadowContainerRef.current.attachShadow({ mode: "open" });
+			shadowRoot.innerHTML = getHtmlText.data;
+		}
+	}, [getHtmlText.isSuccess]);
 
-		const loadCSS = (href: string) => {
-			const link = document.createElement("link");
-			link.rel = "stylesheet";
-			link.href = href;
-			document.head.appendChild(link);
-		};
+	const generatePdfFromRef = async () => {
+		const ref = shadowContainerRef.current;
+		const doc = new jsPDF("portrait", "mm", "a4");
 
-		const loadJS = (src: string) => {
-			const script = document.createElement("script");
-			script.src = src;
-			script.async = true;
-			document.body.appendChild(script);
-		};
-
-		loadCSS("./../../../public/invoiceTemplate/style.css");
-		loadJS("./../../../public/js/invoiceTemplate/main.js");
-	}, []);
+		var cWidth = ref?.clientWidth || 0;
+		var cHeight = ref?.clientHeight || 0;
+		var topLeftMargin = 0;
+		var pdfWidth = cWidth + topLeftMargin * 2;
+		var pdfHeight = pdfWidth * 1.5 + topLeftMargin * 2;
+		var canvasImageWidth = cWidth;
+		var canvasImageHeight = cHeight;
+		var totalPDFPages = Math.ceil(cHeight / pdfHeight) - 1;
+		console.log(totalPDFPages);
+		if (ref) {
+			const canvas = await html2canvas(ref, { allowTaint: true });
+			canvas.getContext("2d");
+			const imgData = canvas.toDataURL("image/png", 1.0);
+			var pdf = new jsPDF("p", "pt", [pdfWidth, pdfHeight]);
+			pdf.addImage(
+				imgData,
+				"PNG",
+				topLeftMargin,
+				topLeftMargin,
+				canvasImageWidth,
+				canvasImageHeight,
+			);
+			for (var i = 1; i <= totalPDFPages; i++) {
+				pdf.addPage([pdfWidth, pdfHeight], "p");
+				pdf.addImage(
+					imgData,
+					"PNG",
+					topLeftMargin,
+					-(pdfHeight * i) + topLeftMargin * 0,
+					cWidth,
+					cHeight,
+				);
+			}
+			pdf.save("download.pdf");
+			return doc;
+		}
+	};
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -67,7 +113,9 @@ const InvoiceDetail = () => {
 		{
 			name: "Download",
 			icon: FileDownloadOutlined,
-			func: () => console.log("Download"),
+			func: () => {
+				generatePdfFromRef();
+			},
 		},
 		{
 			name: "Send Mail",
@@ -95,6 +143,10 @@ const InvoiceDetail = () => {
 			func: handleMoreClick,
 		},
 	];
+
+	if (getHtmlText.isLoading) return <Loader />;
+
+	if (!getHtmlText.data) return <NoDataFound message="No Data Found" />;
 
 	return (
 		<>
@@ -134,9 +186,19 @@ const InvoiceDetail = () => {
 					</MenuItem>
 				))}
 			</Menu>
-			<Box sx={{ width: { xs: "85vw", sm: "auto" }, overflowX: { xs: "scroll", sm: "visible" } }}>
-				<div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-			</Box>
+			{/* <Box
+				ref={iframeRef}
+				src="https://growinvoice-94ee0dd2031b.herokuapp.com/api/invoice/test/clxks3ic3000iee9o70z725kj"
+				component={"iframe"}
+				sx={{ width: "100%", height: "80vh", overflowX: { xs: "scroll", sm: "visible" } }}
+			></Box> */}
+			<Box
+				ref={shadowContainerRef}
+				// component={"div"}
+				// srcDoc={getHtmlText.data}
+				// dangerouslySetInnerHTML={{ __html: getHtmlText.data }}
+				sx={{ width: "100%", height: "auto", overflowX: { xs: "scroll", sm: "visible" } }}
+			></Box>
 		</>
 	);
 };

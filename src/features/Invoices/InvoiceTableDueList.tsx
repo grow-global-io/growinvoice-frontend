@@ -121,7 +121,7 @@ const InvoiceTableDueList = () => {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								console.log("View Invoice");
+								navigate(`/invoice/invoicedetails/${params.row.id}`);
 							}}
 							src={VisibilityIcon}
 						/>
