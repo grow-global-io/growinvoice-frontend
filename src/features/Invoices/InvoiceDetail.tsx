@@ -63,7 +63,6 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		const aspectRatio = cWidth / cHeight;
 		const dpi = 300; // high resolution
 		const totalPDFPages = Math.ceil(cHeight / (pdfHeight * (dpi / 96)));
-		console.log(totalPDFPages);
 		if (ref) {
 			const canvas = await html2canvas(ref, {
 				allowTaint: true,
@@ -74,20 +73,19 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			});
 			canvas.getContext("2d");
 			const imgData = canvas.toDataURL("image/png", 1.0);
-			// var pdf = new jsPDF("p", "pt", [pdfWidth, pdfHeight]);
-			// pdf.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, canvasWidth, canvasHeight);
-			// for (var i = 1; i <= totalPDFPages; i++) {
-			// 	pdf.addPage([pdfWidth, pdfHeight], "p");
-			// 	pdf.addImage(
-			// 		imgData,
-			// 		"PNG",
-			// 		topLeftMargin,
-			// 		-(pdfHeight * i) + topLeftMargin * 0,
-			// 		cWidth,
-			// 		cHeight,
-			// 	);
-			// }
 			doc.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, pdfWidth, pdfWidth / aspectRatio);
+
+			for (var i = 1; i <= totalPDFPages; i++) {
+				doc.addPage();
+				doc.addImage(
+					imgData,
+					"PNG",
+					topLeftMargin,
+					-(pdfHeight * i) + topLeftMargin * 0,
+					pdfWidth,
+					pdfWidth / aspectRatio,
+				);
+			}
 			doc.save("download.pdf");
 			return doc;
 		}
