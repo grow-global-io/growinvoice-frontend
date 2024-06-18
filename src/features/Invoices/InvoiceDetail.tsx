@@ -29,8 +29,7 @@ const styles = {
 
 const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const invoiceRef = useRef<HTMLDivElement | null>(null);
-	const shadowContainerRef = useRef<HTMLDivElement | null>(null);
+	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
 	const getHtmlText = useQuery({
 		enabled: !!invoiceId,
@@ -45,18 +44,17 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 	});
 
 	useEffect(() => {
-		if (shadowContainerRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
-			const shadowRoot =
-				shadowContainerRef.current.shadowRoot ||
-				shadowContainerRef.current.attachShadow({ mode: "open" });
-			shadowRoot.innerHTML = getHtmlText.data;
+		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
+			const iframe = iframeRef.current;
+			iframe.srcdoc = getHtmlText.data;
 		}
 	}, [getHtmlText.isSuccess]);
 
 	const generatePdfFromRef = async () => {
-		const ref = shadowContainerRef.current;
+		const iframe = iframeRef.current;
+		const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
+		const ref = iframeDoc?.getElementById("tm_download_section");
 		const doc = new jsPDF("portrait", "mm", "a4");
-
 		var cWidth = ref?.clientWidth || 0;
 		var cHeight = ref?.clientHeight || 0;
 		var topLeftMargin = 0;
@@ -186,18 +184,17 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 					</MenuItem>
 				))}
 			</Menu>
-			{/* <Box
-				ref={iframeRef}
-				src="https://growinvoice-94ee0dd2031b.herokuapp.com/api/invoice/test/clxks3ic3000iee9o70z725kj"
-				component={"iframe"}
-				sx={{ width: "100%", height: "80vh", overflowX: { xs: "scroll", sm: "visible" } }}
-			></Box> */}
 			<Box
-				ref={shadowContainerRef}
-				// component={"div"}
-				// srcDoc={getHtmlText.data}
-				// dangerouslySetInnerHTML={{ __html: getHtmlText.data }}
-				sx={{ width: "100%", height: "auto", overflowX: { xs: "scroll", sm: "visible" } }}
+				ref={iframeRef}
+				component="iframe"
+				sx={{
+					width: {
+						xs: "1100px",
+						md: "100%",
+					},
+					height: "80vh",
+					overflowX: { xs: "scroll", sm: "visible" },
+				}}
 			></Box>
 		</>
 	);
