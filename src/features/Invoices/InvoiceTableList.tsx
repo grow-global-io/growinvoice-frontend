@@ -121,7 +121,7 @@ export default function InvoiceTableList() {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								navigate("/invoice/invoicedetail");
+								navigate("/invoice/invoicedetails/" + params.row.id);
 							}}
 							src={VisibilityIcon}
 						/>
