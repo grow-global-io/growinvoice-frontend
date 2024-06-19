@@ -1,8 +1,8 @@
-import InvoiceTemplate from "../features/Invoices/InvoiceTemplate";
+import InvoiceDetail from "@features/Invoices/InvoiceDetail";
 import { useParams } from "react-router-dom";
 const InvoiceTemplatePage = () => {
 	const { id } = useParams<{ id?: string }>();
-	return <InvoiceTemplate invoiceId={id} />;
+	return <InvoiceDetail invoiceId={id ?? ""} IsPublic={true} />;
 };
 
 export default InvoiceTemplatePage;

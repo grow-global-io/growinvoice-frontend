@@ -11,7 +11,7 @@ import {
 	CreateOutlined,
 	PaymentsOutlined,
 } from "@mui/icons-material";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ import {
 	useInvoiceControllerTest,
 } from "@api/services/invoice";
 import { usePdfExport } from "@shared/hooks/usePdfExport";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -34,7 +35,7 @@ const styles = {
 	border: { xs: "1px solid rgba(13, 110, 253, 0.5)", lg: "none" },
 };
 
-const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
+const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
 	const navigate = useNavigate();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -169,28 +170,62 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 	if (!getHtmlText.data) return <NoDataFound message="No Data Found" />;
 
 	return (
-		<>
-			<Typography variant="h3" color={"secondary.dark"} mb={3}>
-				#INV-{getInvoiceData?.data?.invoice_number}
-			</Typography>
-			<ButtonGroup
+		<Box
+			sx={{
+				p: IsPublic ? 2 : 0,
+			}}
+		>
+			<Box
 				sx={{
-					width: "100%",
-					bgcolor: "custom.transparentWhite",
 					display: "flex",
-					flexWrap: { xs: "wrap" },
-					my: 2,
+					justifyContent: "space-between",
+					alignItems: "center",
+					mb: 2,
 				}}
-				variant="text"
-				aria-label="Basic button group"
 			>
-				{buttonList.map((item, index) => (
-					<Button sx={styles} onClick={item.func} key={index} href={item.href}>
-						<item.icon sx={{ mr: 1 }} />
-						{item.name}
+				<Typography variant="h3" color={"secondary.dark"}>
+					#INV-{getInvoiceData?.data?.invoice_number}
+				</Typography>
+				{IsPublic && (
+					<Button
+						variant="contained"
+						startIcon={<DownloadIcon />}
+						onClick={() => {
+							if (isMobile) {
+								generatePdfFromHtml({
+									html: getHtmlText.data ?? "",
+								});
+								return;
+							}
+							generatePdfFromRef({
+								iframeRef,
+							});
+						}}
+					>
+						Download
 					</Button>
-				))}
-			</ButtonGroup>
+				)}
+			</Box>
+			{!IsPublic && (
+				<ButtonGroup
+					sx={{
+						width: "100%",
+						bgcolor: "custom.transparentWhite",
+						display: "flex",
+						flexWrap: { xs: "wrap" },
+						my: 2,
+					}}
+					variant="text"
+					aria-label="Basic button group"
+				>
+					{buttonList.map((item, index) => (
+						<Button sx={styles} onClick={item.func} key={index} href={item.href}>
+							<item.icon sx={{ mr: 1 }} />
+							{item.name}
+						</Button>
+					))}
+				</ButtonGroup>
+			)}
 			<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
 				{menuLists.map((item, index) => (
 					<MenuItem
@@ -234,7 +269,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 					}}
 				/>
 			)}
-		</>
+		</Box>
 	);
 };
 

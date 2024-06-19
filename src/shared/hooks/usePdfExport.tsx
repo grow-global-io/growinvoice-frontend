@@ -52,7 +52,7 @@ export const usePdfExport = () => {
 						pdfWidth / aspectRatio,
 					);
 				}
-				doc.save("download.pdf");
+				doc.save("Invoice.pdf");
 				LoaderService.instance?.hideLoader();
 				return doc;
 			}
@@ -108,7 +108,7 @@ export const usePdfExport = () => {
 						pdfWidth / aspectRatio,
 					);
 				}
-				doc.save("download.pdf");
+				doc.save("Invoice.pdf");
 				document.body.removeChild(createDiv);
 				LoaderService.instance?.hideLoader();
 				return doc;
