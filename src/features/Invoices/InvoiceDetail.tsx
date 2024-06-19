@@ -17,17 +17,24 @@ import jsPDF from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
-
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@store/auth";
 const styles = {
+	width: { xs: "100%", sm: "auto" },
 	py: 1,
 	px: 3,
 	color: "secondary.dark",
 	fontWeight: 500,
 	textTransform: "capitalize",
 	my: { xs: 1 },
+	border: { xs: "1px solid rgba(13, 110, 253, 0.5)", lg: "none" },
 };
+import { useMailControllerSendMail } from "@api/services/mail";
+import InvoiceTemplateCard from "./InvoiceTemplateCard";
 
 const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
+	const navigate = useNavigate();
+	const { user } = useAuthStore();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -55,9 +62,9 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
 		const ref = iframeDoc?.getElementById("tm_download_section");
 		const doc = new jsPDF("portrait", "mm", "a4");
-		var cWidth = ref?.clientWidth || 0;
-		var cHeight = ref?.clientHeight || 0;
-		var topLeftMargin = 0;
+		const cWidth = ref?.clientWidth || 0;
+		const cHeight = ref?.clientHeight || 0;
+		const topLeftMargin = 0;
 		const pdfWidth = 210; // A4 width in mm
 		const pdfHeight = 297; // A4 height in mm
 		const aspectRatio = cWidth / cHeight;
@@ -75,7 +82,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			const imgData = canvas.toDataURL("image/png", 1.0);
 			doc.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, pdfWidth, pdfWidth / aspectRatio);
 
-			for (var i = 1; i <= totalPDFPages; i++) {
+			for (let i = 1; i <= totalPDFPages; i++) {
 				doc.addPage();
 				doc.addImage(
 					imgData,
@@ -99,8 +106,61 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		setAnchorEl(null);
 	};
 
+	const { mutate: sendMail } = useMailControllerSendMail();
+	const invoiceLink = `http://localhost:5173/invoice/invoicetemplate/${invoiceId}`;
+	const handleSendMail = async () => {
+		try {
+			const email = user?.email || "default@example.com"; // Provide a fallback value
+			const to = user?.email || "default@example.com"; // Provide a fallback value
+
+			const sendMailDto = {
+				email: email,
+				to: to,
+				subject: "Invoice Details",
+				body: `
+                <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
+                <a href="${invoiceLink}" style="text-decoration: none;">
+                    <button style="
+                        display: inline-block;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        color: white;
+                        background-color: #007BFF;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">
+                        View Invoice
+                    </button>
+                </a>
+            `,
+			};
+
+			sendMail(
+				{ data: sendMailDto },
+				{
+					onSuccess: () => {
+						alert("Email sent successfully");
+					},
+					onError: (error) => {
+						alert("Failed to send email");
+						console.error(error);
+					},
+				},
+			);
+		} catch (error) {
+			console.error("Error generating PDF:", error);
+			alert("Failed to generate PDF");
+		}
+	};
+
 	const menuLists = [
-		{ name: "Share", func: () => console.log("Share") },
+		{
+			name: "Share",
+			func: () => {
+				navigate(`/invoice/invoicetemplate/${invoiceId}`);
+			},
+		},
 		{ name: "Marked Paid", func: () => console.log("Marked Paid") },
 		{ name: "Mark Send", func: () => console.log("Mark Send") },
 		{ name: "Delete", func: () => console.log("Delete") },
@@ -116,17 +176,18 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
-			func: () => console.log("Send Mail"),
+			func: handleSendMail,
 		},
 		{
 			name: "Send Whatsapp",
 			icon: WhatsApp,
-			func: () => console.log("Send Whatsapp"),
+			func: () => console.log("send whatsapp"),
+			href: `https://api.whatsapp.com/send/?phone=${user?.phone}&text=http://localhost:5174/invoice/invoicetemplate/clxlj9nph000wxj3yiv73w2s6&type=url&app_absent=0`,
 		},
 		{
 			name: "Edit",
 			icon: CreateOutlined,
-			func: () => console.log("Edit"),
+			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
 		},
 		{
 			name: "Enter Payment",
@@ -139,9 +200,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			func: handleMoreClick,
 		},
 	];
-
 	if (getHtmlText.isLoading) return <Loader />;
-
 	if (!getHtmlText.data) return <NoDataFound message="No Data Found" />;
 
 	return (
@@ -162,7 +221,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 				aria-label="Basic button group"
 			>
 				{buttonList.map((item, index) => (
-					<Button sx={styles} onClick={item.func} key={index}>
+					<Button sx={styles} onClick={item.func} key={index} href={item.href}>
 						<item.icon sx={{ mr: 1 }} />
 						{item.name}
 					</Button>
@@ -192,8 +251,11 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 					},
 					height: "80vh",
 					overflowX: { xs: "scroll", sm: "visible" },
+					display: { xs: "none", md: "block" },
 				}}
 			></Box>
+
+			<InvoiceTemplateCard invoiceId={invoiceId} />
 		</>
 	);
 };
