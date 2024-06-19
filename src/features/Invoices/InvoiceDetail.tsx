@@ -17,7 +17,8 @@ import jsPDF from "jspdf";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
-
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@store/auth";
 const styles = {
 	py: 1,
 	px: 3,
@@ -28,6 +29,9 @@ const styles = {
 };
 
 const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
+	const navigate = useNavigate();
+	const { user } = useAuthStore();
+	console.log(user);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -100,7 +104,12 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 	};
 
 	const menuLists = [
-		{ name: "Share", func: () => console.log("Share") },
+		{
+			name: "Share",
+			func: () => {
+				navigate(`/invoice/invoicetemplate/${invoiceId}`);
+			},
+		},
 		{ name: "Marked Paid", func: () => console.log("Marked Paid") },
 		{ name: "Mark Send", func: () => console.log("Mark Send") },
 		{ name: "Delete", func: () => console.log("Delete") },
@@ -121,12 +130,13 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		{
 			name: "Send Whatsapp",
 			icon: WhatsApp,
-			func: () => console.log("Send Whatsapp"),
+			func: () => console.log("send whatsapp"),
+			href: `https://api.whatsapp.com/send/?phone=${user?.phone}&text=http://localhost:5174/invoice/invoicetemplate/clxlj9nph000wxj3yiv73w2s6&type=url&app_absent=0`,
 		},
 		{
 			name: "Edit",
 			icon: CreateOutlined,
-			func: () => console.log("Edit"),
+			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
 		},
 		{
 			name: "Enter Payment",
@@ -162,7 +172,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 				aria-label="Basic button group"
 			>
 				{buttonList.map((item, index) => (
-					<Button sx={styles} onClick={item.func} key={index}>
+					<Button sx={styles} onClick={item.func} key={index} href={item.href}>
 						<item.icon sx={{ mr: 1 }} />
 						{item.name}
 					</Button>

@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 const HeroSecton = () => {
 	return (
-		<Box padding={"50px 100px 0px 41px"}>
+		<Box padding={{ xs: "30px 0", lg: "50px 100px 0px 41px" }}>
 			<Box component={"div"} className="main-heading-div">
 				<Typography variant="h1" className="main-heading-text">
 					Build the Future with
@@ -19,7 +19,7 @@ const HeroSecton = () => {
 					we are team of talented engineers <br /> making apllication at Grow-Global
 				</Typography>
 
-				<Button variant="contained" sx={{ marginTop: "30px" }}>
+				<Button variant="contained" sx={{ marginTop: { xs: 1, sm: "30px" } }}>
 					Create your first invoice
 				</Button>
 			</Box>
