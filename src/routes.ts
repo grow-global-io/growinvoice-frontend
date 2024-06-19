@@ -24,6 +24,7 @@ import TaxTypePage from "@pages/TaxTypePage";
 import ApiCredentialsPage from "@pages/ApiCredentialsPage";
 import InvoiceDetailPage from "@pages/InvoiceDetailPage";
 import QuotationDetailPage from "@pages/QuotationDetailPage";
+import InvoiceTemplatePage from "@pages/InvoiceTemplatePage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -40,6 +41,10 @@ export const unProtectedRoutes: Route[] = [
 	{
 		path: "/reset-password",
 		Component: ResetPassword,
+	},
+	{
+		path: "/invoice/invoicetemplate/:id",
+		Component: InvoiceTemplatePage,
 	},
 ];
 
@@ -151,5 +156,9 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/setting/apicredentials",
 		Component: ApiCredentialsPage,
+	},
+	{
+		path: "/invoice/invoicetemplate/:id",
+		Component: InvoiceTemplatePage,
 	},
 ];
