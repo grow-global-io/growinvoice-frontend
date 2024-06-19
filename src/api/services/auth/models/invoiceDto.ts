@@ -30,6 +30,7 @@ export interface InvoiceDto {
 	sub_total: number;
 	/** @nullable */
 	tax_id: string | null;
+	template_id: string;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

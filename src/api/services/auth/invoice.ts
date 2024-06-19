@@ -439,7 +439,7 @@ export const useInvoiceControllerRemove = <
 	return useMutation(mutationOptions);
 };
 export const invoiceControllerTest = (id: string, signal?: AbortSignal) => {
-	return authInstance<void>({ url: `/api/invoice/test/${id}`, method: "GET", signal });
+	return authInstance<string>({ url: `/api/invoice/test/${id}`, method: "GET", signal });
 };
 
 export const getInvoiceControllerTestQueryKey = (id: string) => {
@@ -488,126 +488,6 @@ export const useInvoiceControllerTest = <
 	},
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 	const queryOptions = getInvoiceControllerTestQueryOptions(id, options);
-
-	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-};
-
-export const invoiceControllerTesta = (id: string, signal?: AbortSignal) => {
-	return authInstance<void>({ url: `/api/invoice/testa/${id}`, method: "GET", signal });
-};
-
-export const getInvoiceControllerTestaQueryKey = (id: string) => {
-	return [`/api/invoice/testa/${id}`] as const;
-};
-
-export const getInvoiceControllerTestaQueryOptions = <
-	TData = Awaited<ReturnType<typeof invoiceControllerTesta>>,
-	TError = ErrorType<unknown>,
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTesta>>, TError, TData>
-		>;
-	},
-) => {
-	const { query: queryOptions } = options ?? {};
-
-	const queryKey = queryOptions?.queryKey ?? getInvoiceControllerTestaQueryKey(id);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof invoiceControllerTesta>>> = ({ signal }) =>
-		invoiceControllerTesta(id, signal);
-
-	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof invoiceControllerTesta>>,
-		TError,
-		TData
-	> & { queryKey: QueryKey };
-};
-
-export type InvoiceControllerTestaQueryResult = NonNullable<
-	Awaited<ReturnType<typeof invoiceControllerTesta>>
->;
-export type InvoiceControllerTestaQueryError = ErrorType<unknown>;
-
-export const useInvoiceControllerTesta = <
-	TData = Awaited<ReturnType<typeof invoiceControllerTesta>>,
-	TError = ErrorType<unknown>,
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTesta>>, TError, TData>
-		>;
-	},
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-	const queryOptions = getInvoiceControllerTestaQueryOptions(id, options);
-
-	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-};
-
-export const invoiceControllerTest1 = (id: string, signal?: AbortSignal) => {
-	return authInstance<InvoiceWithAllDataDto>({
-		url: `/api/invoice/test1/${id}`,
-		method: "GET",
-		signal,
-	});
-};
-
-export const getInvoiceControllerTest1QueryKey = (id: string) => {
-	return [`/api/invoice/test1/${id}`] as const;
-};
-
-export const getInvoiceControllerTest1QueryOptions = <
-	TData = Awaited<ReturnType<typeof invoiceControllerTest1>>,
-	TError = ErrorType<unknown>,
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTest1>>, TError, TData>
-		>;
-	},
-) => {
-	const { query: queryOptions } = options ?? {};
-
-	const queryKey = queryOptions?.queryKey ?? getInvoiceControllerTest1QueryKey(id);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof invoiceControllerTest1>>> = ({ signal }) =>
-		invoiceControllerTest1(id, signal);
-
-	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof invoiceControllerTest1>>,
-		TError,
-		TData
-	> & { queryKey: QueryKey };
-};
-
-export type InvoiceControllerTest1QueryResult = NonNullable<
-	Awaited<ReturnType<typeof invoiceControllerTest1>>
->;
-export type InvoiceControllerTest1QueryError = ErrorType<unknown>;
-
-export const useInvoiceControllerTest1 = <
-	TData = Awaited<ReturnType<typeof invoiceControllerTest1>>,
-	TError = ErrorType<unknown>,
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTest1>>, TError, TData>
-		>;
-	},
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-	const queryOptions = getInvoiceControllerTest1QueryOptions(id, options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

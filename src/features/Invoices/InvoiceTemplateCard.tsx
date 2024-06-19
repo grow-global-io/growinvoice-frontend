@@ -5,7 +5,13 @@ import { useAuthStore } from "@store/auth";
 import { useInvoiceControllerFindOne } from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
 
-const InvoiceTemplateCard = ({ invoiceId }: { invoiceId: string }) => {
+const InvoiceTemplateCard = ({
+	invoiceId,
+	downloadfunc,
+}: {
+	invoiceId: string;
+	downloadfunc: () => void;
+}) => {
 	const { user } = useAuthStore();
 	const invoiceFindOne = useInvoiceControllerFindOne(invoiceId ?? "", {
 		query: {
@@ -54,7 +60,12 @@ const InvoiceTemplateCard = ({ invoiceId }: { invoiceId: string }) => {
 					</Box>
 				</Box>
 				<Box textAlign={"center"} mt={1}>
-					<Button variant="contained">
+					<Button
+						variant="contained"
+						onClick={() => {
+							downloadfunc();
+						}}
+					>
 						<FileDownloadOutlined />
 						Download
 					</Button>

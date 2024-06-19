@@ -10,6 +10,7 @@ import type { InvoicePaidStatus } from "./invoicePaidStatus";
 import type { PaymentDetails } from "./paymentDetails";
 import type { InvoiceRecurring } from "./invoiceRecurring";
 import type { InvoiceTax } from "./invoiceTax";
+import type { InvoiceTemplate } from "./invoiceTemplate";
 import type { User } from "./user";
 
 export interface Invoice {
@@ -38,6 +39,8 @@ export interface Invoice {
 	tax?: InvoiceTax;
 	/** @nullable */
 	tax_id: string | null;
+	template?: InvoiceTemplate;
+	template_id: string;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

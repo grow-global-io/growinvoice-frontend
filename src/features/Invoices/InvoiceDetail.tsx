@@ -11,14 +11,19 @@ import {
 	CreateOutlined,
 	PaymentsOutlined,
 } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { useQuery } from "@tanstack/react-query";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@store/auth";
+import { useMailControllerSendMail } from "@api/services/mail";
+import InvoiceTemplateCard from "./InvoiceTemplateCard";
+import {
+	useInvoiceControllerInvoicePublicFindOne,
+	useInvoiceControllerTest,
+} from "@api/services/invoice";
+import { usePdfExport } from "@shared/hooks/usePdfExport";
+import DownloadIcon from "@mui/icons-material/Download";
+
 const styles = {
 	width: { xs: "100%", sm: "auto" },
 	py: 1,
@@ -29,74 +34,31 @@ const styles = {
 	my: { xs: 1 },
 	border: { xs: "1px solid rgba(13, 110, 253, 0.5)", lg: "none" },
 };
-import { useMailControllerSendMail } from "@api/services/mail";
-import InvoiceTemplateCard from "./InvoiceTemplateCard";
 
-const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
+const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
 	const navigate = useNavigate();
-	const { user } = useAuthStore();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
+	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
+	const isMobile = useMediaQuery("(max-width:800px)");
 
-	const getHtmlText = useQuery({
-		enabled: !!invoiceId,
-		queryKey: ["invoice", invoiceId],
-		queryFn: async () => {
-			const response = await fetch(
-				"https://growinvoice-94ee0dd2031b.herokuapp.com/api/invoice/test/" + invoiceId,
-			);
-			const data = await response.text();
-			return data;
+	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
+		query: {
+			enabled: invoiceId !== undefined,
 		},
 	});
 
+	const getInvoiceData = useInvoiceControllerInvoicePublicFindOne(invoiceId ?? "", {
+		query: {
+			enabled: invoiceId !== undefined,
+		},
+	});
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText.data;
 		}
 	}, [getHtmlText.isSuccess]);
-
-	const generatePdfFromRef = async () => {
-		const iframe = iframeRef.current;
-		const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
-		const ref = iframeDoc?.getElementById("tm_download_section");
-		const doc = new jsPDF("portrait", "mm", "a4");
-		const cWidth = ref?.clientWidth || 0;
-		const cHeight = ref?.clientHeight || 0;
-		const topLeftMargin = 0;
-		const pdfWidth = 210; // A4 width in mm
-		const pdfHeight = 297; // A4 height in mm
-		const aspectRatio = cWidth / cHeight;
-		const dpi = 300; // high resolution
-		const totalPDFPages = Math.ceil(cHeight / (pdfHeight * (dpi / 96)));
-		if (ref) {
-			const canvas = await html2canvas(ref, {
-				allowTaint: true,
-				scale: dpi / 96,
-				width: cWidth,
-				height: cHeight,
-				useCORS: true,
-			});
-			canvas.getContext("2d");
-			const imgData = canvas.toDataURL("image/png", 1.0);
-			doc.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, pdfWidth, pdfWidth / aspectRatio);
-
-			for (let i = 1; i <= totalPDFPages; i++) {
-				doc.addPage();
-				doc.addImage(
-					imgData,
-					"PNG",
-					topLeftMargin,
-					-(pdfHeight * i) + topLeftMargin * 0,
-					pdfWidth,
-					pdfWidth / aspectRatio,
-				);
-			}
-			doc.save("download.pdf");
-			return doc;
-		}
-	};
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -106,16 +68,14 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		setAnchorEl(null);
 	};
 
-	const { mutate: sendMail } = useMailControllerSendMail();
-	const invoiceLink = `http://localhost:5173/invoice/invoicetemplate/${invoiceId}`;
+	const { mutateAsync: sendMail } = useMailControllerSendMail();
+	const invoiceLink = `${window.location.origin}/invoice/invoicetemplate/${invoiceId}`;
 	const handleSendMail = async () => {
 		try {
-			const email = user?.email || "default@example.com"; // Provide a fallback value
-			const to = user?.email || "default@example.com"; // Provide a fallback value
+			const email = getInvoiceData?.data?.customer?.email ?? "";
 
 			const sendMailDto = {
 				email: email,
-				to: to,
 				subject: "Invoice Details",
 				body: `
                 <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
@@ -136,18 +96,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
             `,
 			};
 
-			sendMail(
-				{ data: sendMailDto },
-				{
-					onSuccess: () => {
-						alert("Email sent successfully");
-					},
-					onError: (error) => {
-						alert("Failed to send email");
-						console.error(error);
-					},
-				},
-			);
+			await sendMail({ data: sendMailDto });
 		} catch (error) {
 			console.error("Error generating PDF:", error);
 			alert("Failed to generate PDF");
@@ -170,7 +119,15 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			name: "Download",
 			icon: FileDownloadOutlined,
 			func: () => {
-				generatePdfFromRef();
+				if (isMobile) {
+					generatePdfFromHtml({
+						html: getHtmlText.data ?? "",
+					});
+					return;
+				}
+				generatePdfFromRef({
+					iframeRef,
+				});
 			},
 		},
 		{
@@ -182,7 +139,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			name: "Send Whatsapp",
 			icon: WhatsApp,
 			func: () => console.log("send whatsapp"),
-			href: `https://api.whatsapp.com/send/?phone=${user?.phone}&text=http://localhost:5174/invoice/invoicetemplate/clxlj9nph000wxj3yiv73w2s6&type=url&app_absent=0`,
+			href: `https://api.whatsapp.com/send/?phone=${getInvoiceData?.data?.customer?.phone}&text=${window.location.origin}/invoice/invoicetemplate/${invoiceId}&type=url&app_absent=0`,
 		},
 		{
 			name: "Edit",
@@ -200,33 +157,75 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			func: handleMoreClick,
 		},
 	];
-	if (getHtmlText.isLoading) return <Loader />;
+	if (
+		getHtmlText.isLoading ||
+		getInvoiceData?.isLoading ||
+		getInvoiceData?.isRefetching ||
+		getInvoiceData?.isFetching ||
+		getHtmlText?.isRefetching ||
+		getHtmlText?.isFetching
+	) {
+		return <Loader />;
+	}
 	if (!getHtmlText.data) return <NoDataFound message="No Data Found" />;
 
 	return (
-		<>
-			<Typography variant="h3" color={"secondary.dark"} mb={3}>
-				#INV-000001
-			</Typography>
-			<ButtonGroup
+		<Box
+			sx={{
+				p: IsPublic ? 2 : 0,
+			}}
+		>
+			<Box
 				sx={{
-					width: "100%",
-					bgcolor: "custom.transparentWhite",
 					display: "flex",
-					// flexDirection: { xs: "column", sm: "row" },
-					flexWrap: { xs: "wrap" },
-					my: 2,
+					justifyContent: "space-between",
+					alignItems: "center",
+					mb: 2,
 				}}
-				variant="text"
-				aria-label="Basic button group"
 			>
-				{buttonList.map((item, index) => (
-					<Button sx={styles} onClick={item.func} key={index} href={item.href}>
-						<item.icon sx={{ mr: 1 }} />
-						{item.name}
+				<Typography variant="h3" color={"secondary.dark"}>
+					#INV-{getInvoiceData?.data?.invoice_number}
+				</Typography>
+				{IsPublic && (
+					<Button
+						variant="contained"
+						startIcon={<DownloadIcon />}
+						onClick={() => {
+							if (isMobile) {
+								generatePdfFromHtml({
+									html: getHtmlText.data ?? "",
+								});
+								return;
+							}
+							generatePdfFromRef({
+								iframeRef,
+							});
+						}}
+					>
+						Download
 					</Button>
-				))}
-			</ButtonGroup>
+				)}
+			</Box>
+			{!IsPublic && (
+				<ButtonGroup
+					sx={{
+						width: "100%",
+						bgcolor: "custom.transparentWhite",
+						display: "flex",
+						flexWrap: { xs: "wrap" },
+						my: 2,
+					}}
+					variant="text"
+					aria-label="Basic button group"
+				>
+					{buttonList.map((item, index) => (
+						<Button sx={styles} onClick={item.func} key={index} href={item.href}>
+							<item.icon sx={{ mr: 1 }} />
+							{item.name}
+						</Button>
+					))}
+				</ButtonGroup>
+			)}
 			<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
 				{menuLists.map((item, index) => (
 					<MenuItem
@@ -241,22 +240,36 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 					</MenuItem>
 				))}
 			</Menu>
-			<Box
-				ref={iframeRef}
-				component="iframe"
-				sx={{
-					width: {
-						xs: "1100px",
-						md: "100%",
-					},
-					height: "80vh",
-					overflowX: { xs: "scroll", sm: "visible" },
-					display: { xs: "none", md: "block" },
-				}}
-			></Box>
-
-			<InvoiceTemplateCard invoiceId={invoiceId} />
-		</>
+			{!isMobile ? (
+				<Box
+					ref={iframeRef}
+					component="iframe"
+					sx={{
+						width: {
+							xs: "1100px",
+							md: "100%",
+						},
+						height: "80vh",
+						overflowX: { xs: "scroll", sm: "visible" },
+					}}
+				></Box>
+			) : (
+				<InvoiceTemplateCard
+					invoiceId={invoiceId}
+					downloadfunc={() => {
+						if (isMobile) {
+							generatePdfFromHtml({
+								html: getHtmlText.data ?? "",
+							});
+						} else {
+							generatePdfFromRef({
+								iframeRef,
+							});
+						}
+					}}
+				/>
+			)}
+		</Box>
 	);
 };
 

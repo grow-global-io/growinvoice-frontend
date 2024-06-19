@@ -120,9 +120,9 @@ const GetStartedDialog = ({ open, handleClose }: { open: boolean; handleClose?: 
 				initialValues={initialValues}
 				validationSchema={validationSchema}
 				onSubmit={handleSubmit}
+				autoComplete="off"
 			>
-				{({ submitForm, values, errors }) => {
-					console.log(errors);
+				{({ submitForm, values }) => {
 					return (
 						<Form>
 							<DialogContent dividers style={{ maxHeight: "70vh", overflowY: "auto" }}>

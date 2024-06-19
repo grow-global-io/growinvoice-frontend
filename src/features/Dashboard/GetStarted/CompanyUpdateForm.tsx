@@ -29,7 +29,12 @@ const CompanyUpdateForm = () => {
 			</Typography>
 			<Grid container spacing={1} mt={2}>
 				<Grid item xs={12} sm={6}>
-					<Field name="companyName" label="Company Name" component={TextFormField} />
+					<Field
+						name="companyName"
+						label="Company Name"
+						component={TextFormField}
+						isRequired={true}
+					/>
 				</Grid>
 				<Grid item xs={12} sm={6}>
 					<Field name="phoneNumber" label="Phone Number" component={PhoneInputFormField} />

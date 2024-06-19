@@ -11,6 +11,7 @@ import type { PaymentDetails } from "./paymentDetails";
 import type { InvoiceProducts } from "./invoiceProducts";
 import type { InvoiceWithAllDataDtoRecurring } from "./invoiceWithAllDataDtoRecurring";
 import type { InvoiceWithAllDataDtoTax } from "./invoiceWithAllDataDtoTax";
+import type { InvoiceTemplate } from "./invoiceTemplate";
 import type { User } from "./user";
 
 export interface InvoiceWithAllDataDto {
@@ -40,6 +41,8 @@ export interface InvoiceWithAllDataDto {
 	tax?: InvoiceWithAllDataDtoTax;
 	/** @nullable */
 	tax_id: string | null;
+	template?: InvoiceTemplate;
+	template_id: string;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

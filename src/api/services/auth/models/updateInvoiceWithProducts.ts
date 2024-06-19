@@ -27,6 +27,7 @@ export interface UpdateInvoiceWithProducts {
 	sub_total?: number;
 	/** @nullable */
 	tax_id?: string | null;
+	template_id?: string;
 	total?: number;
 	user_id?: string;
 }

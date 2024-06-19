@@ -13,14 +13,14 @@ export const TextFormField: React.FC<
 	FieldProps & {
 		label?: string;
 		required?: boolean;
+		isRequired?: boolean;
 		type?: string;
 		backgroundColor?: string; // New prop for background color
 	}
-> = ({ field, form, label, backgroundColor, ...props }) => {
+> = ({ field, form, label, backgroundColor, isRequired, ...props }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
 	const [hidePassword, setHidePassword] = useState(true);
 	const handleClickHidePassword = () => setHidePassword((hide) => !hide);
-
 	const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 	};
@@ -31,6 +31,18 @@ export const TextFormField: React.FC<
 				<InputLabel sx={{ ml: -1.6 }} shrink htmlFor={field.name}>
 					<Typography variant="h4" color="text.primary">
 						{label?.toUpperCase()}
+						{isRequired && (
+							<Typography
+								variant="h4"
+								color="error"
+								component="span"
+								sx={{
+									fontSize: "1.3rem",
+								}}
+							>
+								{" *"}
+							</Typography>
+						)}
 					</Typography>
 				</InputLabel>
 			)}
