@@ -24,7 +24,6 @@ import GridSelectField from "@shared/components/DataGridFields/GridSelectField";
 import GridTextField from "@shared/components/DataGridFields/GridTextField";
 import { useProductControllerFindAll } from "@api/services/product";
 import { currencyFormatter } from "@shared/formatter";
-import { useCreateProductStore } from "@store/createProductStore";
 import CreateProduct from "@features/Products/CreateProduct";
 
 export default function FullFeaturedCrudGrid({

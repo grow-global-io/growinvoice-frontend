@@ -22,7 +22,7 @@ import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormFie
 import { stringToListDto } from "@shared/models/ListDto";
 import moment from "moment";
 import AddIcon from "@mui/icons-material/Add";
-import PaymentDetailsDrawer from "./PaymentDetailsDrawer";
+import PaymentDetailsDrawer from "../Payments/PaymentDetailsDrawer";
 import { useDialog } from "@shared/hooks/useDialog";
 import { usePaymentdetailsControllerFindAll } from "@api/services/paymentdetails";
 import {
