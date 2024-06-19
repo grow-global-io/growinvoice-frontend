@@ -5,8 +5,8 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import type { HSNCodeDto } from "./hSNCodeDto";
+import type { UserDto } from "./userDto";
 
-export type HsncodeControllerUpdate201AllOf = {
-	result?: HSNCodeDto;
+export type UserControllerUpdateUser201AllOf = {
+	result?: UserDto;
 };

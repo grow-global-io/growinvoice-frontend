@@ -523,6 +523,7 @@ const customTheme = {
 			greyrgba: "rgba(125, 131, 152, 0.1)",
 			apiBtnBgColor: "#BF384B",
 			GreenBtnColor: "#0FBB00",
+			grayColor: "#808080",
 		},
 		...themeOptions.palette,
 	},

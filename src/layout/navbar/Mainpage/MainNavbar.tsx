@@ -9,9 +9,11 @@ import {
 	ListItemText,
 	Button,
 	Drawer,
+	ListItemIcon,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 
 const menuItems = ["Home", "About", "Features", "Services", "Pricing", "Contact"];
 
@@ -31,14 +33,28 @@ const NavButton = ({ text, variant, path }: { text: string; variant: any; path: 
 };
 
 const DrawerList = () => (
-	<Box sx={{ width: { sm: "200px" } }} role="presentation" p={2}>
+	<Box sx={{ width: { sm: "300px" } }} role="presentation" py={1}>
 		<Toolbar sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
-			<Typography variant="h6">Grow Invoice</Typography>
+			<Typography variant="h6" my={1}>
+				Grow Invoice
+			</Typography>
 			<Box component={"div"}>
 				<List component="nav" sx={{ display: "flex", flexDirection: "column" }}>
 					{menuItems.map((item) => (
-						<ListItem key={item}>
-							<ListItemText primary={item} />
+						<ListItem
+							key={item}
+							sx={{
+								"&:hover": {
+									backgroundColor: "custom.lightBlue",
+								},
+								py: 0,
+								borderRadius: 2,
+							}}
+						>
+							<ListItemText primary={item} sx={{ float: "right" }} />
+							<ListItemIcon>
+								<KeyboardArrowRightOutlinedIcon />
+							</ListItemIcon>
 						</ListItem>
 					))}
 				</List>

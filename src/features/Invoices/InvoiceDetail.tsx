@@ -20,18 +20,21 @@ import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@store/auth";
 const styles = {
+	width: { xs: "100%", sm: "auto" },
 	py: 1,
 	px: 3,
 	color: "secondary.dark",
 	fontWeight: 500,
 	textTransform: "capitalize",
 	my: { xs: 1 },
+	border: { xs: "1px solid rgba(13, 110, 253, 0.5)", lg: "none" },
 };
+import { useMailControllerSendMail } from "@api/services/mail";
+import InvoiceTemplateCard from "./InvoiceTemplateCard";
 
 const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 	const navigate = useNavigate();
 	const { user } = useAuthStore();
-	console.log(user);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -103,6 +106,54 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		setAnchorEl(null);
 	};
 
+	const { mutate: sendMail } = useMailControllerSendMail();
+	const invoiceLink = `http://localhost:5173/invoice/invoicetemplate/${invoiceId}`;
+	const handleSendMail = async () => {
+		try {
+			const email = user?.email || "default@example.com"; // Provide a fallback value
+			const to = user?.email || "default@example.com"; // Provide a fallback value
+
+			const sendMailDto = {
+				email: email,
+				to: to,
+				subject: "Invoice Details",
+				body: `
+                <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
+                <a href="${invoiceLink}" style="text-decoration: none;">
+                    <button style="
+                        display: inline-block;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        color: white;
+                        background-color: #007BFF;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">
+                        View Invoice
+                    </button>
+                </a>
+            `,
+			};
+
+			sendMail(
+				{ data: sendMailDto },
+				{
+					onSuccess: () => {
+						alert("Email sent successfully");
+					},
+					onError: (error) => {
+						alert("Failed to send email");
+						console.error(error);
+					},
+				},
+			);
+		} catch (error) {
+			console.error("Error generating PDF:", error);
+			alert("Failed to generate PDF");
+		}
+	};
+
 	const menuLists = [
 		{
 			name: "Share",
@@ -125,7 +176,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
-			func: () => console.log("Send Mail"),
+			func: handleSendMail,
 		},
 		{
 			name: "Send Whatsapp",
@@ -149,9 +200,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			func: handleMoreClick,
 		},
 	];
-
 	if (getHtmlText.isLoading) return <Loader />;
-
 	if (!getHtmlText.data) return <NoDataFound message="No Data Found" />;
 
 	return (
@@ -202,8 +251,11 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 					},
 					height: "80vh",
 					overflowX: { xs: "scroll", sm: "visible" },
+					display: { xs: "none", md: "block" },
 				}}
 			></Box>
+
+			<InvoiceTemplateCard invoiceId={invoiceId} />
 		</>
 	);
 };

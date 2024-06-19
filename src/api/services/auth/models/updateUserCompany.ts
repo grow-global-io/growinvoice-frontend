@@ -6,14 +6,14 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CreateUserCompany {
-	companyName: string;
+export interface UpdateUserCompany {
 	/** @nullable */
 	currency_id?: string | null;
-	email: string;
+	email?: string;
 	/** @nullable */
 	name?: string | null;
-	password: string;
+	old_password: string;
+	password?: string;
 	/** @nullable */
 	phone?: string | null;
 }

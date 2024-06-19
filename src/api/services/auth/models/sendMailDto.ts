@@ -5,8 +5,9 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import type { HSNCodeDto } from "./hSNCodeDto";
 
-export type HsncodeControllerUpdate201AllOf = {
-	result?: HSNCodeDto;
-};
+export interface SendMailDto {
+	body: string;
+	email: string;
+	subject: string;
+}
