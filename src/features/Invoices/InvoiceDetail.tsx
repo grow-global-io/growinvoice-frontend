@@ -33,7 +33,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 
 	const getHtmlText = useQuery({
 		enabled: !!invoiceId,
-		queryKey: ["invoice", invoiceId],
+		queryKey: ["invoicedetails", invoiceId],
 		queryFn: async () => {
 			const response = await fetch(
 				"https://growinvoice-94ee0dd2031b.herokuapp.com/api/invoice/test/" + invoiceId,
@@ -55,9 +55,9 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 		const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
 		const ref = iframeDoc?.getElementById("tm_download_section");
 		const doc = new jsPDF("portrait", "mm", "a4");
-		var cWidth = ref?.clientWidth || 0;
-		var cHeight = ref?.clientHeight || 0;
-		var topLeftMargin = 0;
+		const cWidth = ref?.clientWidth || 0;
+		const cHeight = ref?.clientHeight || 0;
+		const topLeftMargin = 0;
 		const pdfWidth = 210; // A4 width in mm
 		const pdfHeight = 297; // A4 height in mm
 		const aspectRatio = cWidth / cHeight;
@@ -75,7 +75,7 @@ const InvoiceDetail = ({ invoiceId }: { invoiceId: string }) => {
 			const imgData = canvas.toDataURL("image/png", 1.0);
 			doc.addImage(imgData, "PNG", topLeftMargin, topLeftMargin, pdfWidth, pdfWidth / aspectRatio);
 
-			for (var i = 1; i <= totalPDFPages; i++) {
+			for (let i = 1; i < totalPDFPages; i++) {
 				doc.addPage();
 				doc.addImage(
 					imgData,

@@ -8,6 +8,8 @@ import {
 	Card,
 	CardContent,
 	FormHelperText,
+	Dialog,
+	DialogContent,
 } from "@mui/material";
 import { Formik, Form, Field, FormikProps, FormikHelpers } from "formik";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
@@ -39,6 +41,7 @@ import {
 	useInvoiceControllerCreate,
 	useInvoiceControllerFindOne,
 	useInvoiceControllerUpdate,
+	useInvoiceControllerInvoicePreviewFromBody,
 } from "@api/services/invoice";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import CreateTaxes from "@features/Products/CreateTaxes";
@@ -46,12 +49,19 @@ import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 import Loader from "@shared/components/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const [rows, setRows] = useState<GridRowsProp>([]);
+	const [productErrorText, setProductErrorText] = useState<string | undefined>(undefined);
 	const { open, handleClickOpen, handleClose } = useDialog();
+	const {
+		open: openInvoicePreview,
+		handleClickOpen: handleClickOpenInvoicePreview,
+		handleClose: handleCloseInvoicePreview,
+	} = useDialog();
 	const { user } = useAuthStore();
 	const customerData = useCustomerControllerFindAll();
 	const paymentData = usePaymentdetailsControllerFindAll();
@@ -59,6 +69,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
 	const [taxesCreateopen, setTaxesCreateOpen] = useState(false);
 	const taxCodes = useTaxcodeControllerFindAll();
+	const [previewString, setPreviewString] = useState<string | undefined>(undefined);
 	const invoiceFindOne = useInvoiceControllerFindOne(id ?? "", {
 		query: {
 			enabled: id !== undefined,
@@ -66,6 +77,12 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 	});
 
 	const invoiceUpdate = useInvoiceControllerUpdate();
+	const invoicePreview = useInvoiceControllerInvoicePreviewFromBody();
+
+	const handleClosePreview = () => {
+		setPreviewString(undefined);
+		handleCloseInvoicePreview();
+	};
 
 	useEffect(() => {
 		if (invoiceFindOne.isSuccess) {
@@ -125,10 +142,10 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			.array()
 			.of(
 				yup.object({
-					product_id: yup.string().required("Product is required"),
-					quantity: yup.number().required("Quantity is required"),
-					price: yup.number().required("Price is required"),
-					total: yup.number().required("Total is required"),
+					product_id: yup.string(),
+					quantity: yup.number(),
+					price: yup.number(),
+					total: yup.number(),
 				}),
 			)
 			.min(1, "At least one product is required"),
@@ -139,6 +156,14 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		values: typeof initialValues,
 		actions: FormikHelpers<typeof initialValues>,
 	) => {
+		if (rows?.length === 0) {
+			setProductErrorText("At least one product is required");
+			return;
+		} else if (rows?.find((row) => row.product_id === "")) {
+			setProductErrorText("Fullfill all the product details");
+			return;
+		}
+
 		if (id) {
 			await invoiceUpdate.mutateAsync({
 				id,
@@ -155,17 +180,20 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				},
 			});
 		}
-		queryClient.refetchQueries({
+		await queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindOneQueryKey(id ?? ""),
 		});
-		queryClient.refetchQueries({
+		await queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindAllQueryKey(),
 		});
-		queryClient.refetchQueries({
+		await queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
 		});
-		queryClient.refetchQueries({
+		await queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+		});
+		await queryClient.refetchQueries({
+			queryKey: ["invoicedetails", id ?? ""],
 		});
 		actions.resetForm();
 		setRows([]);
@@ -192,13 +220,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
 		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
 		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
-		if (rows?.length > 0) {
-			formik?.setFieldTouched("product", false);
-			formik?.setFieldError("product", undefined);
-		} else {
-			formik?.setFieldTouched("product", true);
-			formik?.setFieldError("product", "Please add at least one product to create an invoice");
-		}
 	}, [rows]);
 
 	const options = [
@@ -234,23 +255,27 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					onSubmit={handleSubmit}
 					innerRef={formikRef}
 				>
-					{({ values, touched, errors, setFieldValue }) => {
+					{(formik) => {
 						useEffect(() => {
-							console.log(values?.tax_id);
 							if (
-								values?.discountPercentage > 0 ||
-								values.tax_id !== "" ||
-								values.tax_id !== undefined ||
-								values.tax_id !== null
+								formik?.values?.discountPercentage > 0 ||
+								formik?.values.tax_id !== "" ||
+								formik?.values.tax_id !== undefined ||
+								formik?.values.tax_id !== null
 							) {
-								const tax = taxCodes.data?.find((tax) => tax.id === values.tax_id);
-								const discount = values?.sub_total * (values?.discountPercentage / 100);
-								const taxPercentage = values?.sub_total * (Number(tax?.percentage ?? 0) / 100);
-								setFieldValue("total", values?.sub_total - discount + taxPercentage);
+								const tax = taxCodes.data?.find((tax) => tax.id === formik?.values.tax_id);
+								const discount =
+									formik?.values?.sub_total * (formik?.values?.discountPercentage / 100);
+								const taxPercentage =
+									formik?.values?.sub_total * (Number(tax?.percentage ?? 0) / 100);
+								formik?.setFieldValue(
+									"total",
+									formik?.values?.sub_total - discount + taxPercentage,
+								);
 							} else {
-								setFieldValue("total", values?.sub_total);
+								formik?.setFieldValue("total", formik?.values?.sub_total);
 							}
-						}, [values?.discountPercentage, values.tax_id]);
+						}, [formik?.values?.discountPercentage, formik?.values.tax_id]);
 						return (
 							<Form>
 								<Grid container spacing={2}>
@@ -314,14 +339,14 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											name="due_date"
 											component={DateFormField}
 											label="Invoice Due Date"
-											minDate={moment(values.date).add(1, "days").toDate()}
+											minDate={moment(formik?.values.date).add(1, "days").toDate()}
 											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} display={"flex"} alignItems={"center"}>
 										<Field name="is_recurring" label="Is Recurring" component={CheckBoxFormField} />
 									</Grid>
-									{values.is_recurring && (
+									{formik?.values.is_recurring && (
 										<Grid item xs={12} sm={4}>
 											<Field
 												name="recurring"
@@ -339,12 +364,12 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 									</Grid>
 
 									<Grid item xs={12} sx={{ width: { xs: "90vw", sm: "auto" } }}>
-										<FullFeaturedCrudGrid rows={rows} setRows={setRows} />
-										{touched?.product && errors?.product !== undefined && (
-											<FormHelperText error={true}>
-												Please add at least one product to create an invoice
-											</FormHelperText>
-										)}
+										<FullFeaturedCrudGrid
+											rows={rows}
+											setRows={setRows}
+											setErrorText={setProductErrorText}
+											errorText={productErrorText}
+										/>
 									</Grid>
 
 									<Grid item xs={12} mb={3}>
@@ -384,7 +409,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												Add Payment
 											</Button>
 										</Box>
-										{values.paymentId ? (
+										{formik?.values.paymentId ? (
 											<Box
 												sx={{
 													bgcolor: "custom.lightBlue",
@@ -394,7 +419,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												}}
 											>
 												{paymentData?.data
-													?.filter((payment) => payment.id === values.paymentId)
+													?.filter((payment) => payment.id === formik?.values.paymentId)
 													.map((payment) => (
 														<Box key={payment.id}>
 															<Typography
@@ -537,6 +562,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															component={TextFormField}
 															type="number"
 															required={true}
+															disabled
 														/>
 													</Grid>
 												</Grid>
@@ -553,7 +579,23 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} display="flex" alignItems="center">
-										<Button variant="outlined">Preview</Button>
+										<Button
+											variant="outlined"
+											onClick={async () => {
+												const data = await invoicePreview.mutateAsync({
+													data: {
+														...formik.values,
+														recurring: formik.values
+															.recurring as CreateInvoiceWithProductsRecurring,
+													},
+												});
+												setPreviewString(data as string);
+												handleClickOpenInvoicePreview();
+											}}
+											disabled={formik.isValid === false || rows?.length === 0}
+										>
+											Preview
+										</Button>
 									</Grid>
 									<Grid item xs={12} textAlign={"center"}>
 										<Button variant="contained" type="submit">
@@ -566,6 +608,25 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					}}
 				</Formik>
 			</Box>
+
+			<Dialog open={openInvoicePreview} onClose={handleClosePreview} fullWidth maxWidth="md">
+				<AppDialogHeader title="Invoice Preview" handleClose={handleClosePreview} />
+				<DialogContent>
+					<Box
+						component="iframe"
+						srcDoc={previewString}
+						sx={{
+							width: {
+								xs: "1100px",
+								md: "100%",
+							},
+							height: "75vh",
+							overflowX: { xs: "scroll", sm: "visible" },
+						}}
+					></Box>
+				</DialogContent>
+			</Dialog>
+
 			<PaymentDetailsDrawer open={open} handleClose={handleClose} />
 		</>
 	);
