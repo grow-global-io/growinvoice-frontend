@@ -9,37 +9,27 @@ import {
 	ListItemText,
 	Button,
 	Drawer,
-	ListItemIcon,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
+import LoginIcon from "@mui/icons-material/Login";
 
 const menuItems = ["Home", "About", "Features", "Services", "Pricing", "Contact"];
 
-const NavButton = ({ text, variant, path }: { text: string; variant: any; path: string }) => {
+const DrawerList = () => {
 	const navigate = useNavigate();
 	return (
-		<Button
-			variant={variant}
-			onClick={() => {
-				navigate(path);
-			}}
-			sx={{ my: { xs: 1, lg: 0 }, mx: { xs: 0, lg: 1 } }}
-		>
-			{text}
-		</Button>
-	);
-};
-
-const DrawerList = () => (
-	<Box sx={{ width: { sm: "300px" } }} role="presentation" py={1}>
-		<Toolbar sx={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
-			<Typography variant="h6" my={1}>
-				Grow Invoice
-			</Typography>
-			<Box component={"div"}>
-				<List component="nav" sx={{ display: "flex", flexDirection: "column" }}>
+		<Box role="presentation" py={1}>
+			<Toolbar sx={{ flexDirection: "column", padding: 0 }}>
+				<List
+					component="nav"
+					sx={{
+						flexDirection: "column",
+						width: "100%",
+						px: 2,
+					}}
+				>
 					{menuItems.map((item) => (
 						<ListItem
 							key={item}
@@ -47,27 +37,40 @@ const DrawerList = () => (
 								"&:hover": {
 									backgroundColor: "custom.lightBlue",
 								},
-								py: 0,
-								borderRadius: 2,
 							}}
 						>
-							<ListItemText primary={item} sx={{ float: "right" }} />
-							<ListItemIcon>
-								<KeyboardArrowRightOutlinedIcon />
-							</ListItemIcon>
+							<ListItemText primary={item} />
+							<KeyboardArrowRightOutlinedIcon />
 						</ListItem>
 					))}
 				</List>
-			</Box>
-			<Box display={"flex"} flexDirection={"column"}>
-				<NavButton text="Login" variant="outlined" path="/login" />
-				<NavButton text="Signup" variant="contained" path="/register" />
-			</Box>
-		</Toolbar>
-	</Box>
-);
+				<Box gap={2} display={"flex"} flexDirection={"column"}>
+					<Button
+						variant="outlined"
+						endIcon={<LoginIcon />}
+						onClick={() => {
+							navigate("/login");
+						}}
+					>
+						Login
+					</Button>
+					<Button
+						variant="contained"
+						endIcon={<LoginIcon />}
+						onClick={() => {
+							navigate("/register");
+						}}
+					>
+						Signup
+					</Button>
+				</Box>
+			</Toolbar>
+		</Box>
+	);
+};
 
 const MainNavbar = () => {
+	const navigate = useNavigate();
 	const [drawerOpen, setDrawerOpen] = React.useState(false);
 
 	const toggleDrawer = (open: boolean) => () => {
@@ -77,8 +80,18 @@ const MainNavbar = () => {
 	return (
 		<>
 			<AppBar position="static">
-				<Box py={0.5} ml={1} sx={{ display: { xs: "block", lg: "none" } }}>
-					<MenuIcon htmlColor="#000" onClick={toggleDrawer(true)} />
+				<Box py={1} sx={{ display: { xs: "block", lg: "none" } }}>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+							px: 2,
+						}}
+					>
+						<Typography variant="h5">Grow Invoice</Typography>
+						<MenuIcon htmlColor="#000" onClick={toggleDrawer(true)} />
+					</Box>
 				</Box>
 				<Toolbar sx={{ display: { xs: "none", lg: "flex" } }}>
 					<Typography variant="h3">Grow Invoice</Typography>
@@ -92,13 +105,29 @@ const MainNavbar = () => {
 						</List>
 					</Box>
 					<Box>
-						<NavButton text="Login" variant="outlined" path="/login" />
-						<NavButton text="Signup" variant="contained" path="/register" />
+						<Button
+							variant="outlined"
+							endIcon={<LoginIcon />}
+							onClick={() => {
+								navigate("/login");
+							}}
+						>
+							Login
+						</Button>
+						<Button
+							variant="contained"
+							endIcon={<LoginIcon />}
+							onClick={() => {
+								navigate("/register");
+							}}
+						>
+							Signup
+						</Button>
 					</Box>
 				</Toolbar>
 			</AppBar>
 
-			<Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+			<Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
 				<DrawerList />
 			</Drawer>
 		</>
