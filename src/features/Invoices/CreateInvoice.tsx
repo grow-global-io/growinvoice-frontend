@@ -7,7 +7,6 @@ import {
 	InputAdornment,
 	Card,
 	CardContent,
-	FormHelperText,
 	Dialog,
 	DialogContent,
 } from "@mui/material";
@@ -42,6 +41,7 @@ import {
 	useInvoiceControllerFindOne,
 	useInvoiceControllerUpdate,
 	useInvoiceControllerInvoicePreviewFromBody,
+	getInvoiceControllerTestQueryKey,
 } from "@api/services/invoice";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import CreateTaxes from "@features/Products/CreateTaxes";
@@ -50,6 +50,7 @@ import Loader from "@shared/components/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
+import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetemplate";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
@@ -75,6 +76,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			enabled: id !== undefined,
 		},
 	});
+	const invoiceTemplateFindAll = useInvoicetemplateControllerFindAll();
 
 	const invoiceUpdate = useInvoiceControllerUpdate();
 	const invoicePreview = useInvoiceControllerInvoicePreviewFromBody();
@@ -117,6 +119,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		discountPercentage: invoiceFindOne?.data?.discountPercentage ?? 0,
 		recurring: invoiceFindOne?.data?.recurring ?? CreateInvoiceWithProductsRecurring.Daily,
 		product: invoiceFindOne?.data?.product ?? [],
+		template_id: invoiceFindOne?.data?.template_id ?? "",
 	};
 
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
@@ -193,7 +196,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
 		await queryClient.refetchQueries({
-			queryKey: ["invoicedetails", id ?? ""],
+			queryKey: getInvoiceControllerTestQueryKey(id ?? ""),
 		});
 		actions.resetForm();
 		setRows([]);
@@ -221,12 +224,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
 		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
 	}, [rows]);
-
-	const options = [
-		{ value: "1", label: "Option 1" },
-		{ value: "2", label: "Option 2" },
-		{ value: "3", label: "Option 3" },
-	];
 
 	if (invoiceFindOne.isLoading || invoiceFindOne?.isRefetching || invoiceFindOne?.isFetching)
 		return <Loader />;
@@ -571,11 +568,17 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 									</Grid>
 									<Grid item xs={12} sm={3.5}>
 										<Field
-											name="invoiceTemplate"
+											name="template_id"
 											label="Invoice Template"
 											component={AutocompleteField}
-											options={options}
+											options={invoiceTemplateFindAll?.data?.map((template) => ({
+												value: template.id,
+												label: template.name,
+											}))}
 											required={true}
+											loading={
+												invoiceTemplateFindAll.isLoading || invoiceTemplateFindAll.isFetching
+											}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} display="flex" alignItems="center">

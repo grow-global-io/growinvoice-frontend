@@ -52,8 +52,6 @@ export * from "./hsncodeControllerUpdate201AllOf";
 export * from "./invoice";
 export * from "./invoiceControllerCreate201";
 export * from "./invoiceControllerCreate201AllOf";
-export * from "./invoiceControllerInvoicePreviewFromBodyParams";
-export * from "./invoiceControllerTestParams";
 export * from "./invoiceControllerUpdate200";
 export * from "./invoiceControllerUpdate200AllOf";
 export * from "./invoiceDto";
