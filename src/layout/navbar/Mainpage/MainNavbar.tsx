@@ -70,7 +70,7 @@ const DrawerList = () => (
 const MainNavbar = () => {
 	const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-	const toggleDrawer = (open: any) => () => {
+	const toggleDrawer = (open: boolean) => () => {
 		setDrawerOpen(open);
 	};
 
