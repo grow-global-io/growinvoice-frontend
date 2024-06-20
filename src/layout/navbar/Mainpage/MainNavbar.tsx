@@ -20,8 +20,8 @@ const menuItems = ["Home", "About", "Features", "Services", "Pricing", "Contact"
 const DrawerList = () => {
 	const navigate = useNavigate();
 	return (
-		<Box role="presentation" py={1}>
-			<Toolbar sx={{ flexDirection: "column", padding: 0 }}>
+		<Box sx={{ width: 200 }} role="presentation" py={1}>
+			<Toolbar sx={{ flexDirection: "column" }}>
 				<List
 					component="nav"
 					sx={{
@@ -44,7 +44,14 @@ const DrawerList = () => {
 						</ListItem>
 					))}
 				</List>
-				<Box gap={2} display={"flex"} flexDirection={"column"}>
+				<Box
+					gap={2}
+					display={"flex"}
+					flexDirection={"column"}
+					sx={{
+						width: "100%",
+					}}
+				>
 					<Button
 						variant="outlined"
 						endIcon={<LoginIcon />}
@@ -61,6 +68,7 @@ const DrawerList = () => {
 						onClick={() => {
 							navigate("/register");
 						}}
+						fullWidth
 					>
 						Signup
 					</Button>
@@ -81,7 +89,7 @@ const MainNavbar = () => {
 	return (
 		<>
 			<AppBar position="static">
-				<Box py={1} sx={{ display: { xs: "block", lg: "none" } }}>
+				<Box py={2} sx={{ display: { xs: "block", lg: "none" } }}>
 					<Box
 						sx={{
 							display: "flex",
@@ -90,7 +98,7 @@ const MainNavbar = () => {
 							px: 2,
 						}}
 					>
-						<Typography variant="h5">Grow Invoice</Typography>
+						<Typography variant="h4">Grow Invoice</Typography>
 						<MenuIcon htmlColor="#000" onClick={toggleDrawer(true)} />
 					</Box>
 				</Box>

@@ -85,7 +85,16 @@ const Register = () => {
 				},
 			}}
 		>
-			<Box sx={{ position: "relative", zIndex: 2 }}>
+			<Box
+				sx={{
+					position: "relative",
+					zIndex: 2,
+					width: {
+						xs: "100%",
+						sm: "30%",
+					},
+				}}
+			>
 				<Card sx={{ borderRadius: 4, p: 2, mb: 3, overflow: "auto" }}>
 					<CardContent>
 						<Box
