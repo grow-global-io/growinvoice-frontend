@@ -51,6 +51,7 @@ const MainNavbar = () => {
 						onClick={() => {
 							navigation("/login");
 						}}
+						fullWidth
 					>
 						Login
 					</Button>
