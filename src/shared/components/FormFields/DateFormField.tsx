@@ -14,6 +14,7 @@ export const DateFormField: React.FC<
 		maxDate?: Date;
 		onValueChange?: (value: string) => void;
 		disabled?: boolean;
+		isRequired?: boolean;
 	}
 > = ({
 	field,
@@ -24,6 +25,7 @@ export const DateFormField: React.FC<
 	disabled,
 	maxDate,
 	onValueChange,
+	isRequired,
 	...props
 }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
@@ -38,6 +40,11 @@ export const DateFormField: React.FC<
 					<InputLabel shrink htmlFor={field.name}>
 						<Typography variant="h4" color="text.primary">
 							{label?.toUpperCase()}
+							{isRequired && (
+								<Typography variant="h5" color="error" component="span">
+									{" *"}
+								</Typography>
+							)}
 						</Typography>
 					</InputLabel>
 				)}

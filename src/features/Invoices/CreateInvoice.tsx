@@ -51,6 +51,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetemplate";
+import { formatDateToIso } from "@shared/formatter";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
@@ -129,7 +130,19 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		invoice_number: yup.string().required("Invoice number is required"),
 		reference_number: yup.string(),
 		date: yup.string().required("Invoice date is required"),
-		due_date: yup.string().required("Due date is required"),
+		due_date: yup
+			.string()
+			.required("Due date is required")
+			.test({
+				name: "due_date",
+				message: "Due date should be greater than invoice date",
+				test: (value) => {
+					if (formikRef.current?.values.date) {
+						return moment(value).isAfter(moment(formikRef.current?.values.date));
+					}
+					return true;
+				},
+			}),
 		is_recurring: yup.boolean().required("Is recurring is required"),
 		notes: yup.string(),
 		paymentId: yup.string().required("Payment details is required"),
@@ -173,6 +186,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				data: {
 					...values,
 					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+					date: formatDateToIso(values.date),
+					due_date: formatDateToIso(values.due_date),
 				},
 			});
 		} else {
@@ -180,6 +195,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 				data: {
 					...values,
 					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+					date: formatDateToIso(values.date),
+					due_date: formatDateToIso(values.due_date),
 				},
 			});
 		}
@@ -539,7 +556,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 														</Grid>
 													)}
 													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Discount</Typography>
+														<Typography variant="h5">Discount in %</Typography>
 													</Grid>
 													<Grid item xs={12} sm={6}>
 														<Field
@@ -582,7 +599,18 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											}
 										/>
 									</Grid>
-									<Grid item xs={12} sm={6} display="flex" alignItems="center">
+									<Grid
+										item
+										xs={12}
+										sm={6}
+										sx={{
+											display: {
+												xs: "none",
+												sm: "flex",
+											},
+											alignItems: "center",
+										}}
+									>
 										<Button
 											variant="outlined"
 											onClick={async () => {
@@ -591,6 +619,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 														...formik.values,
 														recurring: formik.values
 															.recurring as CreateInvoiceWithProductsRecurring,
+														tax_id: formik.values.tax_id === "" ? null : formik.values.tax_id,
 													},
 												});
 												setPreviewString(data as string);

@@ -32,14 +32,7 @@ export const TextFormField: React.FC<
 					<Typography variant="h4" color="text.primary">
 						{label?.toUpperCase()}
 						{isRequired && (
-							<Typography
-								variant="h4"
-								color="error"
-								component="span"
-								sx={{
-									fontSize: "1.3rem",
-								}}
-							>
+							<Typography variant="h5" color="error" component="span">
 								{" *"}
 							</Typography>
 						)}
@@ -81,6 +74,14 @@ export const TextFormField: React.FC<
 					shrink: true,
 				}}
 				hidden={true}
+				onBlur={(e) => {
+					if (props?.type === "number") {
+						const value = e.target.value;
+						const numberValue = parseFloat(value);
+						form.setFieldValue(field.name, numberValue);
+						e.target.value = numberValue.toString();
+					}
+				}}
 			/>
 		</FormControl>
 	);

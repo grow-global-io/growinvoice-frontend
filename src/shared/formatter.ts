@@ -213,7 +213,7 @@ export const formatToIso = (date: string | null | undefined) => {
 	return date;
 };
 
-export const formatDateToIso = (date: Date | null | undefined) => {
+export const formatDateToIso = (date: Date | null | undefined | string) => {
 	if (!date) {
 		return "";
 	}

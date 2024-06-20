@@ -238,7 +238,7 @@ const ProductForm = () => {
 										name="price"
 										component={TextFormField}
 										label="Price"
-										type="text" // Change to text to handle empty string
+										type="number" // Change to text to handle empty string
 										isRequired={true}
 									/>
 								</Grid>

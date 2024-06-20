@@ -265,6 +265,7 @@ const CustomerForm = () => {
 													countryFieldName="billingDetails.country_id"
 													stateFieldName="billingDetails.state_id"
 													stateLabel="State"
+													isRequired={true}
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
@@ -366,6 +367,7 @@ const CustomerForm = () => {
 												countryFieldName="shippingDetails.country_id"
 												stateFieldName="shippingDetails.state_id"
 												stateLabel="State"
+												isRequired={true}
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>

@@ -38,11 +38,13 @@ function AsyncAutoCompleteField({
 	label,
 	optionUrl,
 	onValueChange,
+	isRequired,
 	...props
 }: FieldProps & {
 	label: string;
 	required?: boolean;
 	optionUrl: string;
+	isRequired?: boolean;
 	onValueChange?: (value: ListDto) => void;
 }) {
 	const [debouncedInputValue, setSearchTerm] = useDebounceValue("", 500);
@@ -123,8 +125,9 @@ export const AutocompleteField: React.FC<
 		optionUrl?: string;
 		onValueChange?: (value: ListDto) => void;
 		multiple?: boolean;
+		isRequired?: boolean;
 	}
-> = ({ field, form, label, options = [], optionUrl, onValueChange, ...props }) => {
+> = ({ field, form, label, options = [], optionUrl, onValueChange, isRequired, ...props }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
 
 	if (optionUrl) {
@@ -136,6 +139,7 @@ export const AutocompleteField: React.FC<
 				required={props.required}
 				optionUrl={optionUrl}
 				onValueChange={onValueChange}
+				isRequired={isRequired}
 				{...props}
 			/>
 		);
@@ -147,6 +151,11 @@ export const AutocompleteField: React.FC<
 				<InputLabel sx={{ ml: -1.6 }} shrink htmlFor={field.name}>
 					<Typography variant="h4" color="text.primary">
 						{label?.toUpperCase()}
+						{isRequired && (
+							<Typography variant="h5" color="error" component="span">
+								{" *"}
+							</Typography>
+						)}
 					</Typography>
 				</InputLabel>
 			)}

@@ -6,10 +6,12 @@ const StateFormField = ({
 	countryFieldName,
 	stateFieldName,
 	stateLabel,
+	...props
 }: {
 	countryFieldName: string;
 	stateFieldName: string;
 	stateLabel: string;
+	isRequired?: boolean;
 }) => {
 	const [field] = useField(countryFieldName);
 
@@ -24,6 +26,7 @@ const StateFormField = ({
 			component={AutocompleteField}
 			options={statesFindAllByCountry.data?.map((item) => ({ label: item.name, value: item.id }))}
 			loading={statesFindAllByCountry.isLoading}
+			{...props}
 		/>
 	);
 };
