@@ -12,17 +12,28 @@ const MainHomeCard = ({
 	float: string;
 }) => {
 	return (
-		<Box sx={{ display: "flex", justifyContent: float, margin: "100px 0" }}>
-			<Box sx={{ width: "719px" }}>
+		<Box
+			sx={{
+				display: "flex",
+				justifyContent: { xs: "start", lg: float },
+				margin: { xs: "50px 0", sm: "100px 0" },
+			}}
+		>
+			<Box sx={{ width: { xs: "auto", sm: "719px" } }}>
 				<Typography
-					variant="h2"
-					sx={{ fontSize: "36px", fontWeight: "600", lineHeight: "54px", color: "secondary.dark" }}
+					variant="h3"
+					sx={{
+						fontSize: { xs: "auto", sm: "36px" },
+						fontWeight: "600",
+						lineHeight: { xs: "auto", sm: "54px" },
+						color: "secondary.dark",
+					}}
 				>
 					{heading}
 				</Typography>
 				<Typography
 					sx={{
-						width: "333px",
+						width: { xs: "40%", sm: "333px" },
 						borderBottomStyle: "solid",
 						borderBottomWidth: "4px",
 						borderImage:
@@ -31,12 +42,17 @@ const MainHomeCard = ({
 					}}
 				></Typography>
 				<Typography
-					variant="h6"
-					sx={{ fontSize: "24px", fontWeight: "400", lineHeight: "40px", color: "secondary.dark" }}
+					variant="h5"
+					sx={{
+						fontSize: { xs: "auto", sm: "24px" },
+						fontWeight: "400",
+						lineHeight: { xs: "25px", sm: "40px" },
+						color: "secondary.dark",
+					}}
 				>
 					{text}
 				</Typography>
-				<Button variant="contained" sx={{ marginTop: "20px", width: "30%" }}>
+				<Button variant="contained" sx={{ marginTop: "20px", width: { xs: "auto", sm: "30%" } }}>
 					{buttonText}
 				</Button>
 			</Box>

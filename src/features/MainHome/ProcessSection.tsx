@@ -4,7 +4,7 @@ import MainHomeData from "./../../data/MainHomeData.json";
 
 const ProcessSection = () => {
 	return (
-		<Box sx={{ padding: "50px 100px" }}>
+		<Box sx={{ padding: { xs: "0 20px", lg: "50px 100px" } }}>
 			{MainHomeData.map((item, index) => (
 				<MainHomeCard
 					key={index}

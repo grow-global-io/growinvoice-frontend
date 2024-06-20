@@ -5,7 +5,6 @@ import {
 	Button,
 	Divider,
 	InputAdornment,
-	FormHelperText,
 	Card,
 	CardContent,
 } from "@mui/material";
@@ -36,6 +35,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import Loader from "@shared/components/Loader";
 const CreateQuotation = ({ id }: { id?: string }) => {
+	const [errorText, setErrorText] = useState<string | undefined>(undefined);
 	const queryClient = useQueryClient();
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
 	const customerData = useCustomerControllerFindAll();
@@ -206,7 +206,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					onSubmit={handleSubmit}
 					innerRef={formikRef}
 				>
-					{({ values, touched, errors, setFieldValue }) => {
+					{({ values, setFieldValue }) => {
 						useEffect(() => {
 							if (values?.discountPercentage > 0 || values.tax_id) {
 								const tax = taxCodes.data?.find((tax) => tax.id === values.tax_id);
@@ -288,12 +288,12 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 										<Divider />
 									</Grid>
 									<Grid item xs={12} sx={{ width: { xs: "90vw", sm: "auto" } }}>
-										<FullFeaturedCrudGrid rows={rows} setRows={setRows} />
-										{touched?.quotation && errors?.quotation !== undefined && (
-											<FormHelperText error={true}>
-												Please add at least one product to create an invoice
-											</FormHelperText>
-										)}
+										<FullFeaturedCrudGrid
+											rows={rows}
+											setRows={setRows}
+											errorText={errorText}
+											setErrorText={setErrorText}
+										/>
 									</Grid>
 									<Grid item xs={12} mb={3}>
 										<Divider />

@@ -29,9 +29,13 @@ import CreateProduct from "@features/Products/CreateProduct";
 export default function FullFeaturedCrudGrid({
 	rows,
 	setRows,
+	errorText,
+	setErrorText,
 }: {
 	rows: GridRowsProp;
 	setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+	errorText: string | undefined;
+	setErrorText: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
 	const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 	const [isRowEditing, setIsRowEditing] = React.useState(false);
@@ -57,14 +61,21 @@ export default function FullFeaturedCrudGrid({
 	};
 
 	const handleSaveClick = (id: GridRowId) => () => {
+		setErrorText(undefined);
 		setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
 	};
 
 	const handleDeleteClick = (id: GridRowId) => () => {
+		if (rows.filter((row) => row.id !== id)?.length === 0) {
+			setErrorText("At least one product is required");
+		}
 		setRows(rows.filter((row) => row.id !== id));
 	};
 
 	const handleCancelClick = (id: GridRowId) => () => {
+		if (rows.filter((row) => row.id !== id)?.length === 0) {
+			setErrorText("At least one product is required");
+		}
 		setRowModesModel({
 			...rowModesModel,
 			[id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -87,6 +98,7 @@ export default function FullFeaturedCrudGrid({
 	};
 
 	const handleAddRow = () => {
+		setErrorText(undefined);
 		const randomInRange = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
 		const id = rows.length + 2 + randomInRange;
 		setRows((oldRows) => [
@@ -351,6 +363,7 @@ export default function FullFeaturedCrudGrid({
 					toolbar: { setRows, setRowModesModel },
 				}}
 			/>
+			{errorText && <Typography color="error">{errorText}</Typography>}
 		</Box>
 	);
 }
