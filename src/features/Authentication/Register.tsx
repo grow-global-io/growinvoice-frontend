@@ -85,7 +85,7 @@ const Register = () => {
 				},
 			}}
 		>
-			<Box sx={{ position: "relative", zIndex: 2, width: "30%" }}>
+			<Box sx={{ position: "relative", zIndex: 2 }}>
 				<Card sx={{ borderRadius: 4, p: 2, mb: 3, overflow: "auto" }}>
 					<CardContent>
 						<Box
@@ -98,7 +98,12 @@ const Register = () => {
 							<Typography fontWeight="600" sx={{ mb: 2, fontSize: 26 }}>
 								Lets Start!
 							</Typography>
-							<Typography color="text.secondary" sx={{ mb: 2 }} variant="caption" fontWeight="400">
+							<Typography
+								color="text.secondary"
+								sx={{ mb: 2, textAlign: "center" }}
+								variant="caption"
+								fontWeight="400"
+							>
 								Please create your account to continue with &nbsp;
 								<Typography color="text.secondary" variant="caption" fontWeight="700">
 									GROWINVOICE

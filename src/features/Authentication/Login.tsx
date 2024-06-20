@@ -73,7 +73,12 @@ const Login = () => {
 							<Typography fontWeight="600" sx={{ mb: 2, fontSize: 26 }}>
 								Welcome Back!
 							</Typography>
-							<Typography color="text.secondary" sx={{ mb: 2 }} variant="caption" fontWeight="400">
+							<Typography
+								color="text.secondary"
+								sx={{ mb: 2, textAlign: "center" }}
+								variant="caption"
+								fontWeight="400"
+							>
 								Please login to continue with growinvoice &nbsp;
 								<Typography color="text.secondary" variant="caption" fontWeight="700">
 									GROWINVOICE
