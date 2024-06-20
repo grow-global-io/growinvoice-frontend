@@ -32,7 +32,12 @@ const styles = {
 	fontWeight: 500,
 	textTransform: "capitalize",
 	my: { xs: 1 },
-	border: { xs: "1px solid rgba(13, 110, 253, 0.5)", lg: "none" },
+	borderColor: "custom.invDetailBtnBorder",
+	borderStyle: "solid",
+	borderWidth: { xs: "1px", lg: "0" },
+	display: "flex",
+	justifyContent: "flex-start",
+	bgcolor: "custom.transparentWhite",
 };
 
 const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
@@ -210,7 +215,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				<ButtonGroup
 					sx={{
 						width: "100%",
-						bgcolor: "custom.transparentWhite",
+						bgcolor: { xs: "", md: "custom.transparentWhite" },
 						display: "flex",
 						flexWrap: { xs: "wrap" },
 						my: 2,

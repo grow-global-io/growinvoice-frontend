@@ -88,6 +88,8 @@ export * from "./productControllerUpdate200";
 export * from "./productControllerUpdate200AllOf";
 export * from "./productDto";
 export * from "./productDtoType";
+export * from "./productHsnCode";
+export * from "./productTax";
 export * from "./productType";
 export * from "./productUnit";
 export * from "./productUnitDto";

@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 import type { Currencies } from "./currencies";
-import type { HSNCode } from "./hSNCode";
-import type { Tax } from "./tax";
+import type { ProductHsnCode } from "./productHsnCode";
+import type { ProductTax } from "./productTax";
 import type { ProductType } from "./productType";
 import type { ProductUnit } from "./productUnit";
 import type { User } from "./user";
@@ -18,14 +18,18 @@ export interface Product {
 	currency_id: string;
 	/** @nullable */
 	description: string | null;
-	hsnCode?: HSNCode;
-	hsnCode_id: string;
+	/** @nullable */
+	hsnCode?: ProductHsnCode;
+	/** @nullable */
+	hsnCode_id: string | null;
 	id: string;
 	isExist: boolean;
 	name: string;
 	price: number;
-	tax?: Tax;
-	tax_id: string;
+	/** @nullable */
+	tax?: ProductTax;
+	/** @nullable */
+	tax_id: string | null;
 	type: ProductType;
 	unit?: ProductUnit;
 	unit_id: string;

@@ -1,40 +1,74 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Sidebar from "./Sidebar";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, FormikProps, FormikHelpers } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
+import { useAuthStore } from "@store/auth";
+import { useCurrencyControllerFindCountries } from "@api/services/currency";
+import StateFormField from "@shared/components/FormFields/StateFormField";
+import { useRef } from "react";
+import { useCompanyControllerUpdate } from "@api/services/company";
 
 const Company = () => {
-	const initialValues = {
-		company_name: "",
-		phone: "",
-		vat_number: "",
-		country: "",
-		state: "",
-		city: "",
-		postal_code: "",
-		address: "",
-	};
+	const { user } = useAuthStore();
+	const countryFindAll = useCurrencyControllerFindCountries();
+	const companyUpdate = useCompanyControllerUpdate({
+		mutation: {
+			onSuccess: () => {
+				// handle success
+			},
+			onError: (error) => {
+				// handle error
+				console.error("Update failed", error);
+			},
+		},
+	});
 
+	const initialValues = {
+		name: user?.company?.[0]?.name ?? "",
+		phone: user?.company?.[0]?.phone ?? "",
+		vat: user?.company?.[0]?.vat ?? "",
+		country_id: user?.company?.[0]?.country_id ?? "",
+		state_id: user?.company?.[0]?.state_id ?? "",
+		city: user?.company?.[0]?.city ?? "",
+		zip: user?.company?.[0]?.zip ?? "",
+		address: user?.company?.[0]?.address ?? "",
+		logo: user?.company?.[0]?.logo ?? "",
+		user_id: user?.company?.[0]?.user_id ?? "",
+	};
+	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	const schema = yup.object().shape({
-		company_name: yup.string().required("Company name is required"),
-		vat_number: yup.string().required("Vat Number is required"),
-		country: yup.string().required("Select Country"),
-		state: yup.string().required("Select state"),
+		name: yup.string().required("Company name is required"),
+		vat: yup.string(),
+		country_id: yup.string().required("Select Country"),
+		state_id: yup.string().required("Select state"),
 		city: yup.string().required("Select city"),
 		phone: yup.number().required("Phone Number is required"),
-		postal_code: yup.string().required("Postal Code is required"),
+		zip: yup.string().required("Postal Code is required"),
+		logo: yup.string().required("logo is required"),
 		address: yup.string().required("Address is required"),
 	});
 
-	const handleSubmit = () => {};
-	const options = [
-		{ value: "1", label: "Option 1" },
-		{ value: "2", label: "Option 2" },
-		{ value: "3", label: "Option 3" },
-	];
+	const id = user?.company?.[0]?.user_id ?? "";
+
+	const handleSubmit = async (
+		values: typeof initialValues,
+		actions: FormikHelpers<typeof initialValues>,
+	) => {
+		try {
+			await companyUpdate.mutateAsync({
+				id: id,
+				data: values,
+			});
+			actions.resetForm();
+			console.log("Update successful");
+		} catch (error) {
+			console.error("Update failed", error);
+		}
+	};
+
 	return (
 		<>
 			<Box>
@@ -49,16 +83,21 @@ const Company = () => {
 			>
 				<Sidebar />
 				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
-					<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
+					<Formik
+						initialValues={initialValues}
+						validationSchema={schema}
+						onSubmit={handleSubmit}
+						innerRef={formikRef}
+					>
 						{() => (
 							<Form>
 								<Grid container spacing={2}>
 									<Grid item xs={12} sm={6}>
 										<Field
-											name="company_name"
+											name="name"
 											label="Company Name"
 											component={TextFormField}
-											required={true}
+											isRequired={true}
 											placeholder={"Enter company name"}
 										/>
 									</Grid>
@@ -67,53 +106,55 @@ const Company = () => {
 											name="phone"
 											label="Phone"
 											component={PhoneInputFormField}
-											required={true}
+											isRequired={true}
 											placeholder={"Enter mobile nuber"}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field
-											name="vat_number"
+											name="vat"
 											label="Vat Number"
 											component={TextFormField}
-											required={true}
 											placeholder={"Vat Number"}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field
-											name="country"
+											name="country_id"
 											label="Currency"
 											component={AutocompleteField}
-											options={options}
+											options={countryFindAll.data?.map((item) => ({
+												label: item.name,
+												value: item.id,
+											}))}
+											loading={countryFindAll.isLoading}
 											placeholder={"Select"}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Field
-											name="state"
-											label="State"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
+										<StateFormField
+											countryFieldName="country_id"
+											stateFieldName="state_id"
+											stateLabel="State"
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field
 											name="city"
 											label="City"
-											component={AutocompleteField}
-											options={options}
+											component={TextFormField}
+											isRequired={true}
 											placeholder={"Select"}
 										/>
 									</Grid>
 
 									<Grid item xs={12} sm={6}>
 										<Field
-											name="postal_code"
+											name="zip"
 											label="Postal Code"
 											component={TextFormField}
-											required={true}
+											isRequired={true}
 											placeholder={"Enter postal code"}
 										/>
 									</Grid>
@@ -122,7 +163,7 @@ const Company = () => {
 											name="address"
 											label="Address"
 											component={TextFormField}
-											required={true}
+											isRequired={true}
 											placeholder={"Add address"}
 											multiline
 											rows={5}

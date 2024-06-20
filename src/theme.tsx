@@ -524,6 +524,7 @@ const customTheme = {
 			apiBtnBgColor: "#BF384B",
 			GreenBtnColor: "#0FBB00",
 			grayColor: "#808080",
+			invDetailBtnBorder: "rgba(13, 110, 253, 0.5)",
 		},
 		...themeOptions.palette,
 	},

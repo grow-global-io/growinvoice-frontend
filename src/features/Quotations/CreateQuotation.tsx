@@ -90,7 +90,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		customer_id: yup.string().required("Customer is required"),
 		user_id: yup.string().required("User is required"),
 		quatation_number: yup.string().required("Quotaion number is required"),
-		reference_number: yup.string().required("Reference number is required"),
+		reference_number: yup.string(),
 		date: yup.string().required("Quotation date is required"),
 		expiry_at: yup.string().required("Expiry date is required"),
 		notes: yup.string(),
@@ -98,7 +98,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		sub_total: yup.number().required("Subtotal is required"),
 		tax_id: yup.string(),
 		total: yup.number().required("Total is required"),
-		discountPercentage: yup.number().required("Discount is required"),
+		discountPercentage: yup.number(),
 		quotation: yup
 			.array()
 			.of(
@@ -231,7 +231,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 												label: customer.display_name,
 											}))}
 											loading={customerData.isLoading}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} alignItems={"center"} display={"flex"}>
@@ -256,7 +256,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											InputProps={{
 												startAdornment: <InputAdornment position="start">QTN -</InputAdornment>,
 											}}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
@@ -264,7 +264,6 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											name="reference_number"
 											component={TextFormField}
 											label="Reference Number"
-											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
@@ -272,7 +271,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											name="date"
 											component={DateFormField}
 											label="Quotation Date"
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} lg={4}>
@@ -281,7 +280,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											component={DateFormField}
 											label="Expiry At"
 											minDate={moment(values.date).add(1, "days").toDate()}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} mb={3}>
@@ -345,7 +344,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															component={TextFormField}
 															type="number"
 															disabled
-															required={true}
+															isRequired={true}
 														/>
 													</Grid>
 													<Grid item xs={12} sm={6}>
@@ -384,7 +383,6 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															name="discountPercentage"
 															component={TextFormField}
 															type="number"
-															required={true}
 														/>
 													</Grid>
 													<Grid item xs={12}>
@@ -398,7 +396,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															name="total"
 															component={TextFormField}
 															type="number"
-															required={true}
+															isRequired={true}
 														/>
 													</Grid>
 												</Grid>
@@ -411,7 +409,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											label="Invoice Template"
 											component={AutocompleteField}
 											options={options}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6} display="flex" alignItems="center">
