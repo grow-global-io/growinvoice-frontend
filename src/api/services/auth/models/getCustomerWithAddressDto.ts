@@ -14,10 +14,8 @@ export interface GetCustomerWithAddressDto {
 	billingAddress_id: string;
 	createdAt: string;
 	currencies_id: string;
-	/** @nullable */
-	display_name: string | null;
-	/** @nullable */
-	email: string | null;
+	display_name: string;
+	email: string;
 	id: string;
 	isExist: boolean;
 	name: string;

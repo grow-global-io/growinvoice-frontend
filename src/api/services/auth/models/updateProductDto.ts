@@ -11,10 +11,12 @@ export interface UpdateProductDto {
 	currency_id?: string;
 	/** @nullable */
 	description?: string | null;
-	hsnCode_id?: string;
+	/** @nullable */
+	hsnCode_id?: string | null;
 	name?: string;
 	price?: number;
-	tax_id?: string;
+	/** @nullable */
+	tax_id?: string | null;
 	type?: UpdateProductDtoType;
 	unit_id?: string;
 	user_id?: string;

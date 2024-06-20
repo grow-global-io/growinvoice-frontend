@@ -15,12 +15,14 @@ export interface ProductWithAllDataDto {
 	currency_id: string;
 	/** @nullable */
 	description: string | null;
-	hsnCode_id: string;
+	/** @nullable */
+	hsnCode_id: string | null;
 	id: string;
 	isExist: boolean;
 	name: string;
 	price: number;
-	tax_id: string;
+	/** @nullable */
+	tax_id: string | null;
 	type: ProductWithAllDataDtoType;
 	unit?: ProductUnitDto;
 	unit_id: string;

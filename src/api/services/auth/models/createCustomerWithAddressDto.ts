@@ -12,10 +12,8 @@ import type { CreateShippingAddressDto } from "./createShippingAddressDto";
 export interface CreateCustomerWithAddressDto {
 	billingDetails?: CreateBillingAddressDto;
 	currencies_id: string;
-	/** @nullable */
-	display_name?: string | null;
-	/** @nullable */
-	email?: string | null;
+	display_name: string;
+	email: string;
 	name: string;
 	option: CreateCustomerWithAddressDtoOption;
 	/** @nullable */

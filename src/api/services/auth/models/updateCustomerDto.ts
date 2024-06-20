@@ -10,10 +10,8 @@ import type { UpdateCustomerDtoOption } from "./updateCustomerDtoOption";
 export interface UpdateCustomerDto {
 	billingAddress_id?: string;
 	currencies_id?: string;
-	/** @nullable */
-	display_name?: string | null;
-	/** @nullable */
-	email?: string | null;
+	display_name?: string;
+	email?: string;
 	name?: string;
 	option?: UpdateCustomerDtoOption;
 	/** @nullable */

@@ -17,10 +17,8 @@ export interface Customer {
 	createdAt: string;
 	currencies?: Currencies;
 	currencies_id: string;
-	/** @nullable */
-	display_name: string | null;
-	/** @nullable */
-	email: string | null;
+	display_name: string;
+	email: string;
 	id: string;
 	isExist: boolean;
 	name: string;
