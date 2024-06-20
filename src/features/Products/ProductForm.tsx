@@ -32,10 +32,10 @@ const schema: yup.Schema<CreateProductDto> = yup.object({
 		.oneOf(Object.values(CreateProductDtoType), "Invalid Type"),
 	name: yup.string().required("Name is required"),
 	unit_id: yup.string().required("Unit is required"),
-	hsnCode_id: yup.string().required("HSN Code is required"),
-	tax_id: yup.string().required("Tax is required"),
+	hsnCode_id: yup.string(),
+	tax_id: yup.string(),
 	currency_id: yup.string().required("Currency is required"),
-	price: yup.number().required("Price is required").min(0, "Price should be greater than 0"),
+	price: yup.number().required("Price is required").min(1, "Price should be greater than 0"),
 	description: yup.string().nullable(),
 	user_id: yup.string().required("User id is required"),
 });
@@ -45,7 +45,6 @@ const ProductForm = () => {
 	const { user } = useAuthStore();
 	const createProduct = useProductControllerCreate();
 	const { setOpenProductForm, editValues } = useCreateProductStore.getState();
-
 	const productUnit = useProductunitControllerFindAll();
 	const hsnCodes = useHsncodeControllerFindAll();
 	const taxCodes = useTaxcodeControllerFindAll();
@@ -58,14 +57,20 @@ const ProductForm = () => {
 		action: FormikHelpers<CreateProductDto>,
 	) => {
 		action.setSubmitting(true);
+		const transformedValues = {
+			...values,
+			price: Number(values.price), // Ensure the price is a number before submission
+			tax_id: values.tax_id === "" ? null : values.tax_id,
+			hsnCode_id: values.hsnCode_id === "" ? null : values.hsnCode_id,
+		};
 		if (editValues) {
 			await updateProduct.mutateAsync({
 				id: editValues.id,
-				data: values,
+				data: transformedValues,
 			});
 		} else {
 			await createProduct.mutateAsync({
-				data: values,
+				data: transformedValues,
 			});
 		}
 		action.resetForm();
@@ -141,7 +146,7 @@ const ProductForm = () => {
 										label="Type"
 										component={AutocompleteField}
 										options={Object.values(CreateProductDtoType).map(stringToListDto)}
-										required={true}
+										isRequired={true}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -149,7 +154,7 @@ const ProductForm = () => {
 										name="name"
 										component={TextFormField}
 										label="Service Name"
-										required={true}
+										isRequired={true}
 									/>
 								</Grid>
 								<Field
@@ -161,6 +166,7 @@ const ProductForm = () => {
 										value: currency.id,
 										label: `${currency.short_code} - ${currency.name}`,
 									}))}
+									isRequired={true}
 								/>
 
 								<Grid item xs={12}>
@@ -173,7 +179,7 @@ const ProductForm = () => {
 											value: unit.id,
 											label: unit.name,
 										}))}
-										required={true}
+										isRequired={true}
 									/>
 									{!openProductUnitForm && (
 										<Button variant="text" onClick={handleProductUnitOpen} startIcon={<AddIcon />}>
@@ -197,7 +203,6 @@ const ProductForm = () => {
 												value: item?.id,
 											};
 										})}
-										required={true}
 									/>
 									{!openHsnCodeForm && (
 										<Button variant="text" onClick={handleHsnCodeOpen} startIcon={<AddIcon />}>
@@ -219,7 +224,6 @@ const ProductForm = () => {
 												value: item?.id,
 											};
 										})}
-										required={true}
 									/>
 									{!openTaxesForm && (
 										<Button variant="text" onClick={handleTaxesOpen} startIcon={<AddIcon />}>
@@ -234,8 +238,8 @@ const ProductForm = () => {
 										name="price"
 										component={TextFormField}
 										label="Price"
-										type="number"
-										required={true}
+										type="text" // Change to text to handle empty string
+										isRequired={true}
 									/>
 								</Grid>
 

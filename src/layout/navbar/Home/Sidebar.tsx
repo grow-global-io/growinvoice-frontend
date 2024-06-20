@@ -314,48 +314,51 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Box
-						mx={{ xs: 0, sm: 2 }}
-						onClick={() => {
-							navigate("/setting/myprofile");
-						}}
-					>
-						<SettingsOutlinedIcon />
-					</Box>
-					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Open settings">
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-							</IconButton>
-						</Tooltip>
-						<Menu
-							sx={{ mt: "45px" }}
-							id="menu-appbar"
-							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: "top",
-								horizontal: "right",
+					<Box display={"flex"} alignItems={"center"} gap={1}>
+						<Box
+							mx={{ xs: 0, sm: 2 }}
+							sx={{ cursor: "pointer" }}
+							onClick={() => {
+								navigate("/setting/myprofile");
 							}}
-							keepMounted
-							transformOrigin={{
-								vertical: "top",
-								horizontal: "right",
-							}}
-							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
 						>
-							{settingsWithFunc.map((setting) => (
-								<MenuItem
-									key={setting?.name}
-									onClick={() => {
-										setting.func();
-										handleCloseUserMenu();
-									}}
-								>
-									<Typography textAlign="center">{setting?.name}</Typography>
-								</MenuItem>
-							))}
-						</Menu>
+							<SettingsOutlinedIcon />
+						</Box>
+						<Box sx={{ flexGrow: 0 }}>
+							<Tooltip title="Open settings">
+								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+									<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+								</IconButton>
+							</Tooltip>
+							<Menu
+								sx={{ mt: "45px" }}
+								id="menu-appbar"
+								anchorEl={anchorElUser}
+								anchorOrigin={{
+									vertical: "top",
+									horizontal: "right",
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: "top",
+									horizontal: "right",
+								}}
+								open={Boolean(anchorElUser)}
+								onClose={handleCloseUserMenu}
+							>
+								{settingsWithFunc.map((setting) => (
+									<MenuItem
+										key={setting?.name}
+										onClick={() => {
+											setting.func();
+											handleCloseUserMenu();
+										}}
+									>
+										<Typography textAlign="center">{setting?.name}</Typography>
+									</MenuItem>
+								))}
+							</Menu>
+						</Box>
 					</Box>
 				</Toolbar>
 			</AppBar>

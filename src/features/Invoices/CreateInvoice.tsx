@@ -127,7 +127,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 	const schema = yup.object().shape({
 		customer_id: yup.string().required("Customer is required"),
 		invoice_number: yup.string().required("Invoice number is required"),
-		reference_number: yup.string().required("Reference number is required"),
+		reference_number: yup.string(),
 		date: yup.string().required("Invoice date is required"),
 		due_date: yup.string().required("Due date is required"),
 		is_recurring: yup.boolean().required("Is recurring is required"),
@@ -136,19 +136,18 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		sub_total: yup.number().required("Subtotal is required"),
 		tax_id: yup.string(),
 		total: yup.number().required("Total is required"),
-		discountPercentage: yup.number().required("Discount is required"),
+		discountPercentage: yup.number(),
 		recurring: yup
 			.string()
-			.required("Recurring is required")
 			.oneOf(Object.values(CreateInvoiceWithProductsRecurring), "Invalid Type"),
 		product: yup
 			.array()
 			.of(
 				yup.object({
-					product_id: yup.string(),
-					quantity: yup.number(),
-					price: yup.number(),
-					total: yup.number(),
+					product_id: yup.string().required("Product is required"),
+					quantity: yup.number().required("Quantity is required"),
+					price: yup.number().required("Price is required"),
+					total: yup.number().required("Total is required"),
 				}),
 			)
 			.min(1, "At least one product is required"),
@@ -201,7 +200,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		});
 		actions.resetForm();
 		setRows([]);
-		navigate("/invoice/createinvoice");
 		navigate("/invoice/invoicelist");
 	};
 
@@ -287,7 +285,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												label: customer.display_name,
 											}))}
 											loading={customerData.isLoading}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} alignItems={"center"} display={"flex"}>
@@ -312,7 +310,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											InputProps={{
 												startAdornment: <InputAdornment position="start">INV -</InputAdornment>,
 											}}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4}>
@@ -320,7 +318,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											name="reference_number"
 											component={TextFormField}
 											label="Reference Number"
-											required={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4}>
@@ -329,7 +326,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											component={DateFormField}
 											label="Invoice Date"
 											// minDate={new Date()}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4}>
@@ -338,11 +335,16 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											component={DateFormField}
 											label="Invoice Due Date"
 											minDate={moment(formik?.values.date).add(1, "days").toDate()}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={4} display={"flex"} alignItems={"center"}>
-										<Field name="is_recurring" label="Is Recurring" component={CheckBoxFormField} />
+										<Field
+											name="is_recurring"
+											label="Is Recurring"
+											component={CheckBoxFormField}
+											isRequired={true}
+										/>
 									</Grid>
 									{formik?.values.is_recurring && (
 										<Grid item xs={12} sm={4}>
@@ -353,7 +355,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												options={Object.keys(CreateInvoiceWithProductsRecurring).map(
 													stringToListDto,
 												)}
-												required={true}
 											/>
 										</Grid>
 									)}
@@ -400,7 +401,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												label: payment.paymentType,
 											}))}
 											loading={paymentData.isLoading}
-											required={true}
+											isRequired={true}
 										/>
 										<Box>
 											<Button variant="text" startIcon={<AddIcon />} onClick={handleClickOpen}>
@@ -506,7 +507,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															component={TextFormField}
 															type="number"
 															disabled
-															required={true}
+															isRequired={true}
 														/>
 													</Grid>
 													<Grid item xs={12} sm={6}>
@@ -545,7 +546,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															name="discountPercentage"
 															component={TextFormField}
 															type="number"
-															required={true}
 														/>
 													</Grid>
 													<Grid item xs={12}>
@@ -559,7 +559,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															name="total"
 															component={TextFormField}
 															type="number"
-															required={true}
+															isRequired={true}
 															disabled
 														/>
 													</Grid>
@@ -576,7 +576,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 												value: template.id,
 												label: template.name,
 											}))}
-											required={true}
+											isRequired={true}
 											loading={
 												invoiceTemplateFindAll.isLoading || invoiceTemplateFindAll.isFetching
 											}

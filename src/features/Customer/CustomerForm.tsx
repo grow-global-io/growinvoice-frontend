@@ -100,13 +100,10 @@ const CustomerForm = () => {
 		}),
 		display_name: yup.string().required("Display Name is required"),
 		email: yup.string().required("Email is required").email("Email is invalid"),
-		phone: yup
-			.string()
-			.required("Phone is required")
-			.test("is-phone", "Phone number is not valid", function (value) {
-				if (!value) return true;
-				return isValidPhoneNumber(value);
-			}),
+		phone: yup.string().test("is-phone", "Phone number is not valid", function (value) {
+			if (!value) return true;
+			return isValidPhoneNumber(value);
+		}),
 		website: yup.string().matches(RegexExp.linkRegex, "Website is invalid"),
 	});
 
@@ -177,7 +174,7 @@ const CustomerForm = () => {
 											options={Object.values(CreateCustomerWithAddressDtoOption).map(
 												stringToListDto,
 											)}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 
@@ -186,7 +183,7 @@ const CustomerForm = () => {
 											name="name"
 											label="Customer Name"
 											component={TextFormField}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
@@ -194,7 +191,7 @@ const CustomerForm = () => {
 											name="display_name"
 											label="Display Name"
 											component={TextFormField}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 									{/* <Grid item xs={12} sm={8}>
@@ -206,15 +203,10 @@ const CustomerForm = () => {
 									/>
 								</Grid> */}
 									<Grid item xs={12} sm={6}>
-										<Field name="email" label="Email" component={TextFormField} required={true} />
+										<Field name="email" label="Email" component={TextFormField} isRequired={true} />
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Field
-											name="phone"
-											label="Phone"
-											component={PhoneInputFormField}
-											required={true}
-										/>
+										<Field name="phone" label="Phone" component={PhoneInputFormField} />
 									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field name="website" label="Website" component={TextFormField} />
@@ -229,7 +221,7 @@ const CustomerForm = () => {
 												value: currency.id,
 												label: `${currency.short_code} - ${currency.name}`,
 											}))}
-											required={true}
+											isRequired={true}
 										/>
 									</Grid>
 								</Grid>
@@ -260,7 +252,7 @@ const CustomerForm = () => {
 														value: item.id,
 													}))}
 													loading={countryFindAll.isLoading}
-													required={true}
+													isRequired={true}
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
@@ -280,13 +272,13 @@ const CustomerForm = () => {
 													name="billingDetails.city"
 													component={TextFormField}
 													label="City"
-													required={true}
+													isRequired={true}
 												/>
 												<Field
 													name="billingDetails.zip"
 													component={TextFormField}
 													label="Zip Code"
-													required={true}
+													isRequired={true}
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
@@ -296,7 +288,7 @@ const CustomerForm = () => {
 													label="Address"
 													multiline
 													rows={6}
-													required={true}
+													isRequired={true}
 												/>
 											</Grid>
 										</Grid>
@@ -361,7 +353,7 @@ const CustomerForm = () => {
 													value: item.id,
 												}))}
 												loading={countryFindAll.isLoading}
-												required={true}
+												isRequired={true}
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
@@ -381,13 +373,13 @@ const CustomerForm = () => {
 												name="shippingDetails.city"
 												component={TextFormField}
 												label="City"
-												required={true}
+												isRequired={true}
 											/>
 											<Field
 												name="shippingDetails.zip"
 												component={TextFormField}
 												label="Zip Code"
-												required={true}
+												isRequired={true}
 											/>
 										</Grid>
 										<Grid item xs={12} sm={6}>
@@ -397,7 +389,7 @@ const CustomerForm = () => {
 												label="Address"
 												multiline
 												rows={6}
-												required={true}
+												isRequired={true}
 											/>
 										</Grid>
 									</Grid>
