@@ -153,6 +153,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			)
 			.min(1, "At least one product is required"),
 		user_id: yup.string().required("User is required"),
+		template_id: yup.string().required("Template is required"),
 	});
 
 	const handleSubmit = async (
