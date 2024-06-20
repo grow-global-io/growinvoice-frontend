@@ -70,7 +70,7 @@ const themeOptions: ThemeOptions = {
 		},
 	},
 	typography: {
-		fontFamily: '"Raleway", sans-serif',
+		fontFamily: '"Roboto", sans-serif',
 		fontSize: 14,
 		h1: {
 			fontSize: "2.5rem",
