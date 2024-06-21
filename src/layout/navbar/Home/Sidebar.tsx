@@ -286,12 +286,12 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 	);
 
 	return (
-		<Box sx={{ display: "flex" }}>
+		<Box sx={{ display: "flex", width: "100%" }}>
 			<AppBar
 				position="fixed"
 				sx={{
-					width: { md: `calc(100% - ${drawerWidth}px)` },
-					ml: { sm: `${drawerWidth}px` },
+					width: { lg: `calc(100% - ${drawerWidth}px)` },
+					ml: { xs: 0, lg: `${drawerWidth}px` },
 					backgroundColor: "secondary.dark",
 				}}
 			>
@@ -300,7 +300,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						display: "flex",
 						justifyContent: {
 							xs: "space-between",
-							md: "flex-end",
+							lg: "flex-end",
 						},
 						flex: 1,
 					}}
@@ -364,7 +364,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			</AppBar>
 			<Box
 				component="nav"
-				sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}
+				sx={{ width: { lg: drawerWidth }, flexShrink: { sm: 0 } }}
 				aria-label="mailbox folders"
 			>
 				{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -400,7 +400,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			</Box>
 			<Box
 				component="main"
-				sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+				sx={{ flexGrow: 1, p: 3, width: { lg: `calc(100% - ${drawerWidth}px)` } }}
 			>
 				<Toolbar></Toolbar>
 				{children}

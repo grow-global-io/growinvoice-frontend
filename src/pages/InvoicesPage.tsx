@@ -1,4 +1,4 @@
-import Invoices from "@features/Setting/Invoices";
+import Invoices from "@features/Settings/Invoices";
 
 const InvoicesPage = () => {
 	return <Invoices />;

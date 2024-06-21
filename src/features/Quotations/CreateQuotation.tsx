@@ -14,7 +14,7 @@ import { DateFormField } from "@shared/components/FormFields/DateFormField";
 import * as yup from "yup";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { Constants } from "@shared/constants";
-import FullFeaturedCrudGrid from "@features/Invoices/ProductListDataGrid";
+import FullFeaturedCrudGrid from "@shared/components/EditableProductListTable";
 import { GridRowsProp } from "@mui/x-data-grid";
 import { useEffect, useRef, useState } from "react";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
@@ -22,7 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useCustomerControllerFindAll } from "@api/services/customer";
 import { OmitCreateQuotationProductsDto } from "@api/services/models";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
-import CreateTaxes from "@features/Products/CreateTaxes";
+import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
 import {
 	getQuotationControllerFindAllQueryKey,
 	getQuotationControllerFindOneQueryKey,

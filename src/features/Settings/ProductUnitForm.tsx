@@ -1,13 +1,15 @@
 import { Box, Grid, Typography, IconButton, Divider } from "@mui/material";
+
 import CloseIcon from "@mui/icons-material/Close";
+import CreateProductUnit from "@features/ProductUnit/CreateProductUnit";
 import { useDialog } from "@shared/hooks/useDialog";
-import CreateHSNCode from "@features/Products/CreateHSNCode";
-import ContentPasteOutlinedIcon from "@mui/icons-material/ContentPasteOutlined";
-const HsnCodeForm = ({ handleClose }: { handleClose: () => void }) => {
+import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
+
+const ProductUnitForm = ({ handleClose }: { handleClose: () => void }) => {
 	const {
-		// handleClickOpen: handleHsnCodeOpen,
-		handleClose: handleHsnCodeClose,
-		// open: openHsnCodeForm,
+		// handleClickOpen: handleProductUnitOpen,
+		handleClose: handleProductUnitClose,
+		// open: openProductUnitForm,
 	} = useDialog();
 
 	return (
@@ -21,7 +23,7 @@ const HsnCodeForm = ({ handleClose }: { handleClose: () => void }) => {
 						gap: 1,
 					}}
 				>
-					<ContentPasteOutlinedIcon /> New HSN Code
+					<NoteOutlinedIcon /> New Product Unit
 					{/* <img src={Constants.customImages.QuotationIcon} alt="Invoice Icon" /> New Quotation */}
 				</Typography>
 				<IconButton
@@ -35,10 +37,10 @@ const HsnCodeForm = ({ handleClose }: { handleClose: () => void }) => {
 			</Grid>
 			<Divider />
 			<Box sx={{ mb: 2, mt: 2 }}>
-				<CreateHSNCode handleClose={handleHsnCodeClose} />
+				<CreateProductUnit handleClose={handleProductUnitClose} />
 			</Box>
 		</Box>
 	);
 };
 
-export default HsnCodeForm;
+export default ProductUnitForm;

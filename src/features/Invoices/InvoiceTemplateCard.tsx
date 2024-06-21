@@ -24,7 +24,7 @@ const InvoiceTemplateCard = ({
 		<Card sx={{ display: { xs: "block", md: "none" } }}>
 			<CardContent>
 				<Typography variant="h4" textAlign={"center"} color={"secondary.dark"}>
-					Hi , TestCustomer!
+					Hi, {user?.name}!
 				</Typography>
 				<Typography variant="h5" textAlign={"center"} color={"secondary.dark"}>
 					Invoice from {user?.company?.[0]?.name}

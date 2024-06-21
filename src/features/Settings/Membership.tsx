@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import Sidebar from "./Sidebar";
 import MembershipCard from "@shared/components/MembershipCard";
-import MembershipData from "./../../data/memberShipData.json";
+import MembershipData from "../../data/memberShipData.json";
 
 const Membership = () => {
 	return (
