@@ -1,6 +1,12 @@
 import { Card, Grid, Typography } from "@mui/material";
 
-const OverviewCard = ({ name, img }: { name: string; img: string }) => {
+interface OverviewCardProps {
+	name: string;
+	img: string;
+	value: string | number;
+}
+
+const OverviewCard = ({ name, img, value }: OverviewCardProps) => {
 	return (
 		<Card
 			sx={{
@@ -16,7 +22,7 @@ const OverviewCard = ({ name, img }: { name: string; img: string }) => {
 				}}
 			>
 				<Grid item xs={10}>
-					<Typography variant="h3">$32.5k </Typography>{" "}
+					<Typography variant="h3">{value}</Typography>{" "}
 					<Typography variant="h6" sx={{ my: 1 }}>
 						{name}{" "}
 					</Typography>

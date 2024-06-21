@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Sidebar from "./Sidebar";
-import { Formik, Field, Form, FormikProps, FormikHelpers } from "formik";
+import { Formik, Field, Form, FormikHelpers, FormikProps } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
@@ -14,17 +14,7 @@ import { useCompanyControllerUpdate } from "@api/services/company";
 const Company = () => {
 	const { user } = useAuthStore();
 	const countryFindAll = useCurrencyControllerFindCountries();
-	const companyUpdate = useCompanyControllerUpdate({
-		mutation: {
-			onSuccess: () => {
-				// handle success
-			},
-			onError: (error) => {
-				// handle error
-				console.error("Update failed", error);
-			},
-		},
-	});
+	const companyUpdate = useCompanyControllerUpdate();
 
 	const initialValues = {
 		name: user?.company?.[0]?.name ?? "",
@@ -41,14 +31,15 @@ const Company = () => {
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	const schema = yup.object().shape({
 		name: yup.string().required("Company name is required"),
+		phone: yup.number().required("Phone Number is required"),
 		vat: yup.string(),
 		country_id: yup.string().required("Select Country"),
 		state_id: yup.string().required("Select state"),
 		city: yup.string().required("Select city"),
-		phone: yup.number().required("Phone Number is required"),
 		zip: yup.string().required("Postal Code is required"),
-		logo: yup.string().required("logo is required"),
 		address: yup.string().required("Address is required"),
+		logo: yup.string().required("logo is required"),
+		user_id: yup.string().required("user Id is required"),
 	});
 
 	const id = user?.company?.[0]?.user_id ?? "";
@@ -57,16 +48,11 @@ const Company = () => {
 		values: typeof initialValues,
 		actions: FormikHelpers<typeof initialValues>,
 	) => {
-		try {
-			await companyUpdate.mutateAsync({
-				id: id,
-				data: values,
-			});
-			actions.resetForm();
-			console.log("Update successful");
-		} catch (error) {
-			console.error("Update failed", error);
-		}
+		await companyUpdate.mutateAsync({
+			id: id,
+			data: values,
+		});
+		actions.resetForm();
 	};
 
 	return (
@@ -121,7 +107,7 @@ const Company = () => {
 									<Grid item xs={12} sm={6}>
 										<Field
 											name="country_id"
-											label="Currency"
+											label="Country"
 											component={AutocompleteField}
 											options={countryFindAll.data?.map((item) => ({
 												label: item.name,
