@@ -12,7 +12,6 @@ import { useAuthStore } from "@store/auth";
 
 const ExpensesSummary = () => {
 	const { user } = useAuthStore();
-
 	const customerCount = useCustomerControllerCustomerCount();
 	const invoiceCount = useInvoiceControllerInvoiceCount();
 	const invoiceDueAmount = useInvoiceControllerTotalDue();
@@ -29,7 +28,7 @@ const ExpensesSummary = () => {
 			img: Constants.customImages.InvoiceFile,
 		},
 		{
-			value: 12, // Placeholder value for Estimates
+			value: 0,
 			name: "Estimates",
 			img: Constants.customImages.Estimate,
 		},
