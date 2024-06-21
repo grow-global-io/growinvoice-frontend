@@ -24,15 +24,15 @@ const InvoiceExpenses = () => {
 
 	const outstandingReceivableValue =
 		outstandingReceivable?.data !== undefined
-			? currencyFormatter(outstandingReceivable.data, user?.currency?.short_code)
+			? currencyFormatter(outstandingReceivable?.data, user?.currency?.short_code)
 			: "";
 	const invoiceDueDayValue =
 		invoiceDueDay?.data !== undefined
-			? currencyFormatter(invoiceDueDay.data, user?.currency?.short_code)
+			? currencyFormatter(invoiceDueDay?.data, user?.currency?.short_code)
 			: "";
 	const invoiceDueMonthValue =
 		invoiceDueMonth?.data !== undefined
-			? currencyFormatter(invoiceDueMonth.data, user?.currency?.short_code)
+			? currencyFormatter(invoiceDueMonth?.data, user?.currency?.short_code)
 			: "";
 
 	const data = [

@@ -44,7 +44,7 @@ const CompanyUpdateForm = () => {
 						name="country"
 						label="Country"
 						component={AutocompleteField}
-						options={countryFindAll.data?.map((item) => ({ label: item.name, value: item.id }))}
+						options={countryFindAll?.data?.map((item) => ({ label: item.name, value: item.id }))}
 						loading={countryFindAll.isLoading}
 					/>
 				</Grid>
@@ -53,7 +53,7 @@ const CompanyUpdateForm = () => {
 						name="state"
 						label="State"
 						component={AutocompleteField}
-						options={statesFindAllByCountry.data?.map((item) => ({
+						options={statesFindAllByCountry?.data?.map((item) => ({
 							label: item.name,
 							value: item.id,
 						}))}

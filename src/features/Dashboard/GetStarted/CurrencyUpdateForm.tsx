@@ -18,7 +18,7 @@ const CurrencyUpdateForm = () => {
 					label="Currency"
 					loading={currencyList.isLoading || currencyList.isFetching}
 					component={AutocompleteField}
-					options={currencyList.data?.map((currency) => ({
+					options={currencyList?.data?.map((currency) => ({
 						value: currency.id,
 						label: `${currency.short_code} - ${currency.name}`,
 					}))}

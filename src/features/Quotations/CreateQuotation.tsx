@@ -209,7 +209,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					{({ values, setFieldValue }) => {
 						useEffect(() => {
 							if (values?.discountPercentage > 0 || values.tax_id) {
-								const tax = taxCodes.data?.find((tax) => tax.id === values.tax_id);
+								const tax = taxCodes?.data?.find((tax) => tax.id === values.tax_id);
 								const discount = values?.sub_total * (values?.discountPercentage / 100);
 								const taxAmount = values?.sub_total * (tax?.percentage ?? 0 / 100);
 								setFieldValue("total", values?.sub_total - discount + taxAmount);
@@ -355,7 +355,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															name="tax_id"
 															component={AutocompleteField}
 															loading={taxCodes.isLoading || taxCodes.isFetching}
-															options={taxCodes.data?.map((item) => {
+															options={taxCodes?.data?.map((item) => {
 																return {
 																	label: item?.percentage + "%",
 																	value: item?.id,

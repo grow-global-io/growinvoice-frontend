@@ -149,7 +149,7 @@ const CustomerTableList = () => {
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={CustomerData.data} columns={columns} />
+			<DataGrid autoHeight rows={CustomerData?.data} columns={columns} />
 			<CustomerView open={open} handleClose={handleClose} customerId={viewCustomerId ?? ""} />
 		</Box>
 	);
