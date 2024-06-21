@@ -1,4 +1,4 @@
-import Preferences from "@features/Setting/Preferences";
+import Preferences from "@features/Settings/Preferences";
 
 const PreferencesPage = () => {
 	return <Preferences />;

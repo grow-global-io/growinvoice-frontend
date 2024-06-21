@@ -1,4 +1,4 @@
-import ApiCredentials from "@features/Setting/ApiCredentials";
+import ApiCredentials from "@features/Settings/ApiCredentials";
 
 const ApiCredentialsPage = () => {
 	return <ApiCredentials />;

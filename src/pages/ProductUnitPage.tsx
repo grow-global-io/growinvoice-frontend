@@ -1,4 +1,4 @@
-import ProductUnit from "@features/Setting/ProductUnit";
+import ProductUnit from "@features/Settings/ProductUnit";
 
 const ProductUnitPage = () => {
 	return <ProductUnit />;

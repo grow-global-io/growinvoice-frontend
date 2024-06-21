@@ -22,7 +22,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useCustomerControllerFindAll } from "@api/services/customer";
 import { OmitCreateQuotationProductsDto } from "@api/services/models";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
-import CreateTaxes from "@features/Products/CreateTaxes";
+import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
 import {
 	getQuotationControllerFindAllQueryKey,
 	getQuotationControllerFindOneQueryKey,

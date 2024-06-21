@@ -1,4 +1,4 @@
-import TaxType from "@features/Setting/TaxType";
+import TaxType from "@features/Settings/TaxType";
 
 const TaxTypePage = () => {
 	return <TaxType />;

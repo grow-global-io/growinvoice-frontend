@@ -1,15 +1,13 @@
 import { Box, Grid, Typography, IconButton, Divider } from "@mui/material";
-
 import CloseIcon from "@mui/icons-material/Close";
-import CreateProductUnit from "@features/Products/CreateProductUnit";
 import { useDialog } from "@shared/hooks/useDialog";
-import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
-
-const ProductUnitForm = ({ handleClose }: { handleClose: () => void }) => {
+import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+const TaxTypeForm = ({ handleClose }: { handleClose: () => void }) => {
 	const {
-		// handleClickOpen: handleProductUnitOpen,
-		handleClose: handleProductUnitClose,
-		// open: openProductUnitForm,
+		// handleClickOpen: handleTaxesOpen,
+		handleClose: handleTaxesClose,
+		// open: openTaxesForm,
 	} = useDialog();
 
 	return (
@@ -23,7 +21,7 @@ const ProductUnitForm = ({ handleClose }: { handleClose: () => void }) => {
 						gap: 1,
 					}}
 				>
-					<NoteOutlinedIcon /> New Product Unit
+					<DescriptionOutlinedIcon /> New Tax
 					{/* <img src={Constants.customImages.QuotationIcon} alt="Invoice Icon" /> New Quotation */}
 				</Typography>
 				<IconButton
@@ -37,10 +35,10 @@ const ProductUnitForm = ({ handleClose }: { handleClose: () => void }) => {
 			</Grid>
 			<Divider />
 			<Box sx={{ mb: 2, mt: 2 }}>
-				<CreateProductUnit handleClose={handleProductUnitClose} />
+				<CreateTaxes handleClose={handleTaxesClose} />
 			</Box>
 		</Box>
 	);
 };
 
-export default ProductUnitForm;
+export default TaxTypeForm;

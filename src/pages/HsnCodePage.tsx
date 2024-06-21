@@ -1,4 +1,4 @@
-import HsnCode from "@features/Setting/HsnCode";
+import HsnCode from "@features/Settings/HsnCode";
 
 const HsnCodePage = () => {
 	return <HsnCode />;

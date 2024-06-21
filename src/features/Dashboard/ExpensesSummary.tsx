@@ -17,25 +17,14 @@ const ExpensesSummary = () => {
 	const invoiceCount = useInvoiceControllerInvoiceCount();
 	const invoiceDueAmount = useInvoiceControllerTotalDue();
 
-	if (customerCount.isLoading || invoiceCount.isLoading || invoiceDueAmount.isLoading) {
-		return <Loader />;
-	}
-
-	const customerCountValue = customerCount?.data ?? "";
-	const invoiceCountValue = invoiceCount?.data ?? "";
-	const invoiceDueAmountValue =
-		invoiceDueAmount?.data !== undefined
-			? currencyFormatter(invoiceDueAmount.data, user?.currency?.short_code)
-			: "";
-
 	const data = [
 		{
-			value: customerCountValue,
+			value: customerCount?.data ?? "",
 			name: "Customers",
 			img: Constants.customImages.GroupUser,
 		},
 		{
-			value: invoiceCountValue,
+			value: invoiceCount?.data ?? "",
 			name: "Invoices",
 			img: Constants.customImages.InvoiceFile,
 		},
@@ -45,12 +34,15 @@ const ExpensesSummary = () => {
 			img: Constants.customImages.Estimate,
 		},
 		{
-			value: invoiceDueAmountValue,
+			value: currencyFormatter(invoiceDueAmount?.data ?? 0, user?.currency?.short_code),
 			name: "Due Amount",
 			img: Constants.customImages.Amount,
 		},
 	];
 
+	if (customerCount.isLoading || invoiceCount.isLoading || invoiceDueAmount.isLoading) {
+		return <Loader />;
+	}
 	return (
 		<Grid container spacing={2}>
 			{data.map((item, index) => (

@@ -1,4 +1,4 @@
-import Company from "@features/Setting/Company";
+import Company from "@features/Settings/Company";
 
 const CompanyPage = () => {
 	return <Company />;

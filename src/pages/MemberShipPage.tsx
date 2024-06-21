@@ -1,4 +1,4 @@
-import Membership from "@features/Setting/Membership";
+import Membership from "@features/Settings/Membership";
 
 const MemberShipPage = () => {
 	return <Membership />;

@@ -1,13 +1,13 @@
 import { Box, Grid, Typography, IconButton, Divider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDialog } from "@shared/hooks/useDialog";
-import CreateTaxes from "@features/Products/CreateTaxes";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-const TaxTypeForm = ({ handleClose }: { handleClose: () => void }) => {
+import CreateHSNCode from "@features/HSNCode/CreateHSNCode";
+import ContentPasteOutlinedIcon from "@mui/icons-material/ContentPasteOutlined";
+const HsnCodeForm = ({ handleClose }: { handleClose: () => void }) => {
 	const {
-		// handleClickOpen: handleTaxesOpen,
-		handleClose: handleTaxesClose,
-		// open: openTaxesForm,
+		// handleClickOpen: handleHsnCodeOpen,
+		handleClose: handleHsnCodeClose,
+		// open: openHsnCodeForm,
 	} = useDialog();
 
 	return (
@@ -21,7 +21,7 @@ const TaxTypeForm = ({ handleClose }: { handleClose: () => void }) => {
 						gap: 1,
 					}}
 				>
-					<DescriptionOutlinedIcon /> New Tax
+					<ContentPasteOutlinedIcon /> New HSN Code
 					{/* <img src={Constants.customImages.QuotationIcon} alt="Invoice Icon" /> New Quotation */}
 				</Typography>
 				<IconButton
@@ -35,10 +35,10 @@ const TaxTypeForm = ({ handleClose }: { handleClose: () => void }) => {
 			</Grid>
 			<Divider />
 			<Box sx={{ mb: 2, mt: 2 }}>
-				<CreateTaxes handleClose={handleTaxesClose} />
+				<CreateHSNCode handleClose={handleHsnCodeClose} />
 			</Box>
 		</Box>
 	);
 };
 
-export default TaxTypeForm;
+export default HsnCodeForm;

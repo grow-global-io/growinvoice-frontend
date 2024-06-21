@@ -1,13 +1,13 @@
 import { Grid, Tab, Tabs, Typography } from "@mui/material";
 import InvoiceExpenses from "./InvoiceExpenses";
-import InvoiceTableList from "./InvoiceTableList";
+import InvoiceTableList from "./InvoiceTableAllList";
 
 import { useTabs } from "@shared/hooks/useTabs";
 import TabPanel from "@shared/components/TabPanel";
 import InvoiceTableDueList from "./InvoiceTableDueList";
 import InvoiceTablePaidList from "./InvoiceTablePaidList";
 
-const InvoiceList = () => {
+const InvoiceListIndex = () => {
 	const { handleChange, tabValue } = useTabs("invoiceTab");
 
 	return (
@@ -67,4 +67,4 @@ const InvoiceList = () => {
 	);
 };
 
-export default InvoiceList;
+export default InvoiceListIndex;

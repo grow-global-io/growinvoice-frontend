@@ -21,7 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useQueryClient } from "@tanstack/react-query";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-export default function InvoiceTableList() {
+export default function InvoiceTableAllList() {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const { user } = useAuthStore();
