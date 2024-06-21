@@ -52,7 +52,7 @@ const InvoiceExpenses = () => {
 			img: Constants.customImages.DueDateBlue,
 		},
 		{
-			value: 0, // Placeholder value
+			value: 0,
 			text: "Overdue Invoice",
 			img: Constants.customImages.Stack,
 		},
