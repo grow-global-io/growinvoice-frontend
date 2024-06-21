@@ -591,9 +591,9 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 																>,
 															) => {
 																const value = e.target.value;
-																const numberValue = 0;
+																const numberValue = parseFloat(value);
 																if (!value) {
-																	formik.setFieldValue("discountPercentage", 0);
+																	formik.setFieldValue("discountPercentage", numberValue);
 																}
 																e.target.value = numberValue.toString();
 															}}

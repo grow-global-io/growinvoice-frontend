@@ -22,7 +22,7 @@ const GridTextField = ({
 			{
 				id: params.id,
 				field: params.field,
-				value: event.target.value,
+				value: type === "number" ? parseFloat(event.target.value) : event.target.value,
 			},
 			event,
 		);

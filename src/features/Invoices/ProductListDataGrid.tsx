@@ -201,7 +201,6 @@ export default function FullFeaturedCrudGrid({
 				const hasError = params.props.value < 1;
 				return { ...params.props, error: hasError };
 			},
-
 			renderEditCell: (params) => {
 				const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
 					const value = parseInt(event.target.value, 10);
