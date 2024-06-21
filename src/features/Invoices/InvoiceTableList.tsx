@@ -5,13 +5,18 @@ import { Constants } from "@shared/constants";
 import {
 	getInvoiceControllerFindAllQueryKey,
 	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindDueMonthQueryKey,
+	getInvoiceControllerFindDueTodayQueryKey,
 	getInvoiceControllerFindPaidInvoicesQueryKey,
+	getInvoiceControllerInvoiceCountQueryKey,
+	getInvoiceControllerOutstandingReceivableQueryKey,
+	getInvoiceControllerTotalDueQueryKey,
 	useInvoiceControllerFindAll,
 	useInvoiceControllerRemove,
 } from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
 import { Invoice } from "@api/services/models";
-import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
+import { currencyFormatter, formatDateToIso, parseDateStringToFormat } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
 import EditIcon from "@mui/icons-material/Edit";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
@@ -20,6 +25,7 @@ import { useConfirmDialogStore } from "@store/confirmDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useQueryClient } from "@tanstack/react-query";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import moment from "moment";
 
 export default function InvoiceTableList() {
 	const queryClient = useQueryClient();
@@ -28,7 +34,7 @@ export default function InvoiceTableList() {
 	const invoiceData = useInvoiceControllerFindAll();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const removeInvoice = useInvoiceControllerRemove();
-
+	const currentDate = moment().format("YYYY-MM-DD");
 	const columns: GridColDef<Invoice>[] = [
 		{
 			field: "invoice_number",
@@ -157,6 +163,25 @@ export default function InvoiceTableList() {
 										});
 										queryClient.refetchQueries({
 											queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+										});
+										await queryClient.refetchQueries({
+											queryKey: getInvoiceControllerInvoiceCountQueryKey(),
+										});
+										await queryClient.refetchQueries({
+											queryKey: getInvoiceControllerTotalDueQueryKey(),
+										});
+										await queryClient.refetchQueries({
+											queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
+										});
+										await queryClient.refetchQueries({
+											queryKey: getInvoiceControllerFindDueTodayQueryKey({
+												date: formatDateToIso(currentDate),
+											}),
+										});
+										await queryClient.refetchQueries({
+											queryKey: getInvoiceControllerFindDueMonthQueryKey({
+												date: formatDateToIso(currentDate),
+											}),
 										});
 									},
 									onCancel: () => {
