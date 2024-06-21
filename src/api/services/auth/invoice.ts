@@ -336,6 +336,112 @@ export const useInvoiceControllerFindDueMonth = <
 	return query;
 };
 
+export const invoiceControllerTotalDue = (signal?: AbortSignal) => {
+	return authInstance<number>({ url: `/api/invoice/totalDue`, method: "GET", signal });
+};
+
+export const getInvoiceControllerTotalDueQueryKey = () => {
+	return [`/api/invoice/totalDue`] as const;
+};
+
+export const getInvoiceControllerTotalDueQueryOptions = <
+	TData = Awaited<ReturnType<typeof invoiceControllerTotalDue>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTotalDue>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getInvoiceControllerTotalDueQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof invoiceControllerTotalDue>>> = ({
+		signal,
+	}) => invoiceControllerTotalDue(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof invoiceControllerTotalDue>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type InvoiceControllerTotalDueQueryResult = NonNullable<
+	Awaited<ReturnType<typeof invoiceControllerTotalDue>>
+>;
+export type InvoiceControllerTotalDueQueryError = ErrorType<unknown>;
+
+export const useInvoiceControllerTotalDue = <
+	TData = Awaited<ReturnType<typeof invoiceControllerTotalDue>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTotalDue>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getInvoiceControllerTotalDueQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const invoiceControllerInvoiceCount = (signal?: AbortSignal) => {
+	return authInstance<number>({ url: `/api/invoice/invoiceCount`, method: "GET", signal });
+};
+
+export const getInvoiceControllerInvoiceCountQueryKey = () => {
+	return [`/api/invoice/invoiceCount`] as const;
+};
+
+export const getInvoiceControllerInvoiceCountQueryOptions = <
+	TData = Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getInvoiceControllerInvoiceCountQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>> = ({
+		signal,
+	}) => invoiceControllerInvoiceCount(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type InvoiceControllerInvoiceCountQueryResult = NonNullable<
+	Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>
+>;
+export type InvoiceControllerInvoiceCountQueryError = ErrorType<unknown>;
+
+export const useInvoiceControllerInvoiceCount = <
+	TData = Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerInvoiceCount>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getInvoiceControllerInvoiceCountQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
 export const invoiceControllerFindDueInvoices = (signal?: AbortSignal) => {
 	return authInstance<Invoice[]>({ url: `/api/invoice/due`, method: "GET", signal });
 };

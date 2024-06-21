@@ -62,6 +62,12 @@ export default function FullFeaturedCrudGrid({
 
 	const handleSaveClick = (id: GridRowId) => () => {
 		setErrorText(undefined);
+
+		const row = rows.find((row) => row.id === id);
+		if (!row?.product_id) {
+			setErrorText("Product must be selected before saving.");
+			return;
+		}
 		setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
 	};
 
@@ -88,6 +94,11 @@ export default function FullFeaturedCrudGrid({
 	};
 
 	const processRowUpdate = (newRow: GridRowModel) => {
+		if (!newRow.product_id) {
+			setErrorText("Product must be selected before saving.");
+			return newRow;
+		}
+
 		const updatedRow = { ...newRow, isNew: false };
 		setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 		return updatedRow;
@@ -131,6 +142,21 @@ export default function FullFeaturedCrudGrid({
 			renderEditCell: (params) => {
 				const handleProductChange = (event: SelectChangeEvent) => {
 					const value = event.target.value as string;
+					const selectedProduct = productList?.data?.find((product) => product.id === value);
+					const updatedRows = rows.map((row) => {
+						if (row.id === params.id) {
+							return {
+								...row,
+								product_id: value,
+								quantity: 1,
+								price: selectedProduct?.price,
+								total: selectedProduct?.price,
+							};
+						}
+						return row;
+					});
+					setRows(updatedRows);
+
 					params.api.setEditCellValue({
 						id: params.id,
 						field: "quantity",
@@ -171,9 +197,18 @@ export default function FullFeaturedCrudGrid({
 			headerName: "Quantity",
 			flex: 0.8,
 			editable: true,
+			preProcessEditCellProps: (params) => {
+				const hasError = params.props.value < 1;
+				return { ...params.props, error: hasError };
+			},
 			renderEditCell: (params) => {
 				const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-					const value = event.target.value as string;
+					const value = parseInt(event.target.value, 10);
+					if (value < 1) {
+						setErrorText("Quantity should not be less than 0");
+					} else {
+						setErrorText("");
+					}
 					const price = productList?.data?.find(
 						(product) => product.id === params.row.product_id,
 					)?.price;

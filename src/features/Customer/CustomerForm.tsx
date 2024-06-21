@@ -28,6 +28,7 @@ import {
 } from "@api/services/currency";
 import StateFormField from "@shared/components/FormFields/StateFormField";
 import {
+	getCustomerControllerCustomerCountQueryKey,
 	getCustomerControllerFindAllQueryKey,
 	getCustomerControllerFindOneQueryKey,
 	useCustomerControllerCreate,
@@ -124,10 +125,14 @@ const CustomerForm = () => {
 			await createCustomer.mutateAsync({
 				data: values,
 			});
+			await queryClient.refetchQueries({
+				queryKey: getCustomerControllerCustomerCountQueryKey(),
+			});
 		}
 		queryClient.invalidateQueries({
 			queryKey: getCustomerControllerFindAllQueryKey(),
 		});
+
 		actions.resetForm();
 		setOpenCustomerForm(false);
 		actions.setSubmitting(false);

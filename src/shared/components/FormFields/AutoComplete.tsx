@@ -69,6 +69,11 @@ function AsyncAutoCompleteField({
 				<InputLabel sx={{ ml: -1.6 }} shrink htmlFor={field.name}>
 					<Typography variant="h4" color="text.primary">
 						{label?.toUpperCase()}
+						{isRequired && (
+							<Typography variant="h5" color="error" component="span">
+								{" *"}
+							</Typography>
+						)}
 					</Typography>
 				</InputLabel>
 			)}

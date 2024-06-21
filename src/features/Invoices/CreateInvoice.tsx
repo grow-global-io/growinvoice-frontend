@@ -42,6 +42,11 @@ import {
 	useInvoiceControllerUpdate,
 	useInvoiceControllerInvoicePreviewFromBody,
 	getInvoiceControllerTestQueryKey,
+	getInvoiceControllerInvoiceCountQueryKey,
+	getInvoiceControllerTotalDueQueryKey,
+	getInvoiceControllerOutstandingReceivableQueryKey,
+	getInvoiceControllerFindDueTodayQueryKey,
+	getInvoiceControllerFindDueMonthQueryKey,
 } from "@api/services/invoice";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import CreateTaxes from "@features/Products/CreateTaxes";
@@ -81,7 +86,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 
 	const invoiceUpdate = useInvoiceControllerUpdate();
 	const invoicePreview = useInvoiceControllerInvoicePreviewFromBody();
-
+	const currentDate = moment().format("YYYY-MM-DD");
 	const handleClosePreview = () => {
 		setPreviewString(undefined);
 		handleCloseInvoicePreview();
@@ -211,6 +216,21 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		});
 		await queryClient.refetchQueries({
 			queryKey: getInvoiceControllerTestQueryKey(id ?? ""),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getInvoiceControllerInvoiceCountQueryKey(),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getInvoiceControllerTotalDueQueryKey(),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindDueTodayQueryKey({ date: formatDateToIso(currentDate) }),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindDueMonthQueryKey({ date: formatDateToIso(currentDate) }),
 		});
 		actions.resetForm();
 		setRows([]);
@@ -571,9 +591,9 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 																>,
 															) => {
 																const value = e.target.value;
-																const numberValue = 0;
+																const numberValue = parseFloat(value);
 																if (!value) {
-																	formik.setFieldValue("discountPercentage", 0);
+																	formik.setFieldValue("discountPercentage", numberValue);
 																}
 																e.target.value = numberValue.toString();
 															}}
