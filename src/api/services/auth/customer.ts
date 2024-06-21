@@ -146,6 +146,59 @@ export const useCustomerControllerFindAll = <
 	return query;
 };
 
+export const customerControllerCustomerCount = (signal?: AbortSignal) => {
+	return authInstance<number>({ url: `/api/customer/customerCount`, method: "GET", signal });
+};
+
+export const getCustomerControllerCustomerCountQueryKey = () => {
+	return [`/api/customer/customerCount`] as const;
+};
+
+export const getCustomerControllerCustomerCountQueryOptions = <
+	TData = Awaited<ReturnType<typeof customerControllerCustomerCount>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof customerControllerCustomerCount>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getCustomerControllerCustomerCountQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof customerControllerCustomerCount>>> = ({
+		signal,
+	}) => customerControllerCustomerCount(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof customerControllerCustomerCount>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type CustomerControllerCustomerCountQueryResult = NonNullable<
+	Awaited<ReturnType<typeof customerControllerCustomerCount>>
+>;
+export type CustomerControllerCustomerCountQueryError = ErrorType<unknown>;
+
+export const useCustomerControllerCustomerCount = <
+	TData = Awaited<ReturnType<typeof customerControllerCustomerCount>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof customerControllerCustomerCount>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getCustomerControllerCustomerCountQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
 export const customerControllerFindOne = (id: string, signal?: AbortSignal) => {
 	return authInstance<GetCustomerWithAddressDto>({
 		url: `/api/customer/${id}`,
