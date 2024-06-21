@@ -16,8 +16,9 @@ export const TextFormField: React.FC<
 		isRequired?: boolean;
 		type?: string;
 		backgroundColor?: string; // New prop for background color
+		onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void;
 	}
-> = ({ field, form, label, backgroundColor, isRequired, ...props }) => {
+> = ({ field, form, label, backgroundColor, isRequired, onBlur, ...props }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
 	const [hidePassword, setHidePassword] = useState(true);
 	const handleClickHidePassword = () => setHidePassword((hide) => !hide);
@@ -75,6 +76,7 @@ export const TextFormField: React.FC<
 				}}
 				hidden={true}
 				onBlur={(e) => {
+					onBlur && onBlur(e);
 					if (props?.type === "number") {
 						const value = e.target.value;
 						const numberValue = parseFloat(value);

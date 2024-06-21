@@ -149,21 +149,18 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		sub_total: yup.number().required("Subtotal is required"),
 		tax_id: yup.string(),
 		total: yup.number().required("Total is required"),
-		discountPercentage: yup.number(),
+		discountPercentage: yup.number().min(0).max(100),
 		recurring: yup
 			.string()
 			.oneOf(Object.values(CreateInvoiceWithProductsRecurring), "Invalid Type"),
-		product: yup
-			.array()
-			.of(
-				yup.object({
-					product_id: yup.string().required("Product is required"),
-					quantity: yup.number().required("Quantity is required"),
-					price: yup.number().required("Price is required"),
-					total: yup.number().required("Total is required"),
-				}),
-			)
-			.min(1, "At least one product is required"),
+		product: yup.array().of(
+			yup.object({
+				product_id: yup.string().required("Product is required"),
+				quantity: yup.number().required("Quantity is required"),
+				price: yup.number().required("Price is required"),
+				total: yup.number().required("Total is required"),
+			}),
+		),
 		user_id: yup.string().required("User is required"),
 		template_id: yup.string().required("Template is required"),
 	});
@@ -278,7 +275,11 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 							) {
 								const tax = taxCodes.data?.find((tax) => tax.id === formik?.values.tax_id);
 								const discount =
-									formik?.values?.sub_total * (formik?.values?.discountPercentage / 100);
+									formik?.values?.sub_total *
+									(formik?.values?.discountPercentage.toString() === "NaN"
+										? 0
+										: formik?.values?.discountPercentage / 100);
+
 								const taxPercentage =
 									formik?.values?.sub_total * (Number(tax?.percentage ?? 0) / 100);
 								formik?.setFieldValue(
@@ -563,6 +564,19 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															name="discountPercentage"
 															component={TextFormField}
 															type="number"
+															onBlur={(
+																e: React.FocusEvent<
+																	HTMLInputElement | HTMLTextAreaElement,
+																	Element
+																>,
+															) => {
+																const value = e.target.value;
+																const numberValue = 0;
+																if (!value) {
+																	formik.setFieldValue("discountPercentage", 0);
+																}
+																e.target.value = numberValue.toString();
+															}}
 														/>
 													</Grid>
 													<Grid item xs={12}>
