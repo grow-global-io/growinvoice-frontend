@@ -40,7 +40,11 @@ const ExpensesSummary = () => {
 			img: Constants.customImages.InvoiceFile,
 		},
 		{
+
 			value: 0, // Placeholder value for Estimates
+
+			value: 12, // Placeholder value for Estimates
+
 			name: "Estimates",
 			img: Constants.customImages.Estimate,
 		},
