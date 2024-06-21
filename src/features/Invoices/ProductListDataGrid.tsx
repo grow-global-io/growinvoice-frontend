@@ -198,11 +198,9 @@ export default function FullFeaturedCrudGrid({
 			flex: 0.8,
 			editable: true,
 			preProcessEditCellProps: (params) => {
-				console.log(params, "params");
 				const hasError = params.props.value < 1;
 				return { ...params.props, error: hasError };
 			},
-
 			renderEditCell: (params) => {
 				const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
 					const value = parseInt(event.target.value, 10);
