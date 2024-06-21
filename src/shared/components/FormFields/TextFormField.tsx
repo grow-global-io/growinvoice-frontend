@@ -76,6 +76,7 @@ export const TextFormField: React.FC<
 				}}
 				hidden={true}
 				onBlur={(e) => {
+					form.handleBlur(e);
 					onBlur && onBlur(e);
 					if (props?.type === "number") {
 						const value = e.target.value;
