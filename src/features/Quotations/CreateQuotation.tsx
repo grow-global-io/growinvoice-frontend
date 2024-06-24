@@ -99,7 +99,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		tax_id: yup.string(),
 		total: yup.number().required("Total is required"),
 		discountPercentage: yup.number(),
-		quotation: yup
+		product: yup
 			.array()
 			.of(
 				yup.object({
@@ -121,14 +121,14 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 				id,
 				data: {
 					...values,
-					quotation: values.quotation,
+					product: values.quotation,
 				},
 			});
 		} else {
 			await createQuotation.mutateAsync({
 				data: {
 					...values,
-					quotation: values.quotation,
+					product: values.quotation,
 				},
 			});
 		}
