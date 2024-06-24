@@ -18,10 +18,10 @@ const styles = {
 	textTransform: "capitalize",
 	my: { xs: 1 },
 };
-
-const QuotationDetail = () => {
+import { useNavigate } from "react-router-dom";
+const QuotationDetail = ({ QuotationId }: { QuotationId: string }) => {
+	const navigate = useNavigate();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
 	const [htmlContent, setHtmlContent] = useState<string>("");
 
 	useEffect(() => {
@@ -70,7 +70,7 @@ const QuotationDetail = () => {
 		{
 			name: "Edit",
 			icon: CreateOutlined,
-			func: () => console.log("Edit"),
+			func: () => navigate(`/quotation/createquotation/${QuotationId}`),
 		},
 
 		{

@@ -97,7 +97,7 @@ export const protectedRoutes: Route[] = [
 		Component: QuotationListPage,
 	},
 	{
-		path: "/quotation/quotationdetail",
+		path: "/quotation/quotationdetail/:id",
 		Component: QuotationDetailPage,
 	},
 	{

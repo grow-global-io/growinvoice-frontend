@@ -5,8 +5,6 @@ import {
 	Button,
 	Divider,
 	InputAdornment,
-	Card,
-	CardContent,
 	Dialog,
 	DialogContent,
 } from "@mui/material";
@@ -26,10 +24,7 @@ import AddIcon from "@mui/icons-material/Add";
 import PaymentDetailsDrawer from "../Payments/PaymentDetailsDrawer";
 import { useDialog } from "@shared/hooks/useDialog";
 import { usePaymentdetailsControllerFindAll } from "@api/services/paymentdetails";
-import {
-	CreateInvoiceWithProductsRecurring,
-	OmitCreateInvoiceProductsDto,
-} from "@api/services/models";
+import { CreateInvoiceWithProductsRecurring } from "@api/services/models";
 import { useEffect, useRef, useState } from "react";
 import { GridRowsProp } from "@mui/x-data-grid";
 import {
@@ -49,7 +44,6 @@ import {
 	getInvoiceControllerFindDueMonthQueryKey,
 } from "@api/services/invoice";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
-import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 import Loader from "@shared/components/Loader";
 import { useQueryClient } from "@tanstack/react-query";
@@ -57,6 +51,7 @@ import { useNavigate } from "react-router-dom";
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetemplate";
 import { formatDateToIso } from "@shared/formatter";
+import FinalCalOfInvoice from "@shared/components/FinalCalOfInvoice";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
@@ -74,7 +69,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 	const paymentData = usePaymentdetailsControllerFindAll();
 	const createInvoice = useInvoiceControllerCreate();
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
-	const [taxesCreateopen, setTaxesCreateOpen] = useState(false);
 	const taxCodes = useTaxcodeControllerFindAll();
 	const [previewString, setPreviewString] = useState<string | undefined>(undefined);
 	const invoiceFindOne = useInvoiceControllerFindOne(id ?? "", {
@@ -237,27 +231,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		navigate("/invoice/invoicelist");
 	};
 
-	useEffect(() => {
-		const formik = formikRef.current;
-		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
-		formik?.setFieldValue(
-			"product",
-			rows.map((row) => {
-				return {
-					product_id: row.product_id,
-					quantity: Number(row.quantity),
-					price: row.price,
-					total: row.total,
-				} as OmitCreateInvoiceProductsDto;
-			}),
-		);
-		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
-		formik?.setFieldValue("sub_total", subtotal);
-		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
-		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
-		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
-	}, [rows]);
-
 	if (invoiceFindOne.isLoading || invoiceFindOne?.isRefetching || invoiceFindOne?.isFetching)
 		return <Loader />;
 
@@ -406,6 +379,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											setRows={setRows}
 											setErrorText={setProductErrorText}
 											errorText={productErrorText}
+											taxCodes={taxCodes}
+											formiks={formik}
 										/>
 									</Grid>
 
@@ -525,98 +500,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 										)}
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Card>
-											<CardContent>
-												<Grid
-													container
-													display={"flex"}
-													alignItems={"center"}
-													px={2}
-													py={3}
-													borderRadius={1}
-													sx={{ background: "custom.transparentWhite" }}
-												>
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Subtotal</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field
-															name="sub_total"
-															component={TextFormField}
-															type="number"
-															disabled
-															isRequired={true}
-														/>
-													</Grid>
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Taxes</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field
-															name="tax_id"
-															component={AutocompleteField}
-															loading={taxCodes.isLoading || taxCodes.isFetching}
-															options={taxCodes.data?.map((item) => {
-																return {
-																	label: item?.percentage + "%",
-																	value: item?.id,
-																};
-															})}
-														/>
-														<Button
-															variant="text"
-															startIcon={<AddIcon />}
-															onClick={() => setTaxesCreateOpen(true)}
-														>
-															Add Taxes
-														</Button>
-													</Grid>
-													{taxesCreateopen && (
-														<Grid item xs={12}>
-															<CreateTaxes handleClose={() => setTaxesCreateOpen(false)} />
-														</Grid>
-													)}
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Discount in %</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6}>
-														<Field
-															name="discountPercentage"
-															component={TextFormField}
-															type="number"
-															onBlur={(
-																e: React.FocusEvent<
-																	HTMLInputElement | HTMLTextAreaElement,
-																	Element
-																>,
-															) => {
-																const value = e.target.value;
-																const numberValue = parseFloat(value);
-																if (!value) {
-																	formik.setFieldValue("discountPercentage", numberValue);
-																}
-																e.target.value = numberValue.toString();
-															}}
-														/>
-													</Grid>
-													<Grid item xs={12}>
-														<Divider />
-													</Grid>
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Total</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field
-															name="total"
-															component={TextFormField}
-															type="number"
-															isRequired={true}
-															disabled
-														/>
-													</Grid>
-												</Grid>
-											</CardContent>
-										</Card>
+										<FinalCalOfInvoice taxCodes={taxCodes} />
 									</Grid>
 									<Grid item xs={12} sm={3.5}>
 										<Field

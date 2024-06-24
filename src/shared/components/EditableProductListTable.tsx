@@ -25,18 +25,36 @@ import GridTextField from "@shared/components/DataGridFields/GridTextField";
 import { useProductControllerFindAll } from "@api/services/product";
 import { currencyFormatter } from "@shared/formatter";
 import CreateProduct from "@features/Products/CreateProduct";
+import { OmitCreateInvoiceProductsDto } from "@api/services/models";
+
+import { FormikProps } from "formik";
+interface TaxCode {
+	id: string;
+	percentage: number;
+}
+interface TaxCodes {
+	isLoading: boolean;
+	isFetching: boolean;
+	data?: TaxCode[];
+}
+
+interface FullFeaturedCrudGridProps {
+	rows: GridRowsProp;
+	setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+	errorText: string | undefined;
+	setErrorText: React.Dispatch<React.SetStateAction<string | undefined>>;
+	taxCodes: TaxCodes;
+	formiks: FormikProps<any>;
+}
 
 export default function FullFeaturedCrudGrid({
 	rows,
 	setRows,
 	errorText,
 	setErrorText,
-}: {
-	rows: GridRowsProp;
-	setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
-	errorText: string | undefined;
-	setErrorText: React.Dispatch<React.SetStateAction<string | undefined>>;
-}) {
+	taxCodes,
+	formiks,
+}: FullFeaturedCrudGridProps) {
 	const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 	const [isRowEditing, setIsRowEditing] = React.useState(false);
 	const productList = useProductControllerFindAll();
@@ -47,6 +65,27 @@ export default function FullFeaturedCrudGrid({
 		);
 		setIsRowEditing(editingRows.length > 0);
 	}, [rowModesModel]);
+
+	React.useEffect(() => {
+		const formik = formiks;
+		const subtotal = rows.reduce((acc, row) => acc + (row.price * row.quantity || 0), 0);
+		formik?.setFieldValue(
+			"product",
+			rows.map((row) => {
+				return {
+					product_id: row.product_id,
+					quantity: Number(row.quantity),
+					price: row.price,
+					total: row.total,
+				} as OmitCreateInvoiceProductsDto;
+			}),
+		);
+		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
+		formik?.setFieldValue("sub_total", subtotal);
+		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
+		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
+		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
+	}, [rows, taxCodes?.data]);
 
 	const handleRowEditStop: GridEventListener<"rowEditStop"> = (_, event) => {
 		event.defaultMuiPrevented = true;

@@ -74,7 +74,7 @@ const QuotationTableList = () => {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								navigate(`/quotation/quotationdetail`);
+								navigate(`/quotation/quotationdetail/${params.row.id}`);
 							}}
 							src={VisibilityIcon}
 						/>
