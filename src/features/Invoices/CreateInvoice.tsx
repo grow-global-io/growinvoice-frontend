@@ -293,7 +293,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 								formik?.values.tax_id !== undefined ||
 								formik?.values.tax_id !== null
 							) {
-								const tax = taxCodes.data?.find((tax) => tax.id === formik?.values.tax_id);
+								const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
 								const discount =
 									formik?.values?.sub_total *
 									(formik?.values?.discountPercentage.toString() === "NaN"
@@ -556,7 +556,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 															name="tax_id"
 															component={AutocompleteField}
 															loading={taxCodes.isLoading || taxCodes.isFetching}
-															options={taxCodes.data?.map((item) => {
+															options={taxCodes?.data?.map((item) => {
 																return {
 																	label: item?.percentage + "%",
 																	value: item?.id,

@@ -30,7 +30,7 @@ export class InterceptorService {
 		this._axiosInstance.interceptors.response.use(
 			(response) => {
 				if (["post", "put", "delete", "patch"].includes(response.config.method || "")) {
-					if (response.data?.message) {
+					if (response?.data?.message) {
 						AlertService.instance.successMessage(response.data.message);
 					}
 				}
@@ -47,8 +47,13 @@ export class InterceptorService {
 					}
 				}
 
-				if (error.response?.status === 401 && error.response?.data?.message === "jwt expired") {
+				if (
+					error.response?.status === 401 &&
+					(error.response?.data?.message === "jwt expired" ||
+						error?.response?.data?.message === "No auth token")
+				) {
 					AlertService.instance.errorMessage("Session expired, logging you out");
+
 					new Promise((resolve) => setTimeout(() => resolve(true), 2000)).then(() => {
 						window.location.reload();
 					});

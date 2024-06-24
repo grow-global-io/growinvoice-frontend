@@ -20,7 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import AddIcon from "@mui/icons-material/Add";
 import { useCustomerControllerFindAll } from "@api/services/customer";
-import { OmitCreateQuotationProductsDto } from "@api/services/models";
+import { OmitCreateInvoiceProductsDto } from "@api/services/models";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
 import {
@@ -146,30 +146,21 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		const formik = formikRef.current;
 		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
 		formik?.setFieldValue(
-			"quotation",
+			"product",
 			rows.map((row) => {
 				return {
 					product_id: row.product_id,
 					quantity: Number(row.quantity),
 					price: row.price,
 					total: row.total,
-				} as OmitCreateQuotationProductsDto;
+				} as OmitCreateInvoiceProductsDto;
 			}),
 		);
+		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
 		formik?.setFieldValue("sub_total", subtotal);
 		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
-		const taxAmount =
-			subtotal *
-			(taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id)?.percentage ?? 0 / 100);
-
-		formik?.setFieldValue("total", subtotal - discount + taxAmount);
-		if (rows?.length > 0) {
-			formik?.setFieldTouched("quotation", false);
-			formik?.setFieldError("quotation", undefined);
-		} else {
-			formik?.setFieldTouched("quotation", true);
-			formik?.setFieldError("quotation", "Please add at least one product to create an invoice");
-		}
+		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
+		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
 	}, [rows]);
 
 	const options = [
@@ -209,7 +200,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					{({ values, setFieldValue }) => {
 						useEffect(() => {
 							if (values?.discountPercentage > 0 || values.tax_id) {
-								const tax = taxCodes.data?.find((tax) => tax.id === values.tax_id);
+								const tax = taxCodes?.data?.find((tax) => tax.id === values.tax_id);
 								const discount = values?.sub_total * (values?.discountPercentage / 100);
 								const taxAmount = values?.sub_total * (tax?.percentage ?? 0 / 100);
 								setFieldValue("total", values?.sub_total - discount + taxAmount);
@@ -355,7 +346,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 															name="tax_id"
 															component={AutocompleteField}
 															loading={taxCodes.isLoading || taxCodes.isFetching}
-															options={taxCodes.data?.map((item) => {
+															options={taxCodes?.data?.map((item) => {
 																return {
 																	label: item?.percentage + "%",
 																	value: item?.id,
