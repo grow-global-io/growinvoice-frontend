@@ -61,7 +61,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
 			const iframe = iframeRef.current;
-			iframe.srcdoc = getHtmlText.data;
+			iframe.srcdoc = getHtmlText?.data;
 		}
 	}, [getHtmlText.isSuccess]);
 
@@ -126,7 +126,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			func: () => {
 				if (isMobile) {
 					generatePdfFromHtml({
-						html: getHtmlText.data ?? "",
+						html: getHtmlText?.data ?? "",
 					});
 					return;
 				}
@@ -172,7 +172,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	) {
 		return <Loader />;
 	}
-	if (!getHtmlText.data) return <NoDataFound message="No Data Found" />;
+	if (!getHtmlText?.data) return <NoDataFound message="No Data Found" />;
 
 	return (
 		<Box
@@ -198,7 +198,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 						onClick={() => {
 							if (isMobile) {
 								generatePdfFromHtml({
-									html: getHtmlText.data ?? "",
+									html: getHtmlText?.data ?? "",
 								});
 								return;
 							}
@@ -264,7 +264,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					downloadfunc={() => {
 						if (isMobile) {
 							generatePdfFromHtml({
-								html: getHtmlText.data ?? "",
+								html: getHtmlText?.data ?? "",
 							});
 						} else {
 							generatePdfFromRef({

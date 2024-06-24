@@ -24,7 +24,7 @@ const StateFormField = ({
 			name={stateFieldName}
 			label={stateLabel}
 			component={AutocompleteField}
-			options={statesFindAllByCountry.data?.map((item) => ({ label: item.name, value: item.id }))}
+			options={statesFindAllByCountry?.data?.map((item) => ({ label: item.name, value: item.id }))}
 			loading={statesFindAllByCountry.isLoading}
 			{...props}
 		/>

@@ -11,7 +11,11 @@ import { useEffect, useRef, useState } from "react";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import AddIcon from "@mui/icons-material/Add";
 import { useCustomerControllerFindAll } from "@api/services/customer";
+
 import { useNavigate } from "react-router-dom";
+
+import { OmitCreateInvoiceProductsDto } from "@api/services/models";
+
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 import FinalCalOfInvoice from "@shared/components/FinalCalOfInvoice";
 import {
@@ -137,11 +141,40 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		navigate("/quotation/quotationlist");
 	};
 
+
 	// const options = [
 	// 	{ value: "1", label: "Option 1" },
 	// 	{ value: "2", label: "Option 2" },
 	// 	{ value: "3", label: "Option 3" },
 	// ];
+
+	useEffect(() => {
+		const formik = formikRef.current;
+		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
+		formik?.setFieldValue(
+			"product",
+			rows.map((row) => {
+				return {
+					product_id: row.product_id,
+					quantity: Number(row.quantity),
+					price: row.price,
+					total: row.total,
+				} as OmitCreateInvoiceProductsDto;
+			}),
+		);
+		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
+		formik?.setFieldValue("sub_total", subtotal);
+		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
+		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
+		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
+	}, [rows]);
+
+	const options = [
+		{ value: "1", label: "Option 1" },
+		{ value: "2", label: "Option 2" },
+		{ value: "3", label: "Option 3" },
+	];
+
 
 	if (quotationFindOne.isLoading) {
 		return <Loader />;
@@ -173,6 +206,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 				>
 					{(formik) => {
 						useEffect(() => {
+
 							if (
 								formik?.values?.discountPercentage > 0 ||
 								formik?.values.tax_id !== "" ||
@@ -192,6 +226,13 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 									"total",
 									formik?.values?.sub_total - discount + taxPercentage,
 								);
+
+							if (values?.discountPercentage > 0 || values.tax_id) {
+								const tax = taxCodes?.data?.find((tax) => tax.id === values.tax_id);
+								const discount = values?.sub_total * (values?.discountPercentage / 100);
+								const taxAmount = values?.sub_total * (tax?.percentage ?? 0 / 100);
+								setFieldValue("total", values?.sub_total - discount + taxAmount);
+
 							} else {
 								formik?.setFieldValue("total", formik?.values?.sub_total);
 							}
@@ -305,7 +346,88 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
+
 										<FinalCalOfInvoice taxCodes={taxCodes} />
+
+										<Card>
+											<CardContent>
+												<Grid
+													container
+													display={"flex"}
+													alignItems={"center"}
+													px={2}
+													py={3}
+													borderRadius={1}
+													sx={{ background: "custom.transparentWhite" }}
+												>
+													<Grid item xs={12} sm={6}>
+														<Typography variant="h5">Subtotal</Typography>
+													</Grid>
+													<Grid item xs={12} sm={6} textAlign={"right"}>
+														<Field
+															name="sub_total"
+															component={TextFormField}
+															type="number"
+															disabled
+															isRequired={true}
+														/>
+													</Grid>
+													<Grid item xs={12} sm={6}>
+														<Typography variant="h5">Taxes</Typography>
+													</Grid>
+													<Grid item xs={12} sm={6} textAlign={"right"}>
+														<Field
+															name="tax_id"
+															component={AutocompleteField}
+															loading={taxCodes.isLoading || taxCodes.isFetching}
+															options={taxCodes?.data?.map((item) => {
+																return {
+																	label: item?.percentage + "%",
+																	value: item?.id,
+																};
+															})}
+														/>
+														<Button
+															variant="text"
+															startIcon={<AddIcon />}
+															onClick={() => setTaxesCreateOpen(true)}
+														>
+															Add Taxes
+														</Button>
+													</Grid>
+													{taxesCreateopen && (
+														<Grid item xs={12}>
+															<CreateTaxes handleClose={() => setTaxesCreateOpen(false)} />
+														</Grid>
+													)}
+													<Grid item xs={12} sm={6}>
+														<Typography variant="h5">Discount</Typography>
+													</Grid>
+													<Grid item xs={12} sm={6}>
+														<Field
+															name="discountPercentage"
+															component={TextFormField}
+															type="number"
+														/>
+													</Grid>
+													<Grid item xs={12}>
+														<Divider />
+													</Grid>
+													<Grid item xs={12} sm={6}>
+														<Typography variant="h5">Total</Typography>
+													</Grid>
+													<Grid item xs={12} sm={6} textAlign={"right"}>
+														<Field
+															name="total"
+															component={TextFormField}
+															type="number"
+															isRequired={true}
+														/>
+													</Grid>
+												</Grid>
+											</CardContent>
+										</Card>
+
 									</Grid>
 									{/* <Grid item xs={12} sm={3.5}>
 										<Field

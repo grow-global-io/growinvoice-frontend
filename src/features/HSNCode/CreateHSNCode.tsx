@@ -9,6 +9,7 @@ import { useAuthStore } from "@store/auth";
 import { Formik, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useQueryClient } from "@tanstack/react-query";
+import { RegexExp } from "@shared/regex";
 
 const style = {
 	bgcolor: "custom.lightBlue",
@@ -22,7 +23,9 @@ const CreateHSNCode = ({ handleClose }: { handleClose?: () => void }) => {
 	const { user } = useAuthStore();
 	const createHSNCode = useHsncodeControllerCreate();
 	const validationSchema: Yup.Schema<CreateHSNCodeDto> = Yup.object().shape({
-		code: Yup.string().required("HSN Code is required"),
+		code: Yup.string()
+			.required("HSN Code is required")
+			.matches(RegexExp?.numberRegex, "Invalid HSN Code"),
 		tax: Yup.number()
 			.required("Tax is required")
 			.min(0, "Tax should be greater than 0")
@@ -62,7 +65,7 @@ const CreateHSNCode = ({ handleClose }: { handleClose?: () => void }) => {
 				{({ handleSubmit }) => {
 					return (
 						<>
-							<Field component={TextFormField} name="code" label="HSN Code" />
+							<Field component={TextFormField} name="code" label="HSN Code" type="number" />
 							<Field
 								component={TextFormField}
 								type="number"

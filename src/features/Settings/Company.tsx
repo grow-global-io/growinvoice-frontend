@@ -109,7 +109,7 @@ const Company = () => {
 												name="country_id"
 												label="Country"
 												component={AutocompleteField}
-												options={countryFindAll.data?.map((item) => ({
+												options={countryFindAll?.data?.map((item) => ({
 													label: item.name,
 													value: item.id,
 												}))}

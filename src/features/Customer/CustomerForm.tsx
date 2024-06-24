@@ -222,7 +222,7 @@ const CustomerForm = () => {
 											label="Currency"
 											loading={currencyList.isLoading || currencyList.isFetching}
 											component={AutocompleteField}
-											options={currencyList.data?.map((currency) => ({
+											options={currencyList?.data?.map((currency) => ({
 												value: currency.id,
 												label: `${currency.short_code} - ${currency.name}`,
 											}))}
@@ -252,7 +252,7 @@ const CustomerForm = () => {
 													name="billingDetails.country_id"
 													component={AutocompleteField}
 													label="Country"
-													options={countryFindAll.data?.map((item) => ({
+													options={countryFindAll?.data?.map((item) => ({
 														label: item.name,
 														value: item.id,
 													}))}
@@ -354,7 +354,7 @@ const CustomerForm = () => {
 												name="shippingDetails.country_id"
 												component={AutocompleteField}
 												label="Country"
-												options={countryFindAll.data?.map((item) => ({
+												options={countryFindAll?.data?.map((item) => ({
 													label: item.name,
 													value: item.id,
 												}))}
