@@ -157,7 +157,7 @@ const ProductForm = () => {
 									<Field
 										name="name"
 										component={TextFormField}
-										label="Service Name"
+										label="Product Name"
 										isRequired={true}
 									/>
 								</Grid>
@@ -166,7 +166,7 @@ const ProductForm = () => {
 									label="Currency"
 									loading={currencyList.isLoading || currencyList.isFetching}
 									component={AutocompleteField}
-									options={currencyList.data?.map((currency) => ({
+									options={currencyList?.data?.map((currency) => ({
 										value: currency.id,
 										label: `${currency.short_code} - ${currency.name}`,
 									}))}
@@ -179,7 +179,7 @@ const ProductForm = () => {
 										label="Unit"
 										loading={productUnit.isLoading || productUnit.isFetching}
 										component={AutocompleteField}
-										options={productUnit.data?.map((unit) => ({
+										options={productUnit?.data?.map((unit) => ({
 											value: unit.id,
 											label: unit.name,
 										}))}
@@ -201,7 +201,7 @@ const ProductForm = () => {
 										label="HSN Code (India)"
 										component={AutocompleteField}
 										loading={hsnCodes.isLoading || hsnCodes.isFetching}
-										options={hsnCodes.data?.map((item) => {
+										options={hsnCodes?.data?.map((item) => {
 											return {
 												label: `${item?.code} - ${item.tax}`,
 												value: item?.id,
@@ -222,7 +222,7 @@ const ProductForm = () => {
 										label="Taxes"
 										component={AutocompleteField}
 										loading={taxCodes.isLoading || taxCodes.isFetching}
-										options={taxCodes.data?.map((item) => {
+										options={taxCodes?.data?.map((item) => {
 											return {
 												label: item?.percentage + "%",
 												value: item?.id,
