@@ -10,7 +10,12 @@ import {
 	WhatsApp,
 	CreateOutlined,
 	PaymentsOutlined,
+	ShareOutlined,
+	DeleteOutline,
+	PaidOutlined,
+	SendOutlined,
 } from "@mui/icons-material";
+
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
@@ -23,6 +28,8 @@ import {
 } from "@api/services/invoice";
 import { usePdfExport } from "@shared/hooks/usePdfExport";
 import DownloadIcon from "@mui/icons-material/Download";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -42,7 +49,8 @@ const styles = {
 
 const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
 	const navigate = useNavigate();
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
+	const [menuIconAnchorEl, setMenuIconAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
 	const isMobile = useMediaQuery("(max-width:800px)");
@@ -58,6 +66,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			enabled: invoiceId !== undefined,
 		},
 	});
+
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
 			const iframe = iframeRef.current;
@@ -66,11 +75,19 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	}, [getHtmlText.isSuccess]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
+		setMoreAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = () => {
-		setAnchorEl(null);
+	const handleMoreClose = () => {
+		setMoreAnchorEl(null);
+	};
+
+	const handleMenuIconClick = (event: React.MouseEvent<HTMLElement>) => {
+		setMenuIconAnchorEl(event.currentTarget);
+	};
+
+	const handleMenuIconClose = () => {
+		setMenuIconAnchorEl(null);
 	};
 
 	const { mutateAsync: sendMail } = useMailControllerSendMail();
@@ -134,11 +151,13 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					iframeRef,
 				});
 			},
+			href: "",
 		},
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
 			func: handleSendMail,
+			href: "",
 		},
 		{
 			name: "Send Whatsapp",
@@ -150,16 +169,91 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			name: "Edit",
 			icon: CreateOutlined,
 			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
+			href: "",
 		},
 		{
 			name: "Enter Payment",
 			icon: PaymentsOutlined,
 			func: () => console.log("Enter Payment"),
+			href: "",
 		},
 		{
 			name: "",
 			icon: MoreVertOutlined,
 			func: handleMoreClick,
+			href: "",
+		},
+	];
+
+	const buttonListForSmallSrn = [
+		{
+			name: "Download",
+			icon: FileDownloadOutlined,
+			func: () => {
+				if (isMobile) {
+					generatePdfFromHtml({
+						html: getHtmlText?.data ?? "",
+					});
+					return;
+				}
+				generatePdfFromRef({
+					iframeRef,
+				});
+			},
+			href: "",
+		},
+		{
+			name: "Send Mail",
+			icon: EmailOutlined,
+			func: handleSendMail,
+			href: "",
+		},
+		{
+			name: "Send Whatsapp",
+			icon: WhatsApp,
+			func: () => console.log("send whatsapp"),
+			href: `https://api.whatsapp.com/send/?phone=${getInvoiceData?.data?.customer?.phone}&text=${window.location.origin}/invoice/invoicetemplate/${invoiceId}&type=url&app_absent=0`,
+		},
+		{
+			name: "Edit",
+			icon: CreateOutlined,
+			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
+			href: "",
+		},
+		{
+			name: "Enter Payment",
+			icon: PaymentsOutlined,
+			func: () => console.log("Enter Payment"),
+			href: "",
+		},
+		{
+			name: "Share",
+			icon: ShareOutlined,
+			func: () => {
+				navigate(`/invoice/invoicetemplate/${invoiceId}`);
+			},
+			href: "",
+		},
+
+		{
+			name: "Marked Paid",
+			icon: PaidOutlined,
+			func: () => console.log("Marked Paid"),
+			href: "",
+		},
+
+		{
+			name: "Mark Send",
+			icon: SendOutlined,
+			func: () => console.log("Mark Send"),
+			href: "",
+		},
+
+		{
+			name: "Delete",
+			icon: DeleteOutline,
+			func: () => console.log("Delete"),
+			href: "",
 		},
 	];
 	if (
@@ -173,6 +267,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		return <Loader />;
 	}
 	if (!getHtmlText?.data) return <NoDataFound message="No Data Found" />;
+
+	const openMore = Boolean(moreAnchorEl);
+	const openMenuIcon = Boolean(menuIconAnchorEl);
 
 	return (
 		<Box
@@ -191,6 +288,21 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				<Typography variant="h3" color={"secondary.dark"}>
 					#INV-{getInvoiceData?.data?.invoice_number}
 				</Typography>
+
+				{!IsPublic && (
+					<Box display={{ xs: "block", lg: "none" }}>
+						<IconButton
+							aria-label="more"
+							id="menu-icon-button"
+							aria-controls={openMenuIcon ? "menu-icon-menu" : undefined}
+							aria-expanded={openMenuIcon ? "true" : undefined}
+							aria-haspopup="true"
+							onClick={handleMenuIconClick}
+						>
+							<MenuIcon />
+						</IconButton>
+					</Box>
+				)}
 				{IsPublic && (
 					<Button
 						variant="contained"
@@ -216,7 +328,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					sx={{
 						width: "100%",
 						bgcolor: { xs: "", md: "custom.transparentWhite" },
-						display: "flex",
+						display: { xs: "none", lg: "flex" },
 						flexWrap: { xs: "wrap" },
 						my: 2,
 					}}
@@ -231,12 +343,12 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					))}
 				</ButtonGroup>
 			)}
-			<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+			<Menu anchorEl={moreAnchorEl} open={openMore} onClose={handleMoreClose}>
 				{menuLists.map((item, index) => (
 					<MenuItem
 						onClick={() => {
 							item.func();
-							handleClose();
+							handleMoreClose;
 						}}
 						sx={{ pr: 6 }}
 						key={index}
@@ -245,6 +357,30 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					</MenuItem>
 				))}
 			</Menu>
+
+			<Menu
+				id="menu-icon-menu"
+				MenuListProps={{
+					"aria-labelledby": "menu-icon-button",
+				}}
+				anchorEl={menuIconAnchorEl}
+				open={openMenuIcon}
+				onClose={handleMenuIconClose}
+				PaperProps={{
+					style: {
+						maxHeight: "100%",
+						width: "20ch",
+					},
+				}}
+			>
+				{buttonListForSmallSrn.map((item, index) => (
+					<MenuItem onClick={item.func} key={index} href={item.href}>
+						<item.icon sx={{ mr: 1 }} />
+						{item.name}
+					</MenuItem>
+				))}
+			</Menu>
+
 			{!isMobile ? (
 				<Box
 					ref={iframeRef}
