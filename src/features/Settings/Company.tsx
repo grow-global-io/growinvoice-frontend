@@ -1,5 +1,4 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
-import Sidebar from "./Sidebar";
+import { Box, Button, Grid } from "@mui/material";
 import { Formik, Field, Form, FormikHelpers, FormikProps } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
@@ -56,117 +55,105 @@ const Company = () => {
 	return (
 		<>
 			<Box>
-				<Typography variant="h3" textTransform={"capitalize"} mb={3}>
-					Setting
-				</Typography>
-			</Box>
-			<Box
-				display="flex"
-				sx={{ flexDirection: { xs: "column", lg: "row" } }}
-				height={{ xs: "auto", lg: "75vh" }}
-			>
-				<Sidebar />
-				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
-					<Formik
-						initialValues={initialValues}
-						validationSchema={schema}
-						onSubmit={handleSubmit}
-						innerRef={formikRef}
-					>
-						{(formik) => {
-							console.log(formik?.errors);
-							return (
-								<Form>
-									<Grid container spacing={2}>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="name"
-												label="Company Name"
-												component={TextFormField}
-												isRequired={true}
-												placeholder={"Enter company name"}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="phone"
-												label="Phone"
-												component={PhoneInputFormField}
-												isRequired={true}
-												placeholder={"Enter mobile nuber"}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="vat"
-												label="Vat Number"
-												component={TextFormField}
-												placeholder={"Vat Number"}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="country_id"
-												label="Country"
-												component={AutocompleteField}
-												options={countryFindAll?.data?.map((item) => ({
-													label: item.name,
-													value: item.id,
-												}))}
-												loading={countryFindAll.isLoading}
-												placeholder={"Select"}
-												isRequired={true}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<StateFormField
-												countryFieldName="country_id"
-												stateFieldName="state_id"
-												stateLabel="State"
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="city"
-												label="City"
-												component={TextFormField}
-												isRequired={true}
-												placeholder={"Select"}
-											/>
-										</Grid>
-
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="zip"
-												label="Postal Code"
-												component={TextFormField}
-												isRequired={true}
-												placeholder={"Enter postal code"}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="address"
-												label="Address"
-												component={TextFormField}
-												isRequired={true}
-												placeholder={"Add address"}
-												multiline
-												rows={5}
-											/>
-										</Grid>
-
-										<Grid item xs={12} textAlign={"center"} my={2}>
-											<Button variant="contained" type="submit">
-												Update
-											</Button>
-										</Grid>
+				<Formik
+					initialValues={initialValues}
+					validationSchema={schema}
+					onSubmit={handleSubmit}
+					innerRef={formikRef}
+				>
+					{(formik) => {
+						console.log(formik?.errors);
+						return (
+							<Form>
+								<Grid container spacing={2}>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="name"
+											label="Company Name"
+											component={TextFormField}
+											isRequired={true}
+											placeholder={"Enter company name"}
+										/>
 									</Grid>
-								</Form>
-							);
-						}}
-					</Formik>
-				</Box>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="phone"
+											label="Phone"
+											component={PhoneInputFormField}
+											isRequired={true}
+											placeholder={"Enter mobile nuber"}
+										/>
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="vat"
+											label="Vat Number"
+											component={TextFormField}
+											placeholder={"Vat Number"}
+										/>
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="country_id"
+											label="Country"
+											component={AutocompleteField}
+											options={countryFindAll?.data?.map((item) => ({
+												label: item.name,
+												value: item.id,
+											}))}
+											loading={countryFindAll.isLoading}
+											placeholder={"Select"}
+											isRequired={true}
+										/>
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<StateFormField
+											countryFieldName="country_id"
+											stateFieldName="state_id"
+											stateLabel="State"
+										/>
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="city"
+											label="City"
+											component={TextFormField}
+											isRequired={true}
+											placeholder={"Select"}
+										/>
+									</Grid>
+
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="zip"
+											label="Postal Code"
+											component={TextFormField}
+											isRequired={true}
+											placeholder={"Enter postal code"}
+										/>
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<Field
+											name="address"
+											label="Address"
+											component={TextFormField}
+											isRequired={true}
+											placeholder={"Add address"}
+											multiline
+											rows={5}
+										/>
+									</Grid>
+
+									<Grid item xs={12} textAlign={"center"} my={2}>
+										<Button variant="contained" type="submit">
+											Update
+										</Button>
+									</Grid>
+								</Grid>
+							</Form>
+						);
+					}}
+				</Formik>
 			</Box>
 		</>
 	);

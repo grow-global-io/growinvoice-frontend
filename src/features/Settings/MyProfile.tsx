@@ -1,5 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
-import Sidebar from "./Sidebar";
+import { Box, Button, Divider, Grid } from "@mui/material";
 import { Formik, Field, Form, FormikHelpers, FormikProps } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
@@ -54,109 +53,95 @@ const MyProfile = () => {
 	}
 
 	return (
-		<>
-			<Box>
-				<Typography variant="h3" textTransform={"capitalize"} mb={3}>
-					Setting
-				</Typography>
-			</Box>
-			<Box
-				display="flex"
-				sx={{ flexDirection: { xs: "column", lg: "row" } }}
-				height={{ xs: "auto", lg: "75vh" }}
+		<Box>
+			<Formik
+				initialValues={initialValues}
+				validationSchema={schema}
+				onSubmit={handleSubmit}
+				innerRef={formikRef}
 			>
-				<Sidebar />
-				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
-					<Formik
-						initialValues={initialValues}
-						validationSchema={schema}
-						onSubmit={handleSubmit}
-						innerRef={formikRef}
-					>
-						{() => (
-							<Form>
-								<Grid container spacing={2}>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="name"
-											label="Full Name"
-											component={TextFormField}
-											placeholder={"Enter Full name"}
-										/>
-									</Grid>
+				{() => (
+					<Form>
+						<Grid container spacing={2}>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name="name"
+									label="Full Name"
+									component={TextFormField}
+									placeholder={"Enter Full name"}
+								/>
+							</Grid>
 
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="email"
-											label="Email"
-											component={TextFormField}
-											placeholder={"Enter email ID"}
-										/>
-									</Grid>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name="email"
+									label="Email"
+									component={TextFormField}
+									placeholder={"Enter email ID"}
+								/>
+							</Grid>
 
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="phone"
-											label="Phone"
-											component={PhoneInputFormField}
-											required={true}
-											placeholder={"Enter mobile nuber"}
-										/>
-									</Grid>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name="phone"
+									label="Phone"
+									component={PhoneInputFormField}
+									required={true}
+									placeholder={"Enter mobile nuber"}
+								/>
+							</Grid>
 
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="currency_id"
-											label="Currency"
-											loading={currencyList.isLoading || currencyList.isFetching}
-											component={AutocompleteField}
-											options={currencyList?.data?.map((currency) => ({
-												value: currency.id,
-												label: `${currency.short_code} - ${currency.name}`,
-											}))}
-										/>
-									</Grid>
-									<Grid item xs={12} sm={12}>
-										<Divider />
-									</Grid>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name="currency_id"
+									label="Currency"
+									loading={currencyList.isLoading || currencyList.isFetching}
+									component={AutocompleteField}
+									options={currencyList?.data?.map((currency) => ({
+										value: currency.id,
+										label: `${currency.short_code} - ${currency.name}`,
+									}))}
+								/>
+							</Grid>
+							<Grid item xs={12} sm={12}>
+								<Divider />
+							</Grid>
 
-									<SettingFormHeading
-										heading="Update Password"
-										icon={Constants.customImages.UpdatePassWordIcon}
-										text="If you want to update your password please fill the information below."
-									/>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="old_password"
-											label="Old Password"
-											component={TextFormField}
-											placeholder={"Enter old password"}
-											type="password"
-										/>
-									</Grid>
+							<SettingFormHeading
+								heading="Update Password"
+								icon={Constants.customImages.UpdatePassWordIcon}
+								text="If you want to update your password please fill the information below."
+							/>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name="old_password"
+									label="Old Password"
+									component={TextFormField}
+									placeholder={"Enter old password"}
+									type="password"
+								/>
+							</Grid>
 
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="password"
-											label="New Passwod"
-											component={TextFormField}
-											placeholder={"Enter new password"}
-											type="password"
-										/>
-									</Grid>
+							<Grid item xs={12} sm={6}>
+								<Field
+									name="password"
+									label="New Passwod"
+									component={TextFormField}
+									placeholder={"Enter new password"}
+									type="password"
+								/>
+							</Grid>
 
-									<Grid item xs={12} textAlign={"center"} my={2}>
-										<Button variant="contained" type="submit">
-											Update
-										</Button>
-									</Grid>
-								</Grid>
-							</Form>
-						)}
-					</Formik>
-				</Box>
-			</Box>
-		</>
+							<Grid item xs={12} textAlign={"center"} my={2}>
+								<Button variant="contained" type="submit">
+									Update
+								</Button>
+							</Grid>
+						</Grid>
+					</Form>
+				)}
+			</Formik>
+		</Box>
 	);
 };
 
