@@ -1,5 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
-import Sidebar from "./Sidebar";
+import { Box, Button, Divider, Grid } from "@mui/material";
 import { Formik, Field, Form } from "formik";
 import * as yup from "yup";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
@@ -34,106 +33,94 @@ const Preferences = () => {
 	return (
 		<>
 			<Box>
-				<Typography variant="h3" textTransform={"capitalize"} mb={3}>
-					Setting
-				</Typography>
-			</Box>
-			<Box
-				display="flex"
-				sx={{ flexDirection: { xs: "column", lg: "row" } }}
-				height={{ xs: "auto", lg: "75vh" }}
-			>
-				<Sidebar />
-				<Box flex={1} padding={{ xs: 0, sm: 2 }} sx={{ overflowY: "scroll" }}>
-					<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
-						{() => (
-							<Form>
-								<Grid container spacing={2}>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="language"
-											label="Language"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
-										/>
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="timezone"
-											label="TimeZone"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
-										/>
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="date_format"
-											label="Date Format"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
-										/>
-									</Grid>
-
-									<Grid item xs={12} sm={12}>
-										<Divider />
-									</Grid>
-
-									<SettingFormHeading
-										heading="Financial Year"
-										icon={Constants.customImages.FinancialIcon}
+				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
+					{() => (
+						<Form>
+							<Grid container spacing={2}>
+								<Grid item xs={12} sm={6}>
+									<Field
+										name="language"
+										label="Language"
+										component={AutocompleteField}
+										options={options}
+										placeholder={"Select"}
 									/>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="month_starts"
-											label="Month Starts"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
-										/>
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="month_ends"
-											label="Month Ends"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
-										/>
-									</Grid>
-
-									<Grid item xs={12} sm={12}>
-										<Divider />
-									</Grid>
-
-									<SettingFormHeading
-										heading="Discount Type"
-										icon={Constants.customImages.PencilEditIcon}
-										text="Choose how to apply discount on invoices/estimates"
-									/>
-
-									<Grid item xs={12} sm={12}>
-										<Field
-											name="discount_month_starts"
-											label="Month Starts"
-											component={AutocompleteField}
-											options={options}
-											placeholder={"Select"}
-										/>
-									</Grid>
-
-									<Grid item xs={12} textAlign={"center"} my={2}>
-										<Button variant="contained" type="submit">
-											Update
-										</Button>
-									</Grid>
 								</Grid>
-							</Form>
-						)}
-					</Formik>
-				</Box>
+								<Grid item xs={12} sm={6}>
+									<Field
+										name="timezone"
+										label="TimeZone"
+										component={AutocompleteField}
+										options={options}
+										placeholder={"Select"}
+									/>
+								</Grid>
+								<Grid item xs={12} sm={6}>
+									<Field
+										name="date_format"
+										label="Date Format"
+										component={AutocompleteField}
+										options={options}
+										placeholder={"Select"}
+									/>
+								</Grid>
+
+								<Grid item xs={12} sm={12}>
+									<Divider />
+								</Grid>
+
+								<SettingFormHeading
+									heading="Financial Year"
+									icon={Constants.customImages.FinancialIcon}
+								/>
+								<Grid item xs={12} sm={6}>
+									<Field
+										name="month_starts"
+										label="Month Starts"
+										component={AutocompleteField}
+										options={options}
+										placeholder={"Select"}
+									/>
+								</Grid>
+								<Grid item xs={12} sm={6}>
+									<Field
+										name="month_ends"
+										label="Month Ends"
+										component={AutocompleteField}
+										options={options}
+										placeholder={"Select"}
+									/>
+								</Grid>
+
+								<Grid item xs={12} sm={12}>
+									<Divider />
+								</Grid>
+
+								<SettingFormHeading
+									heading="Discount Type"
+									icon={Constants.customImages.PencilEditIcon}
+									text="Choose how to apply discount on invoices/estimates"
+								/>
+
+								<Grid item xs={12} sm={12}>
+									<Field
+										name="discount_month_starts"
+										label="Month Starts"
+										component={AutocompleteField}
+										options={options}
+										placeholder={"Select"}
+									/>
+								</Grid>
+
+								<Grid item xs={12} textAlign={"center"} my={2}>
+									<Button variant="contained" type="submit">
+										Update
+									</Button>
+								</Grid>
+							</Grid>
+						</Form>
+					)}
+				</Formik>
 			</Box>
 		</>
 	);

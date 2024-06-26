@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { protectedRoutes, unProtectedRoutes } from "./routes";
-// import Navbar from "./layout/navbar";
 import Typography from "@mui/material/Typography";
 import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
@@ -21,10 +20,12 @@ import { useCreateProductStore } from "@store/createProductStore";
 import { ProductDrawer } from "@features/Products/CreateProduct";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import { CustomerDrawer } from "@features/Customer/CreateCustomer";
+import ParentofSidebar from "@layout/navbar/Settings/Sidebar";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
 	const [isLoading, setIsLoading] = useState(true);
+	const location = useLocation(); // Get the current path
 
 	useEffectOnce(() => {
 		setIsLoading(true);
@@ -53,23 +54,47 @@ function AppContainer() {
 		);
 	}
 
+	const includeParentofSidebar = location.pathname.includes("setting");
+
 	return (
 		<Navbar>
-			<GetStartedDialog
-				open={
-					user?.company?.length === 0 ||
-					user?.company?.[0]?.country_id === "" ||
-					user?.company?.[0]?.address === null ||
-					user?.company?.[0]?.address === ""
-				}
-			/>
-			<Routes>
-				<Route path="*" element={<NotFoundPage />} />
-				{protectedRoutes.map(({ path, Component }) => (
-					<Route key={path} path={path} element={<Component />} />
-				))}
-				<Route path="/login" element={<Navigate to="/" replace />} />
-			</Routes>
+			{includeParentofSidebar ? (
+				<ParentofSidebar>
+					<GetStartedDialog
+						open={
+							user?.company?.length === 0 ||
+							user?.company?.[0]?.country_id === "" ||
+							user?.company?.[0]?.address === null ||
+							user?.company?.[0]?.address === ""
+						}
+					/>
+					<Routes>
+						<Route path="*" element={<NotFoundPage />} />
+						{protectedRoutes.map(({ path, Component }) => (
+							<Route key={path} path={path} element={<Component />} />
+						))}
+						<Route path="/login" element={<Navigate to="/" replace />} />
+					</Routes>
+				</ParentofSidebar>
+			) : (
+				<>
+					<GetStartedDialog
+						open={
+							user?.company?.length === 0 ||
+							user?.company?.[0]?.country_id === "" ||
+							user?.company?.[0]?.address === null ||
+							user?.company?.[0]?.address === ""
+						}
+					/>
+					<Routes>
+						<Route path="*" element={<NotFoundPage />} />
+						{protectedRoutes.map(({ path, Component }) => (
+							<Route key={path} path={path} element={<Component />} />
+						))}
+						<Route path="/login" element={<Navigate to="/" replace />} />
+					</Routes>
+				</>
+			)}
 		</Navbar>
 	);
 }

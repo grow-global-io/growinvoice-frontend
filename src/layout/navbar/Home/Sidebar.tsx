@@ -127,6 +127,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 	);
 
 	useEffect(() => {
+		if (mobileOpen) handleDrawerClose();
 		setMenuToggle(
 			menuList.map((menuItemMap) => {
 				if (pathname.startsWith(menuItemMap?.path)) return true;
