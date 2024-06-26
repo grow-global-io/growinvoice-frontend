@@ -9,10 +9,10 @@ import {
 	FormControl,
 	Dialog,
 	DialogContent,
-	Button,
+	Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { Formik, Field, Form, FormikProps } from "formik";
+import { Formik, Field, Form } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { Constants } from "@shared/constants";
@@ -31,7 +31,7 @@ const CustomFormControlLabel = styled(FormControlLabel)(() => ({
 const Invoices = () => {
 	const { open, handleClickOpen, handleClose } = useDialog();
 
-	const initialValues = {
+	const initialValues: { [key: string]: string } = {
 		invoice_prefix: "",
 		reminder1: "",
 		reminder2: "",
@@ -53,48 +53,6 @@ const Invoices = () => {
 	const handleSubmit = () => {};
 
 	const [currentTemplate, setCurrentTemplate] = useState("");
-
-	const handleDialogSubmit = (formik: FormikProps<any>) => {
-		console.log(formik, "formik");
-		formik.setFieldValue("company_address_format", "");
-
-		let updatedCompanyAddressFormat = formik.values.company_address_format;
-
-		[
-			"company_name",
-			"company_vat_number",
-			"company_billing_address_1",
-			"company_billing_address_2",
-			"company_billing_city",
-			"company_billing_state",
-			"company_billing_country",
-			"company_billing_phone",
-			"company_billing_zip",
-			"customer_name",
-			"customer_vat_number",
-			"customer_billing_address_1",
-			"customer_billing_address_2",
-			"customer_billing_city",
-			"customer_billing_state",
-			"customer_billing_country",
-			"customer_billing_phone",
-			"customer_billing_zip",
-			"customer_shipping_address_1",
-			"customer_shipping_address_2",
-			"customer_shipping_city",
-			"customer_shipping_state",
-			"customer_shipping_country",
-			"customer_shipping_phone",
-			"customer_shipping_zip",
-		].forEach((field) => {
-			if (formik.values[field] && !updatedCompanyAddressFormat.includes(formik.values[field])) {
-				updatedCompanyAddressFormat += `<Typography>${formik.values[field]}</Typography> <br/>`;
-			}
-		});
-		console.log(updatedCompanyAddressFormat, "upated");
-		formik.setFieldValue(currentTemplate, updatedCompanyAddressFormat);
-		handleClose();
-	};
 
 	const templateList = [
 		Constants.customImages.Template1,
@@ -274,59 +232,28 @@ const Invoices = () => {
 								<Divider />
 								<DialogContent>
 									<Grid container>
-										{[
-											{ name: "company_name", label: "{company.name}" },
-											{ name: "company_vat_number", label: "{company.vat_number}" },
-											{ name: "company_billing_address_1", label: "{company.billing.address_1}" },
-											{ name: "company_billing_address_2", label: "{company.billing.address_2}" },
-											{ name: "company_billing_city", label: "{company.billing.city}" },
-											{ name: "company_billing_state", label: "{company.billing.state}" },
-											{ name: "company_billing_country", label: "{company.billing.country}" },
-											{ name: "company_billing_phone", label: "{company.billing.phone}" },
-											{ name: "company_billing_zip", label: "{company.billing.zip}" },
-
-											{ name: "customer_name", label: "{customer.name}" },
-											{ name: "customer_vat_number", label: "{customer.vat_number}" },
-											{ name: "customer_billing_address_1", label: "{customer.billing.address_1}" },
-											{ name: "customer_billing_address_2", label: "{customer.billing.address_2}" },
-											{ name: "customer_billing_city", label: "{customer.billing.city}" },
-											{ name: "customer_billing_state", label: "{customer.billing.state}" },
-											{ name: "customer_billing_country", label: "{customer.billing.country}" },
-											{ name: "customer_billing_phone", label: "{customer.billing.phone}" },
-											{ name: "customer_billing_zip", label: "{customer.billing.zip}" },
-
-											{
-												name: "customer_shipping_address_1",
-												label: "{customer.shipping.address_1}",
-											},
-											{
-												name: "customer_shipping_address_2",
-												label: "{customer.shipping.address_2}",
-											},
-											{ name: "customer_shipping_city", label: "{customer.shipping.city}" },
-											{ name: "customer_shipping_state", label: "{customer.shipping.state}" },
-											{ name: "customer_shipping_country", label: "{customer.shipping.country}" },
-											{ name: "customer_shipping_phone", label: "{customer.shipping.phone}" },
-											{ name: "customer_shipping_zip", label: "{customer.shipping.zip}" },
-										].map((field, index) => (
-											<Grid item xs={12} key={index} my={0}>
-												<Field
-													name={field.name}
+										{Constants?.invoiceAddressExpressions?.map((field, index) => (
+											<Grid item xs={12} key={`${field?.name}-${index}`} my={0}>
+												<FormControlLabel
+													control={<Checkbox />}
 													label={field.label}
-													component={CheckBoxFormField}
-													value={field.label}
+													checked={formik?.values?.[currentTemplate]?.includes(field.label)}
+													onChange={(_, checked) => {
+														if (checked) {
+															formik?.setFieldValue(
+																currentTemplate,
+																`${formik?.values?.[currentTemplate]} ${field.label}`,
+															);
+														} else {
+															formik?.setFieldValue(
+																currentTemplate,
+																formik?.values?.[currentTemplate]?.replace(field.label, ""),
+															);
+														}
+													}}
 												/>
 											</Grid>
 										))}
-
-										<Button
-											variant="contained"
-											onClick={() => {
-												handleDialogSubmit(formik);
-											}}
-										>
-											submit
-										</Button>
 									</Grid>
 								</DialogContent>
 							</Dialog>

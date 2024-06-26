@@ -18,23 +18,23 @@ export const RichTextEditor: React.FC<
 		required?: boolean;
 		editorOptions?: SunEditorOptions;
 	}
-> = ({ field, form, label, editorOptions, ...props }) => {
+> = ({ field, form, label, ...props }) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
-	const toolbarOptions: SunEditorOptions = {
-		buttonList: [
-			["undo", "redo"],
-			["bold", "underline", "italic"],
-			["align", "list", "table"],
-			["image", "fullScreen", "preview", "print", "template"],
-		],
-		toolbarWidth: "100%", // Specify the desired width of the toolbar
-	};
-	let options: SunEditorOptions;
-	if (!editorOptions) {
-		options = toolbarOptions;
-	} else {
-		options = editorOptions;
-	}
+	// const toolbarOptions: SunEditorOptions = {
+	// 	buttonList: [
+	// 		["undo", "redo"],
+	// 		["bold", "underline", "italic"],
+	// 		["align", "list", "table"],
+	// 		["image", "fullScreen", "preview", "print", "template"],
+	// 	],
+	// 	toolbarWidth: "100%", // Specify the desired width of the toolbar
+	// };
+	// let options: SunEditorOptions;
+	// if (!editorOptions) {
+	// 	options = toolbarOptions;
+	// } else {
+	// 	options = editorOptions;
+	// }
 
 	return (
 		<FormControl fullWidth error={!!errorText}>
@@ -55,7 +55,6 @@ export const RichTextEditor: React.FC<
 				setContents={field.value}
 				placeholder="Please type here..."
 				onChange={(data) => form.setFieldValue(field.name, data, true)}
-				setOptions={options}
 				{...props}
 			/>
 			<FormHelperText>{errorText}</FormHelperText>

@@ -220,6 +220,7 @@ export const AutocompleteField: React.FC<
 						? options.filter((option) => field.value?.includes(option.value)) ?? []
 						: options.find((option) => option.value === field.value) ?? null
 				}
+				onBlur={field.onBlur}
 			/>
 		</FormControl>
 	);
