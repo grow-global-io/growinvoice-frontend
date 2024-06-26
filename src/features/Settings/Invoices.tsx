@@ -12,7 +12,7 @@ import {
 	Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, FormikProps } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { Constants } from "@shared/constants";
@@ -50,13 +50,11 @@ const Invoices = () => {
 		overdue_reminder2: yup.number().required("Reminder2 is required"),
 	});
 
-	const handleSubmit = (values: any) => {
-		console.log(values);
-	};
+	const handleSubmit = () => {};
 
 	const [currentTemplate, setCurrentTemplate] = useState("");
 
-	const handleDialogSubmit = (formik: any) => {
+	const handleDialogSubmit = (formik: FormikProps<any>) => {
 		console.log(formik, "formik");
 		formik.setFieldValue("company_address_format", "");
 
