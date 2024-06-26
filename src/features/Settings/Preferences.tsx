@@ -37,38 +37,6 @@ const Preferences = () => {
 					{() => (
 						<Form>
 							<Grid container spacing={2}>
-								<Grid item xs={12} sm={6}>
-									<Field
-										name="language"
-										label="Language"
-										component={AutocompleteField}
-										options={options}
-										placeholder={"Select"}
-									/>
-								</Grid>
-								<Grid item xs={12} sm={6}>
-									<Field
-										name="timezone"
-										label="TimeZone"
-										component={AutocompleteField}
-										options={options}
-										placeholder={"Select"}
-									/>
-								</Grid>
-								<Grid item xs={12} sm={6}>
-									<Field
-										name="date_format"
-										label="Date Format"
-										component={AutocompleteField}
-										options={options}
-										placeholder={"Select"}
-									/>
-								</Grid>
-
-								<Grid item xs={12} sm={12}>
-									<Divider />
-								</Grid>
-
 								<SettingFormHeading
 									heading="Financial Year"
 									icon={Constants.customImages.FinancialIcon}

@@ -31,9 +31,7 @@ const MyProfile = () => {
 		phone: yup.number().required("Phone Number is required"),
 		currency_id: yup.string().required("Select Currency is required"),
 		old_password: yup.string().min(7, "Password is at least 7 characters"),
-		// .required("Old Password is required"),
 		password: yup.string().min(7, "Password is at least 7 characters"),
-		// .required("New Password is required"),
 	});
 
 	const id = user?.company?.[0]?.user_id ?? "";

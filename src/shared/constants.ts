@@ -63,4 +63,40 @@ export class Constants {
 		Template4,
 		TemplateIcon,
 	};
+
+	static readonly invoiceAddressExpressions = [
+		{ name: "company_name", label: "{company.name}" },
+		{ name: "company_vat_number", label: "{company.vat_number}" },
+		{ name: "company_billing_address_1", label: "{company.billing.address_1}" },
+		{ name: "company_billing_address_2", label: "{company.billing.address_2}" },
+		{ name: "company_billing_city", label: "{company.billing.city}" },
+		{ name: "company_billing_state", label: "{company.billing.state}" },
+		{ name: "company_billing_country", label: "{company.billing.country}" },
+		{ name: "company_billing_phone", label: "{company.billing.phone}" },
+		{ name: "company_billing_zip", label: "{company.billing.zip}" },
+
+		{ name: "customer_name", label: "{customer.name}" },
+		{ name: "customer_vat_number", label: "{customer.vat_number}" },
+		{ name: "customer_billing_address_1", label: "{customer.billing.address_1}" },
+		{ name: "customer_billing_address_2", label: "{customer.billing.address_2}" },
+		{ name: "customer_billing_city", label: "{customer.billing.city}" },
+		{ name: "customer_billing_state", label: "{customer.billing.state}" },
+		{ name: "customer_billing_country", label: "{customer.billing.country}" },
+		{ name: "customer_billing_phone", label: "{customer.billing.phone}" },
+		{ name: "customer_billing_zip", label: "{customer.billing.zip}" },
+
+		{
+			name: "customer_shipping_address_1",
+			label: "{customer.shipping.address_1}",
+		},
+		{
+			name: "customer_shipping_address_2",
+			label: "{customer.shipping.address_2}",
+		},
+		{ name: "customer_shipping_city", label: "{customer.shipping.city}" },
+		{ name: "customer_shipping_state", label: "{customer.shipping.state}" },
+		{ name: "customer_shipping_country", label: "{customer.shipping.country}" },
+		{ name: "customer_shipping_phone", label: "{customer.shipping.phone}" },
+		{ name: "customer_shipping_zip", label: "{customer.shipping.zip}" },
+	];
 }

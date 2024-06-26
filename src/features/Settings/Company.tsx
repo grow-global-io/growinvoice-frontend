@@ -1,5 +1,5 @@
 import { Box, Button, Grid } from "@mui/material";
-import { Formik, Field, Form, FormikHelpers, FormikProps } from "formik";
+import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { PhoneInputFormField } from "@shared/components/FormFields/PhoneInputFormField";
@@ -7,27 +7,34 @@ import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { useAuthStore } from "@store/auth";
 import { useCurrencyControllerFindCountries } from "@api/services/currency";
 import StateFormField from "@shared/components/FormFields/StateFormField";
-import { useRef } from "react";
-import { useCompanyControllerUpdate } from "@api/services/company";
+import {
+	getCompanyControllerFindOneQueryKey,
+	useCompanyControllerFindOne,
+	useCompanyControllerUpdate,
+} from "@api/services/company";
+import AvatarFormField from "@shared/components/FormFields/AvatarFormField";
+import Loader from "@shared/components/Loader";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Company = () => {
+	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const countryFindAll = useCurrencyControllerFindCountries();
 	const companyUpdate = useCompanyControllerUpdate();
+	const companyFindOne = useCompanyControllerFindOne(user?.company?.[0]?.id ?? "");
 
 	const initialValues = {
-		name: user?.company?.[0]?.name ?? "",
-		phone: user?.company?.[0]?.phone ?? "",
-		vat: user?.company?.[0]?.vat ?? "",
-		country_id: user?.company?.[0]?.country_id ?? "",
-		state_id: user?.company?.[0]?.state_id ?? "",
-		city: user?.company?.[0]?.city ?? "",
-		zip: user?.company?.[0]?.zip ?? "",
-		address: user?.company?.[0]?.address ?? "",
-		logo: user?.company?.[0]?.logo ?? "",
+		name: companyFindOne?.data?.name ?? "",
+		phone: companyFindOne?.data?.phone ?? "",
+		vat: companyFindOne?.data?.vat ?? "",
+		country_id: companyFindOne?.data?.country_id ?? "",
+		state_id: companyFindOne?.data?.state_id ?? "",
+		city: companyFindOne?.data?.city ?? "",
+		zip: companyFindOne?.data?.zip ?? "",
+		address: companyFindOne?.data?.address ?? "",
+		logo: companyFindOne?.data?.logo ?? "",
 		user_id: user?.id ?? "",
 	};
-	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	const schema = yup.object().shape({
 		name: yup.string().required("Company name is required"),
 		phone: yup.number().required("Phone Number is required"),
@@ -37,35 +44,37 @@ const Company = () => {
 		city: yup.string().required("Select city"),
 		zip: yup.string().required("Postal Code is required"),
 		address: yup.string().required("Address is required"),
-		logo: yup.string().required("logo is required"),
+		logo: yup.string(),
 		user_id: yup.string().required("user Id is required"),
 	});
-
 	const handleSubmit = async (
 		values: typeof initialValues,
 		actions: FormikHelpers<typeof initialValues>,
 	) => {
 		await companyUpdate.mutateAsync({
-			id: user?.id ?? "",
+			id: user?.company?.[0]?.id ?? "",
 			data: values,
+		});
+		queryClient?.refetchQueries({
+			queryKey: getCompanyControllerFindOneQueryKey(user?.company?.[0]?.id ?? ""),
 		});
 		actions.resetForm();
 	};
 
+	if (companyFindOne.isLoading || companyFindOne?.isRefetching || companyFindOne?.isFetching)
+		return <Loader />;
+
 	return (
 		<>
 			<Box>
-				<Formik
-					initialValues={initialValues}
-					validationSchema={schema}
-					onSubmit={handleSubmit}
-					innerRef={formikRef}
-				>
-					{(formik) => {
-						console.log(formik?.errors);
+				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
+					{() => {
 						return (
 							<Form>
 								<Grid container spacing={2}>
+									<Grid item xs={12}>
+										<Field name="logo" label="Logo" component={AvatarFormField} isRequired={true} />
+									</Grid>
 									<Grid item xs={12} sm={6}>
 										<Field
 											name="name"
