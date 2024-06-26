@@ -151,109 +151,65 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					iframeRef,
 				});
 			},
-			href: "",
 		},
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
 			func: handleSendMail,
-			href: "",
 		},
 		{
 			name: "Send Whatsapp",
 			icon: WhatsApp,
-			func: () => console.log("send whatsapp"),
-			href: `https://api.whatsapp.com/send/?phone=${getInvoiceData?.data?.customer?.phone}&text=${window.location.origin}/invoice/invoicetemplate/${invoiceId}&type=url&app_absent=0`,
+			func: () => {
+				window.open(
+					`https://api.whatsapp.com/send/?phone=${getInvoiceData?.data?.customer?.phone}&text=${window.location.origin}/invoice/invoicetemplate/${invoiceId}&type=url&app_absent=0`,
+					"_blank",
+				);
+			},
 		},
 		{
 			name: "Edit",
 			icon: CreateOutlined,
 			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
-			href: "",
 		},
 		{
 			name: "Enter Payment",
 			icon: PaymentsOutlined,
 			func: () => console.log("Enter Payment"),
-			href: "",
 		},
 		{
 			name: "",
 			icon: MoreVertOutlined,
 			func: handleMoreClick,
-			href: "",
 		},
 	];
 
 	const buttonListForSmallSrn = [
-		{
-			name: "Download",
-			icon: FileDownloadOutlined,
-			func: () => {
-				if (isMobile) {
-					generatePdfFromHtml({
-						html: getHtmlText?.data ?? "",
-					});
-					return;
-				}
-				generatePdfFromRef({
-					iframeRef,
-				});
-			},
-			href: "",
-		},
-		{
-			name: "Send Mail",
-			icon: EmailOutlined,
-			func: handleSendMail,
-			href: "",
-		},
-		{
-			name: "Send Whatsapp",
-			icon: WhatsApp,
-			func: () => console.log("send whatsapp"),
-			href: `https://api.whatsapp.com/send/?phone=${getInvoiceData?.data?.customer?.phone}&text=${window.location.origin}/invoice/invoicetemplate/${invoiceId}&type=url&app_absent=0`,
-		},
-		{
-			name: "Edit",
-			icon: CreateOutlined,
-			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
-			href: "",
-		},
-		{
-			name: "Enter Payment",
-			icon: PaymentsOutlined,
-			func: () => console.log("Enter Payment"),
-			href: "",
-		},
+		...buttonList,
 		{
 			name: "Share",
 			icon: ShareOutlined,
 			func: () => {
 				navigate(`/invoice/invoicetemplate/${invoiceId}`);
 			},
-			href: "",
 		},
 
 		{
 			name: "Marked Paid",
 			icon: PaidOutlined,
 			func: () => console.log("Marked Paid"),
-			href: "",
 		},
 
 		{
 			name: "Mark Send",
 			icon: SendOutlined,
 			func: () => console.log("Mark Send"),
-			href: "",
 		},
 
 		{
 			name: "Delete",
 			icon: DeleteOutline,
 			func: () => console.log("Delete"),
-			href: "",
 		},
 	];
 	if (
@@ -336,7 +292,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					aria-label="Basic button group"
 				>
 					{buttonList.map((item, index) => (
-						<Button sx={styles} onClick={item.func} key={index} href={item.href}>
+						<Button sx={styles} onClick={item.func} key={index}>
 							<item.icon sx={{ mr: 1 }} />
 							{item.name}
 						</Button>
@@ -373,12 +329,16 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					},
 				}}
 			>
-				{buttonListForSmallSrn.map((item, index) => (
-					<MenuItem onClick={item.func} key={index} href={item.href}>
-						<item.icon sx={{ mr: 1 }} />
-						{item.name}
-					</MenuItem>
-				))}
+				{buttonListForSmallSrn
+					.filter((item) => item.name !== "")
+					.map((item, index) => {
+						return (
+							<MenuItem onClick={item.func} key={index}>
+								<item.icon sx={{ mr: 1 }} />
+								{item.name}
+							</MenuItem>
+						);
+					})}
 			</Menu>
 
 			{!isMobile ? (

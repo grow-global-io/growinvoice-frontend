@@ -20,7 +20,7 @@ import { useCreateProductStore } from "@store/createProductStore";
 import { ProductDrawer } from "@features/Products/CreateProduct";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import { CustomerDrawer } from "@features/Customer/CreateCustomer";
-import ParentofSidebar from "@features/Settings/ParentofSidebar";
+import ParentofSidebar from "@layout/navbar/Settings/Sidebar";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
