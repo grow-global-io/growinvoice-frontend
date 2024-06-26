@@ -24,8 +24,8 @@ export interface QuotationWithAllDataDto {
 	notes: string | null;
 	/** @nullable */
 	private_notes: string | null;
+	product?: QuotationProducts[];
 	quatation_number: string;
-	quotation?: QuotationProducts[];
 	/** @nullable */
 	reference_number: string | null;
 	sub_total: number;

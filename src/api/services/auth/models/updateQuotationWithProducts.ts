@@ -17,8 +17,8 @@ export interface UpdateQuotationWithProducts {
 	notes?: string | null;
 	/** @nullable */
 	private_notes?: string | null;
+	product: OmitCreateQuotationProductsDto[];
 	quatation_number?: string;
-	quotation: OmitCreateQuotationProductsDto[];
 	/** @nullable */
 	reference_number?: string | null;
 	sub_total?: number;
