@@ -25,18 +25,46 @@ import GridTextField from "@shared/components/DataGridFields/GridTextField";
 import { useProductControllerFindAll } from "@api/services/product";
 import { currencyFormatter } from "@shared/formatter";
 import CreateProduct from "@features/Products/CreateProduct";
+import { FormikProps } from "formik";
+import { OmitCreateInvoiceProductsDto } from "@api/services/models";
+import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 
 export default function FullFeaturedCrudGrid({
 	rows,
 	setRows,
 	errorText,
 	setErrorText,
+	formik,
 }: {
 	rows: GridRowsProp;
 	setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
 	errorText: string | undefined;
 	setErrorText: React.Dispatch<React.SetStateAction<string | undefined>>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: FormikProps<any>;
 }) {
+	const taxCodes = useTaxcodeControllerFindAll();
+
+	const handleTotal = (rows: GridRowsProp) => {
+		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
+		formik?.setFieldValue(
+			"product",
+			rows.map((row) => {
+				return {
+					product_id: row.product_id,
+					quantity: Number(row.quantity),
+					price: row.price,
+					total: row.total,
+				} as OmitCreateInvoiceProductsDto;
+			}),
+		);
+		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
+		formik?.setFieldValue("sub_total", subtotal);
+		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
+		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
+		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
+	};
+
 	const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 	const [isRowEditing, setIsRowEditing] = React.useState(false);
 	const productList = useProductControllerFindAll();
@@ -69,6 +97,7 @@ export default function FullFeaturedCrudGrid({
 			return;
 		}
 		setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+		handleTotal(rows);
 	};
 
 	const handleDeleteClick = (id: GridRowId) => () => {
@@ -76,6 +105,7 @@ export default function FullFeaturedCrudGrid({
 			setErrorText("At least one product is required");
 		}
 		setRows(rows.filter((row) => row.id !== id));
+		handleTotal(rows.filter((row) => row.id !== id));
 	};
 
 	const handleCancelClick = (id: GridRowId) => () => {

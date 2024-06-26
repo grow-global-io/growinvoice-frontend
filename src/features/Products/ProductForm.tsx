@@ -35,7 +35,11 @@ const schema: yup.Schema<CreateProductDto> = yup.object({
 	hsnCode_id: yup.string(),
 	tax_id: yup.string(),
 	currency_id: yup.string().required("Currency is required"),
-	price: yup.number().required("Price is required").min(1, "Price should be greater than 0"),
+	price: yup
+		.number()
+		.typeError("Price must be a number")
+		.required("Price is required")
+		.min(1, "Price should be greater than 0"),
 	description: yup.string().nullable(),
 	user_id: yup.string().required("User id is required"),
 });

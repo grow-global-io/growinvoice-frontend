@@ -1,13 +1,4 @@
-import {
-	Box,
-	Typography,
-	Grid,
-	Button,
-	Divider,
-	InputAdornment,
-	Card,
-	CardContent,
-} from "@mui/material";
+import { Box, Typography, Grid, Button, Divider, InputAdornment } from "@mui/material";
 import { Formik, Form, Field, FormikProps, FormikHelpers } from "formik";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { DateFormField } from "@shared/components/FormFields/DateFormField";
@@ -20,9 +11,6 @@ import { useEffect, useRef, useState } from "react";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import AddIcon from "@mui/icons-material/Add";
 import { useCustomerControllerFindAll } from "@api/services/customer";
-import { OmitCreateInvoiceProductsDto } from "@api/services/models";
-import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
-import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
 import {
 	getQuotationControllerFindAllQueryKey,
 	getQuotationControllerFindOneQueryKey,
@@ -34,6 +22,8 @@ import { useAuthStore } from "@store/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 import Loader from "@shared/components/Loader";
+import SubtotalFooter from "@shared/components/SubtotalFooter";
+import { formatToIso } from "@shared/formatter";
 const CreateQuotation = ({ id }: { id?: string }) => {
 	const [errorText, setErrorText] = useState<string | undefined>(undefined);
 	const queryClient = useQueryClient();
@@ -41,8 +31,6 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 	const customerData = useCustomerControllerFindAll();
 	const [rows, setRows] = useState<GridRowsProp>([]);
 	const { user } = useAuthStore();
-	const taxCodes = useTaxcodeControllerFindAll();
-	const [taxesCreateopen, setTaxesCreateOpen] = useState(false);
 	const createQuotation = useQuotationControllerCreate();
 	const quotationFindOne = useQuotationControllerFindOne(id ?? "", {
 		query: {
@@ -55,7 +43,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 	useEffect(() => {
 		if (quotationFindOne.isSuccess) {
 			setRows(
-				quotationFindOne?.data?.quotation?.map((product) => ({
+				quotationFindOne?.data?.product?.map((product) => ({
 					id: product.id,
 					product_id: product.product_id,
 					quantity: product.quantity,
@@ -81,7 +69,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		tax_id: quotationFindOne?.data?.tax_id ?? "",
 		total: quotationFindOne?.data?.total ?? 0,
 		discountPercentage: quotationFindOne?.data?.discountPercentage ?? 0,
-		quotation: quotationFindOne?.data?.quotation ?? [],
+		product: quotationFindOne?.data?.product ?? [],
 	};
 
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
@@ -121,19 +109,21 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 				id,
 				data: {
 					...values,
-					quotation: values.quotation,
+					date: formatToIso(values.date),
+					expiry_at: formatToIso(values.expiry_at),
 				},
 			});
 		} else {
 			await createQuotation.mutateAsync({
 				data: {
 					...values,
-					quotation: values.quotation,
+					date: formatToIso(values.date),
+					expiry_at: formatToIso(values.expiry_at),
 				},
 			});
 		}
 
-		queryClient.invalidateQueries({
+		queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindOneQueryKey(id ?? ""),
 		});
 		queryClient.refetchQueries({
@@ -142,34 +132,13 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		actions.resetForm();
 	};
 
-	useEffect(() => {
-		const formik = formikRef.current;
-		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
-		formik?.setFieldValue(
-			"product",
-			rows.map((row) => {
-				return {
-					product_id: row.product_id,
-					quantity: Number(row.quantity),
-					price: row.price,
-					total: row.total,
-				} as OmitCreateInvoiceProductsDto;
-			}),
-		);
-		const tax = taxCodes?.data?.find((tax) => tax.id === formik?.values.tax_id);
-		formik?.setFieldValue("sub_total", subtotal);
-		const discount = subtotal * (Number(formik?.values?.discountPercentage) / 100);
-		const taxPercentage = subtotal * (Number(tax?.percentage ?? 0) / 100);
-		formik?.setFieldValue("total", subtotal - discount + taxPercentage);
-	}, [rows]);
-
 	const options = [
 		{ value: "1", label: "Option 1" },
 		{ value: "2", label: "Option 2" },
 		{ value: "3", label: "Option 3" },
 	];
 
-	if (quotationFindOne.isLoading) {
+	if (quotationFindOne.isLoading || quotationFindOne.isFetching || quotationFindOne?.isRefetching) {
 		return <Loader />;
 	}
 
@@ -197,18 +166,8 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					onSubmit={handleSubmit}
 					innerRef={formikRef}
 				>
-					{({ values, setFieldValue }) => {
-						useEffect(() => {
-							if (values?.discountPercentage > 0 || values.tax_id) {
-								const tax = taxCodes?.data?.find((tax) => tax.id === values.tax_id);
-								const discount = values?.sub_total * (values?.discountPercentage / 100);
-								const taxAmount = values?.sub_total * (tax?.percentage ?? 0 / 100);
-								setFieldValue("total", values?.sub_total - discount + taxAmount);
-							} else {
-								setFieldValue("total", values?.sub_total);
-							}
-						}, [values?.discountPercentage, values.tax_id]);
-
+					{(formik) => {
+						console.log(formik?.errors);
 						return (
 							<Form>
 								<Grid container spacing={2}>
@@ -270,7 +229,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											name="expiry_at"
 											component={DateFormField}
 											label="Expiry At"
-											minDate={moment(values.date).add(1, "days").toDate()}
+											minDate={moment(formik?.values.date).add(1, "days").toDate()}
 											isRequired={true}
 										/>
 									</Grid>
@@ -283,6 +242,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											setRows={setRows}
 											errorText={errorText}
 											setErrorText={setErrorText}
+											formik={formik}
 										/>
 									</Grid>
 									<Grid item xs={12} mb={3}>
@@ -315,84 +275,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 										/>
 									</Grid>
 									<Grid item xs={12} sm={6}>
-										<Card>
-											<CardContent>
-												<Grid
-													container
-													display={"flex"}
-													alignItems={"center"}
-													px={2}
-													py={3}
-													borderRadius={1}
-													sx={{ background: "custom.transparentWhite" }}
-												>
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Subtotal</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field
-															name="sub_total"
-															component={TextFormField}
-															type="number"
-															disabled
-															isRequired={true}
-														/>
-													</Grid>
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Taxes</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field
-															name="tax_id"
-															component={AutocompleteField}
-															loading={taxCodes.isLoading || taxCodes.isFetching}
-															options={taxCodes?.data?.map((item) => {
-																return {
-																	label: item?.percentage + "%",
-																	value: item?.id,
-																};
-															})}
-														/>
-														<Button
-															variant="text"
-															startIcon={<AddIcon />}
-															onClick={() => setTaxesCreateOpen(true)}
-														>
-															Add Taxes
-														</Button>
-													</Grid>
-													{taxesCreateopen && (
-														<Grid item xs={12}>
-															<CreateTaxes handleClose={() => setTaxesCreateOpen(false)} />
-														</Grid>
-													)}
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Discount</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6}>
-														<Field
-															name="discountPercentage"
-															component={TextFormField}
-															type="number"
-														/>
-													</Grid>
-													<Grid item xs={12}>
-														<Divider />
-													</Grid>
-													<Grid item xs={12} sm={6}>
-														<Typography variant="h5">Total</Typography>
-													</Grid>
-													<Grid item xs={12} sm={6} textAlign={"right"}>
-														<Field
-															name="total"
-															component={TextFormField}
-															type="number"
-															isRequired={true}
-														/>
-													</Grid>
-												</Grid>
-											</CardContent>
-										</Card>
+										<SubtotalFooter formik={formik} />
 									</Grid>
 									<Grid item xs={12} sm={3.5}>
 										<Field
