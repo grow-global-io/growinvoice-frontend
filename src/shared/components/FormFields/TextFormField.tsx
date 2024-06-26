@@ -9,7 +9,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 
-export const TextFormField: React.FC< 
+export const TextFormField: React.FC<
 	FieldProps & {
 		label?: string;
 		required?: boolean;
