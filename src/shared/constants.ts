@@ -66,14 +66,13 @@ export class Constants {
 
 	static readonly invoiceAddressExpressions = [
 		{ name: "company_name", label: "{company.name}" },
-		{ name: "company_vat_number", label: "{company.vat_number}" },
-		{ name: "company_billing_address_1", label: "{company.billing.address_1}" },
-		{ name: "company_billing_address_2", label: "{company.billing.address_2}" },
-		{ name: "company_billing_city", label: "{company.billing.city}" },
-		{ name: "company_billing_state", label: "{company.billing.state}" },
-		{ name: "company_billing_country", label: "{company.billing.country}" },
-		{ name: "company_billing_phone", label: "{company.billing.phone}" },
-		{ name: "company_billing_zip", label: "{company.billing.zip}" },
+		{ name: "company_vat_number", label: "{company.vat}" },
+		{ name: "company_billing_address_1", label: "{company.address}" },
+		{ name: "company_billing_city", label: "{company.city}" },
+		{ name: "company_billing_state", label: "{company.state}" },
+		{ name: "company_billing_country", label: "{company.country}" },
+		{ name: "company_billing_phone", label: "{company.phone}" },
+		{ name: "company_billing_zip", label: "{company.zip}" },
 
 		{ name: "customer_name", label: "{customer.name}" },
 		{ name: "customer_vat_number", label: "{customer.vat_number}" },

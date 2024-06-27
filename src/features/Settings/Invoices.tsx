@@ -10,6 +10,7 @@ import {
 	Dialog,
 	DialogContent,
 	Checkbox,
+	Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { Formik, Field, Form } from "formik";
@@ -22,6 +23,17 @@ import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormFie
 import { useDialog } from "@shared/hooks/useDialog";
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import { useState } from "react";
+import { useAuthStore } from "@store/auth";
+import {
+	getInvoicesettingsControllerFindFirstQueryKey,
+	useInvoicesettingsControllerCreate,
+	useInvoicesettingsControllerFindFirst,
+	useInvoicesettingsControllerUpdate,
+} from "@api/services/invoicesettings";
+import Loader from "@shared/components/Loader";
+import { CreateInvoiceSettingsDto } from "@api/services/models";
+import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetemplate";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CustomFormControlLabel = styled(FormControlLabel)(() => ({
 	alignItems: "flex-start",
@@ -29,37 +41,73 @@ const CustomFormControlLabel = styled(FormControlLabel)(() => ({
 }));
 
 const Invoices = () => {
+	const queryClient = useQueryClient();
+	const { user } = useAuthStore();
 	const { open, handleClickOpen, handleClose } = useDialog();
+	const invoiceSettings = useInvoicesettingsControllerFindFirst();
+	const invoiceTemplates = useInvoicetemplateControllerFindAll();
+	const invoiceSettingCreate = useInvoicesettingsControllerCreate();
+	const invoiceSettingUpdate = useInvoicesettingsControllerUpdate();
 
-	const initialValues: { [key: string]: string } = {
-		invoice_prefix: "",
-		reminder1: "",
-		reminder2: "",
-		overdue_reminder1: "",
-		overdue_reminder2: "",
-		company_address_format: "",
-		cus_bill_address_format: "",
-		cus_ship_address_format: "",
+	const initialValues: CreateInvoiceSettingsDto = {
+		invoicePrefix: invoiceSettings?.data?.invoicePrefix ?? "",
+		autoArchive: invoiceSettings?.data?.autoArchive ?? false,
+		footer: invoiceSettings?.data?.footer ?? "",
+		dueNotice: invoiceSettings?.data?.dueNotice ?? 0,
+		overDueNotice: invoiceSettings?.data?.overDueNotice ?? 0,
+		companyAddressTemplate: invoiceSettings?.data?.companyAddressTemplate ?? "",
+		customerBillingAddressTemplate: invoiceSettings?.data?.customerBillingAddressTemplate ?? "",
+		customerShippingAddressTemplate: invoiceSettings?.data?.customerShippingAddressTemplate ?? "",
+		user_id: user?.id ?? "",
+		invoiceTemplateId: invoiceSettings?.data?.invoiceTemplateId ?? "",
 	};
 
-	const schema = yup.object().shape({
-		invoice_prefix: yup.string().required("Invoice prefix is required"),
-		reminder1: yup.number().required("Reminder1 is required"),
-		reminder2: yup.number().required("Reminder2 is required"),
-		overdue_reminder1: yup.number().required("Reminder1 is required"),
-		overdue_reminder2: yup.number().required("Reminder2 is required"),
+	const schema: yup.Schema<CreateInvoiceSettingsDto> = yup.object().shape({
+		invoicePrefix: yup.string().required("Invoice Prefix is required"),
+		autoArchive: yup.boolean().required("Auto Archive is required"),
+		footer: yup.string().nullable(),
+		dueNotice: yup.number().required("Due Notice is required"),
+		overDueNotice: yup.number().required("Overdue Notice is required"),
+		companyAddressTemplate: yup.string().required("Company Address Template is required"),
+		customerBillingAddressTemplate: yup
+			.string()
+			.required("Customer Billing Address Template is required"),
+		customerShippingAddressTemplate: yup
+			.string()
+			.required("Customer Shipping Address Template is required"),
+		user_id: yup.string().required("User ID is required"),
+		invoiceTemplateId: yup.string().required("Invoice Template ID is required"),
 	});
 
-	const handleSubmit = () => {};
+	const handleSubmit = async (values: CreateInvoiceSettingsDto) => {
+		if (invoiceSettings?.data) {
+			await invoiceSettingUpdate.mutateAsync({
+				id: invoiceSettings?.data?.id,
+				data: values,
+			});
+		} else {
+			await invoiceSettingCreate.mutateAsync({
+				data: values,
+			});
+		}
+		queryClient.invalidateQueries({
+			queryKey: getInvoicesettingsControllerFindFirstQueryKey(),
+		});
+	};
 
-	const [currentTemplate, setCurrentTemplate] = useState("");
+	const [currentTemplate, setCurrentTemplate] =
+		useState<keyof CreateInvoiceSettingsDto>("companyAddressTemplate");
 
-	const templateList = [
-		Constants.customImages.Template1,
-		Constants.customImages.Template2,
-		Constants.customImages.Template3,
-		Constants.customImages.Template4,
-	];
+	if (
+		invoiceSettings?.isLoading ||
+		invoiceSettings?.isRefetching ||
+		invoiceSettings?.isFetching ||
+		invoiceTemplates?.isLoading ||
+		invoiceTemplates?.isRefetching ||
+		invoiceTemplates?.isFetching
+	) {
+		return <Loader />;
+	}
 
 	return (
 		<>
@@ -68,9 +116,9 @@ const Invoices = () => {
 					{(formik) => (
 						<Form>
 							<Grid container spacing={2}>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={6} display={"flex"} alignItems={"center"}>
 									<Field
-										name="invoice_prefix"
+										name="invoicePrefix"
 										label="Invoice Prefix"
 										component={TextFormField}
 										required={true}
@@ -80,7 +128,7 @@ const Invoices = () => {
 								<Grid item xs={12} sm={6}>
 									<Box>
 										<Typography variant="h5">Auto Archive</Typography>
-										<Field name="auto_archive" label="YES" component={CheckBoxFormField} />
+										<Field name="autoArchive" label="YES" component={CheckBoxFormField} />
 										<Typography variant="body1" lineHeight={1.2}>
 											Enable this, If you wish to auto archive approved or rejected estimates after
 											30 days.
@@ -100,24 +148,15 @@ const Invoices = () => {
 								/>
 								<Grid item xs={6}>
 									<Field
-										name="reminder1"
-										label="Reminder 1"
+										name="dueNotice"
+										label="Due Notice in Days"
 										component={TextFormField}
 										required={true}
 										placeholder="x days before due date"
 										type="number"
 									/>
 								</Grid>
-								<Grid item xs={6}>
-									<Field
-										name="reminder2"
-										label="Reminder 2"
-										component={TextFormField}
-										required={true}
-										placeholder="x days before due date"
-										type="number"
-									/>
-								</Grid>
+
 								<SettingFormHeading
 									heading="Overdue Notices"
 									icon={Constants.customImages.redNoticeIcon}
@@ -125,24 +164,15 @@ const Invoices = () => {
 								/>
 								<Grid item xs={6}>
 									<Field
-										name="overdue_reminder1"
-										label="Reminder 1"
+										name="overDueNotice"
+										label="Overdue Notice in Days"
 										component={TextFormField}
 										required={true}
 										placeholder="x days before due date"
 										type="number"
 									/>
 								</Grid>
-								<Grid item xs={6}>
-									<Field
-										name="overdue_reminder2"
-										label="Reminder 2"
-										component={TextFormField}
-										required={true}
-										placeholder="x days before due date"
-										type="number"
-									/>
-								</Grid>
+
 								<Grid item xs={12}>
 									<Divider />
 								</Grid>
@@ -154,7 +184,7 @@ const Invoices = () => {
 									<Box
 										onClick={() => {
 											handleClickOpen();
-											setCurrentTemplate("company_address_format");
+											setCurrentTemplate("companyAddressTemplate");
 										}}
 									>
 										<Typography variant="h5" mb={1} sx={{ cursor: "pointer" }}>
@@ -162,7 +192,7 @@ const Invoices = () => {
 										</Typography>
 									</Box>
 									<Field
-										name="company_address_format"
+										name="companyAddressTemplate"
 										label="Company Address Format"
 										component={RichTextEditor}
 										required={true}
@@ -172,7 +202,7 @@ const Invoices = () => {
 									<Box
 										onClick={() => {
 											handleClickOpen();
-											setCurrentTemplate("cus_bill_address_format");
+											setCurrentTemplate("customerBillingAddressTemplate");
 										}}
 									>
 										<Typography variant="h5" mb={1} sx={{ cursor: "pointer" }}>
@@ -180,7 +210,7 @@ const Invoices = () => {
 										</Typography>
 									</Box>
 									<Field
-										name="cus_bill_address_format"
+										name="customerBillingAddressTemplate"
 										label="Customer Billing Address Format"
 										component={RichTextEditor}
 										required={true}
@@ -190,7 +220,7 @@ const Invoices = () => {
 									<Box
 										onClick={() => {
 											handleClickOpen();
-											setCurrentTemplate("cus_ship_address_format");
+											setCurrentTemplate("customerShippingAddressTemplate");
 										}}
 									>
 										<Typography variant="h5" mb={1} sx={{ cursor: "pointer" }}>
@@ -198,7 +228,7 @@ const Invoices = () => {
 										</Typography>
 									</Box>
 									<Field
-										name="cus_ship_address_format"
+										name="customerShippingAddressTemplate"
 										label="Customer Shipping Address Format"
 										component={RichTextEditor}
 										required={true}
@@ -213,18 +243,35 @@ const Invoices = () => {
 								/>
 								<Grid item xs={12}>
 									<FormControl component="fieldset">
-										<RadioGroup row aria-label="invoice-template" name="invoice-template-group">
-											{templateList.map((item, index) => (
+										<RadioGroup
+											row
+											aria-label="invoice-template"
+											name="invoiceTemplateId"
+											value={formik.values.invoiceTemplateId}
+											onChange={(event) => {
+												const { value } = event.target;
+												formik.setFieldValue("invoiceTemplateId", value);
+											}}
+										>
+											{invoiceTemplates?.data?.map((item, index) => (
 												<Grid item xs={12} sm={3} key={index}>
 													<CustomFormControlLabel
-														value={`template${index + 1}`}
+														value={item.id}
 														control={<Radio />}
-														label={<img src={item} width="100%" alt={`Template ${index + 1}`} />}
+														label={<img src={item.view} width="100%" alt={item.name} />}
 													/>
 												</Grid>
 											))}
 										</RadioGroup>
 									</FormControl>
+								</Grid>
+								<Grid item xs={12}>
+									<Divider />
+								</Grid>
+								<Grid item xs={12} textAlign={"center"}>
+									<Button type="submit" variant="contained">
+										Save Settings
+									</Button>
 								</Grid>
 							</Grid>
 							<Dialog open={open} onClose={handleClose} fullWidth={true}>
@@ -237,7 +284,9 @@ const Invoices = () => {
 												<FormControlLabel
 													control={<Checkbox />}
 													label={field.label}
-													checked={formik?.values?.[currentTemplate]?.includes(field.label)}
+													checked={formik?.values?.[currentTemplate]
+														?.toString()
+														?.includes(field.label.toString())}
 													onChange={(_, checked) => {
 														if (checked) {
 															formik?.setFieldValue(
@@ -247,7 +296,9 @@ const Invoices = () => {
 														} else {
 															formik?.setFieldValue(
 																currentTemplate,
-																formik?.values?.[currentTemplate]?.replace(field.label, ""),
+																formik?.values?.[currentTemplate]
+																	?.toString()
+																	?.replace(field.label, ""),
 															);
 														}
 													}}
