@@ -793,6 +793,65 @@ export const useInvoiceControllerTest = <
 	return query;
 };
 
+export const invoiceControllerTestaa = (id: string, signal?: AbortSignal) => {
+	return authInstance<string>({ url: `/api/invoice/testaa/${id}`, method: "GET", signal });
+};
+
+export const getInvoiceControllerTestaaQueryKey = (id: string) => {
+	return [`/api/invoice/testaa/${id}`] as const;
+};
+
+export const getInvoiceControllerTestaaQueryOptions = <
+	TData = Awaited<ReturnType<typeof invoiceControllerTestaa>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTestaa>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getInvoiceControllerTestaaQueryKey(id);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof invoiceControllerTestaa>>> = ({
+		signal,
+	}) => invoiceControllerTestaa(id, signal);
+
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof invoiceControllerTestaa>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type InvoiceControllerTestaaQueryResult = NonNullable<
+	Awaited<ReturnType<typeof invoiceControllerTestaa>>
+>;
+export type InvoiceControllerTestaaQueryError = ErrorType<unknown>;
+
+export const useInvoiceControllerTestaa = <
+	TData = Awaited<ReturnType<typeof invoiceControllerTestaa>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof invoiceControllerTestaa>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getInvoiceControllerTestaaQueryOptions(id, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
 export const invoiceControllerInvoicePublicFindOne = (id: string, signal?: AbortSignal) => {
 	return authInstance<InvoiceWithAllDataDto>({
 		url: `/api/invoice/invoicePublicFindOne/${id}`,
