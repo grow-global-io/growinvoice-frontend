@@ -21,9 +21,6 @@ const ProductUnitTableList = () => {
 			field: "name",
 			headerName: "Name",
 			flex: 1,
-			renderCell: (params) => {
-				return <Typography>{params.value}</Typography>;
-			},
 		},
 		{
 			field: "action",
@@ -42,9 +39,18 @@ const ProductUnitTableList = () => {
 		},
 	];
 	return (
-		<Box width={{ xs: "85vw", sm: "100%" }}>
-			<DataGrid autoHeight rows={row} columns={columns} />
-		</Box>
+		<DataGrid
+			autoHeight
+			rows={row}
+			columns={columns}
+			sx={{
+				width: {
+					sm: "100%",
+					md: "100%",
+					lg: "99%",
+				},
+			}}
+		/>
 	);
 };
 
