@@ -51,6 +51,7 @@ import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetemplate";
 import { formatDateToIso } from "@shared/formatter";
 import SubtotalFooter from "@shared/components/SubtotalFooter";
+import { useInvoicesettingsControllerFindFirst } from "@api/services/invoicesettings";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
@@ -69,6 +70,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 	const createInvoice = useInvoiceControllerCreate();
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
 	const [previewString, setPreviewString] = useState<string | undefined>(undefined);
+	const invoiceSettings = useInvoicesettingsControllerFindFirst();
 	const invoiceFindOne = useInvoiceControllerFindOne(id ?? "", {
 		query: {
 			enabled: id !== undefined,
@@ -117,7 +119,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		discountPercentage: invoiceFindOne?.data?.discountPercentage ?? 0,
 		recurring: invoiceFindOne?.data?.recurring ?? CreateInvoiceWithProductsRecurring.Daily,
 		product: invoiceFindOne?.data?.product ?? [],
-		template_id: invoiceFindOne?.data?.template_id ?? "",
+		template_id:
+			invoiceFindOne?.data?.template_id ?? invoiceSettings?.data?.invoiceTemplateId ?? "",
 	};
 
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
@@ -229,7 +232,12 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		navigate("/invoice/invoicelist");
 	};
 
-	if (invoiceFindOne.isLoading || invoiceFindOne?.isRefetching || invoiceFindOne?.isFetching)
+	if (
+		invoiceFindOne.isLoading ||
+		invoiceFindOne?.isRefetching ||
+		invoiceFindOne?.isFetching ||
+		invoiceSettings?.isLoading
+	)
 		return <Loader />;
 
 	return (
@@ -293,7 +301,11 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 											component={TextFormField}
 											label="Invoice Number"
 											InputProps={{
-												startAdornment: <InputAdornment position="start">INV -</InputAdornment>,
+												startAdornment: (
+													<InputAdornment position="start">
+														{invoiceSettings?.data?.invoicePrefix ?? "INV"} -
+													</InputAdornment>
+												),
 											}}
 											isRequired={true}
 										/>

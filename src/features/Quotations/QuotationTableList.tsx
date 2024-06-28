@@ -98,8 +98,8 @@ const QuotationTableList = () => {
 							iconColor="error"
 							onClick={async () => {
 								handleOpen({
-									title: "Delete Invoice",
-									message: "Are you sure you want to delete this invoice?",
+									title: "Delete Quotation",
+									message: "Are you sure you want to delete this quotation?",
 									onConfirm: async () => {
 										await removeQuotation.mutateAsync({ id: params.row.id });
 										queryClient.refetchQueries({

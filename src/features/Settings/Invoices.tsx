@@ -7,33 +7,31 @@ import {
 	RadioGroup,
 	FormControlLabel,
 	FormControl,
-	Dialog,
-	DialogContent,
-	Checkbox,
 	Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { Formik, Field, Form } from "formik";
 import * as yup from "yup";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
-import { Constants } from "@shared/constants";
+import { AddressExpressions, Constants } from "@shared/constants";
 import SettingFormHeading from "./SettingFormHeading";
 import { RichTextEditor } from "@shared/components/FormFields/RichTextEditor";
 import { CheckBoxFormField } from "@shared/components/FormFields/CheckBoxFormField";
 import { useDialog } from "@shared/hooks/useDialog";
-import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import { useState } from "react";
 import { useAuthStore } from "@store/auth";
 import {
 	getInvoicesettingsControllerFindFirstQueryKey,
 	useInvoicesettingsControllerCreate,
 	useInvoicesettingsControllerFindFirst,
+	useInvoicesettingsControllerRemove,
 	useInvoicesettingsControllerUpdate,
 } from "@api/services/invoicesettings";
 import Loader from "@shared/components/Loader";
 import { CreateInvoiceSettingsDto } from "@api/services/models";
 import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetemplate";
 import { useQueryClient } from "@tanstack/react-query";
+import AddressExpressionsDialog from "@shared/components/AddressExpressionsDialog";
 
 const CustomFormControlLabel = styled(FormControlLabel)(() => ({
 	alignItems: "flex-start",
@@ -48,6 +46,7 @@ const Invoices = () => {
 	const invoiceTemplates = useInvoicetemplateControllerFindAll();
 	const invoiceSettingCreate = useInvoicesettingsControllerCreate();
 	const invoiceSettingUpdate = useInvoicesettingsControllerUpdate();
+	const deleteInvoiceSetting = useInvoicesettingsControllerRemove();
 
 	const initialValues: CreateInvoiceSettingsDto = {
 		invoicePrefix: invoiceSettings?.data?.invoicePrefix ?? "",
@@ -272,42 +271,43 @@ const Invoices = () => {
 									<Button type="submit" variant="contained">
 										Save Settings
 									</Button>
+									{invoiceSettings?.data && (
+										<Button
+											color="error"
+											variant="contained"
+											onClick={async () => {
+												await deleteInvoiceSetting.mutateAsync({
+													id: invoiceSettings?.data?.id ?? "",
+												});
+												queryClient.invalidateQueries({
+													queryKey: getInvoicesettingsControllerFindFirstQueryKey(),
+												});
+											}}
+										>
+											Reset Settings
+										</Button>
+									)}
 								</Grid>
 							</Grid>
-							<Dialog open={open} onClose={handleClose} fullWidth={true}>
-								<AppDialogHeader title="Template Tags" handleClose={handleClose} />
-								<Divider />
-								<DialogContent>
-									<Grid container>
-										{Constants?.invoiceAddressExpressions?.map((field, index) => (
-											<Grid item xs={12} key={`${field?.name}-${index}`} my={0}>
-												<FormControlLabel
-													control={<Checkbox />}
-													label={field.label}
-													checked={formik?.values?.[currentTemplate]
-														?.toString()
-														?.includes(field.label.toString())}
-													onChange={(_, checked) => {
-														if (checked) {
-															formik?.setFieldValue(
-																currentTemplate,
-																`${formik?.values?.[currentTemplate]} ${field.label}`,
-															);
-														} else {
-															formik?.setFieldValue(
-																currentTemplate,
-																formik?.values?.[currentTemplate]
-																	?.toString()
-																	?.replace(field.label, ""),
-															);
-														}
-													}}
-												/>
-											</Grid>
-										))}
-									</Grid>
-								</DialogContent>
-							</Dialog>
+							<AddressExpressionsDialog
+								open={open}
+								handleClose={handleClose}
+								currentTemplate={currentTemplate as keyof AddressExpressions}
+								fieldValue={(formik.values[currentTemplate] as string) ?? ""}
+								handleChecked={(checked, label) => {
+									if (checked) {
+										formik?.setFieldValue(
+											currentTemplate,
+											`${formik?.values?.[currentTemplate]} ${label}`,
+										);
+									} else {
+										formik?.setFieldValue(
+											currentTemplate,
+											formik?.values?.[currentTemplate]?.toString()?.replace(label, ""),
+										);
+									}
+								}}
+							/>
 						</Form>
 					)}
 				</Formik>

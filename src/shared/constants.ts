@@ -29,6 +29,12 @@ import Template2 from "@assets/img/template_2.png";
 import Template3 from "@assets/img/template_3.jpg";
 import Template4 from "@assets/img/template_4.jpg";
 import TemplateIcon from "@assets/img/invoice-template-icon.png";
+
+export type AddressExpressions = {
+	companyAddressTemplate: Array<{ name: string; label: string }>;
+	customerBillingAddressTemplate: Array<{ name: string; label: string }>;
+	customerShippingAddressTemplate: Array<{ name: string; label: string }>;
+};
 export class Constants {
 	static readonly customImages = {
 		invoiceIcon,
@@ -64,38 +70,34 @@ export class Constants {
 		TemplateIcon,
 	};
 
-	static readonly invoiceAddressExpressions = [
-		{ name: "company_name", label: "{company.name}" },
-		{ name: "company_vat_number", label: "{company.vat}" },
-		{ name: "company_billing_address_1", label: "{company.address}" },
-		{ name: "company_billing_city", label: "{company.city}" },
-		{ name: "company_billing_state", label: "{company.state}" },
-		{ name: "company_billing_country", label: "{company.country}" },
-		{ name: "company_billing_phone", label: "{company.phone}" },
-		{ name: "company_billing_zip", label: "{company.zip}" },
-
-		{ name: "customer_name", label: "{customer.name}" },
-		{ name: "customer_vat_number", label: "{customer.vat_number}" },
-		{ name: "customer_billing_address_1", label: "{customer.billing.address_1}" },
-		{ name: "customer_billing_address_2", label: "{customer.billing.address_2}" },
-		{ name: "customer_billing_city", label: "{customer.billing.city}" },
-		{ name: "customer_billing_state", label: "{customer.billing.state}" },
-		{ name: "customer_billing_country", label: "{customer.billing.country}" },
-		{ name: "customer_billing_phone", label: "{customer.billing.phone}" },
-		{ name: "customer_billing_zip", label: "{customer.billing.zip}" },
-
-		{
-			name: "customer_shipping_address_1",
-			label: "{customer.shipping.address_1}",
-		},
-		{
-			name: "customer_shipping_address_2",
-			label: "{customer.shipping.address_2}",
-		},
-		{ name: "customer_shipping_city", label: "{customer.shipping.city}" },
-		{ name: "customer_shipping_state", label: "{customer.shipping.state}" },
-		{ name: "customer_shipping_country", label: "{customer.shipping.country}" },
-		{ name: "customer_shipping_phone", label: "{customer.shipping.phone}" },
-		{ name: "customer_shipping_zip", label: "{customer.shipping.zip}" },
-	];
+	static readonly addressExpressions: AddressExpressions = {
+		companyAddressTemplate: [
+			{ name: "company_name", label: "{company.name}" },
+			{ name: "company_vat_number", label: "{company.vat}" },
+			{ name: "company_billing_address_1", label: "{company.address}" },
+			{ name: "company_billing_city", label: "{company.city}" },
+			{ name: "company_billing_state", label: "{company.state}" },
+			{ name: "company_billing_country", label: "{company.country}" },
+			{ name: "company_billing_phone", label: "{company.phone}" },
+			{ name: "company_billing_zip", label: "{company.zip}" },
+		],
+		customerBillingAddressTemplate: [
+			{ name: "customer_name", label: "{customer.name}" },
+			{ name: "customer_address", label: "{customer.address}" },
+			{ name: "customer_phone", label: "{customer.phone}" },
+			{ name: "customer_billing_city", label: "{customer.city}" },
+			{ name: "customer_billing_state", label: "{customer.state}" },
+			{ name: "customer_billing_country", label: "{customer.country}" },
+			{ name: "customer_billing_zip", label: "{customer.zip}" },
+		],
+		customerShippingAddressTemplate: [
+			{ name: "customer_name", label: "{customer.name}" },
+			{ name: "customer_address", label: "{customer.address}" },
+			{ name: "customer_phone", label: "{customer.phone}" },
+			{ name: "customer_billing_city", label: "{customer.city}" },
+			{ name: "customer_billing_state", label: "{customer.state}" },
+			{ name: "customer_billing_country", label: "{customer.country}" },
+			{ name: "customer_billing_zip", label: "{customer.zip}" },
+		],
+	};
 }
