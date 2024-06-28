@@ -55,6 +55,7 @@ export const RichTextEditor: React.FC<
 				setContents={field.value}
 				placeholder="Please type here..."
 				onChange={(data) => form.setFieldValue(field.name, data, true)}
+				onBlur={field.onBlur}
 				{...props}
 			/>
 			<FormHelperText>{errorText}</FormHelperText>

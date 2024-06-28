@@ -257,7 +257,7 @@ const Invoices = () => {
 													<CustomFormControlLabel
 														value={item.id}
 														control={<Radio />}
-														label={<img src={item.view} width="100%" alt={item.name} />}
+														label={<img src={item.path ?? ""} width="100%" alt={item.name} />}
 													/>
 												</Grid>
 											))}
