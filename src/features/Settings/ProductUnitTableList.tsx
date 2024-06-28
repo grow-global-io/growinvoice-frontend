@@ -1,5 +1,4 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Box, Typography } from "@mui/material";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
