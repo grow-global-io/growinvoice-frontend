@@ -17,6 +17,7 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-g
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import Loader from "@shared/components/Loader";
 import { snakeToReadableText } from "@shared/formatter";
+import { useAuthStore } from "@store/auth";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -41,6 +42,7 @@ function CustomToolbar() {
 }
 
 const DashboardOpenAi = () => {
+	const { user } = useAuthStore();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [rows, setRows] = useState<any[]>([]);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -80,9 +82,11 @@ const DashboardOpenAi = () => {
 		try {
 			setRows([]);
 			setColumns([]);
-			const a = await openAiApi.mutateAsync({ data: values });
-			console.log(a);
-			// setRows(a as OpenaiControllerCreate200Item[]);
+			const a = await openAiApi.mutateAsync({
+				data: {
+					prompt: values.prompt + ". i want data related to my account: user_id=" + user?.id,
+				},
+			});
 			const keysData = a as OpenaiControllerCreate200Item[];
 			const keys = Object.keys(keysData[0]);
 
@@ -172,14 +176,14 @@ const DashboardOpenAi = () => {
 			) : (
 				<Grid item xs={12} textAlign={"right"}>
 					<FormControl sx={{ m: 1, width: 300 }}>
-						<InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+						<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
 						<Select
 							labelId="demo-multiple-checkbox-label"
 							id="demo-multiple-checkbox"
 							multiple
-							value={columns?.map((item) => item?.field)}
+							value={columns?.filter((item) => item?.show)?.map((item) => item?.field)}
 							onChange={handleChange}
-							input={<OutlinedInput label="Tag" />}
+							input={<OutlinedInput label="Column Filter" />}
 							renderValue={(selected) => selected.join(", ")}
 							MenuProps={MenuProps}
 						>
