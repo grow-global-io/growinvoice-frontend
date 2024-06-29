@@ -15,9 +15,15 @@ import type { InvoiceTemplate } from "./invoiceTemplate";
 import type { User } from "./user";
 
 export interface InvoiceWithAllDataDto {
+	/** @nullable */
+	companyAddress?: string | null;
 	createdAt: string;
 	customer?: Customer;
 	customer_id: string;
+	/** @nullable */
+	customerBillingAddress?: string | null;
+	/** @nullable */
+	customerShippingAddress?: string | null;
 	date: string;
 	/** @nullable */
 	discountPercentage: number | null;

@@ -24,6 +24,7 @@ import ApiCredentialsPage from "@pages/ApiCredentialsPage";
 import InvoiceDetailPage from "@pages/InvoiceDetailPage";
 import QuotationDetailPage from "@pages/QuotationDetailPage";
 import InvoiceTemplatePage from "@pages/InvoiceTemplatePage";
+import DashboardPage from "@pages/DashboardPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -155,5 +156,9 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/invoice/invoicetemplate/:id",
 		Component: InvoiceTemplatePage,
+	},
+	{
+		path: "/dashboard",
+		Component: DashboardPage,
 	},
 ];
