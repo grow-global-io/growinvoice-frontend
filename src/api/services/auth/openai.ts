@@ -14,6 +14,8 @@ import type {
 import type {
 	OpenaiControllerCreate200Item,
 	OpenaiControllerCreate201,
+	OpenaiControllerCreateGraph200Item,
+	OpenaiControllerCreateGraph201,
 	RequestBodyOpenaiDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
@@ -81,6 +83,71 @@ export const useOpenaiControllerCreate = <
 	TContext
 > => {
 	const mutationOptions = getOpenaiControllerCreateMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const openaiControllerCreateGraph = (requestBodyOpenaiDto: RequestBodyOpenaiDto) => {
+	return authInstance<OpenaiControllerCreateGraph200Item[] | OpenaiControllerCreateGraph201>({
+		url: `/api/openai/graph`,
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		data: requestBodyOpenaiDto,
+	});
+};
+
+export const getOpenaiControllerCreateGraphMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof openaiControllerCreateGraph>>,
+		TError,
+		{ data: RequestBodyOpenaiDto },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof openaiControllerCreateGraph>>,
+	TError,
+	{ data: RequestBodyOpenaiDto },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof openaiControllerCreateGraph>>,
+		{ data: RequestBodyOpenaiDto }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return openaiControllerCreateGraph(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type OpenaiControllerCreateGraphMutationResult = NonNullable<
+	Awaited<ReturnType<typeof openaiControllerCreateGraph>>
+>;
+export type OpenaiControllerCreateGraphMutationBody = RequestBodyOpenaiDto;
+export type OpenaiControllerCreateGraphMutationError = ErrorType<unknown>;
+
+export const useOpenaiControllerCreateGraph = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof openaiControllerCreateGraph>>,
+		TError,
+		{ data: RequestBodyOpenaiDto },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof openaiControllerCreateGraph>>,
+	TError,
+	{ data: RequestBodyOpenaiDto },
+	TContext
+> => {
+	const mutationOptions = getOpenaiControllerCreateGraphMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };
