@@ -7,8 +7,8 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { ListDto } from "../../models/ListDto";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useDebounceValue } from "usehooks-ts";
+import { http } from "@shared/axios";
 
 const transformData = (data: unknown) => {
 	if (!Array.isArray(data)) {
@@ -39,30 +39,39 @@ function AsyncAutoCompleteField({
 	optionUrl,
 	onValueChange,
 	isRequired,
+	isGpt,
 	...props
 }: FieldProps & {
 	label: string;
 	required?: boolean;
 	optionUrl: string;
 	isRequired?: boolean;
+	isGpt?: boolean;
 	onValueChange?: (value: ListDto) => void;
 }) {
+	const [typedData, setTypedData] = React.useState<ListDto>();
 	const [debouncedInputValue, setSearchTerm] = useDebounceValue("", 500);
 
 	const { data = [], isLoading } = useQuery({
 		queryKey: ["autocomplete", optionUrl, debouncedInputValue],
 		queryFn: async () => {
+			if (
+				typedData?.value?.toString()?.toLowerCase() ===
+					debouncedInputValue?.toString()?.toLowerCase() &&
+				isGpt
+			) {
+				return [];
+			}
 			const params = new URLSearchParams();
 			if (debouncedInputValue) {
 				params.append("q", debouncedInputValue);
 			}
-			const { data } = await axios.get(optionUrl, { params });
+			const { data } = await http.get(optionUrl, { params });
 			return transformData(data);
 		},
 	});
 
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
-
 	return (
 		<FormControl fullWidth error={!!errorText}>
 			{field.name && (
@@ -81,7 +90,13 @@ function AsyncAutoCompleteField({
 				{...props}
 				id={field.name}
 				filterOptions={(x) => x}
-				options={data}
+				filterSelectedOptions
+				options={
+					[
+						...(typedData && isGpt ? [typedData] : []),
+						...data.filter((option) => !typedData || option.value !== typedData.value),
+					] as ListDto[]
+				}
 				loading={isLoading}
 				onChange={(_, value) => {
 					if (value === null) {
@@ -95,6 +110,10 @@ function AsyncAutoCompleteField({
 				onInputChange={(_, value, reason) => {
 					if (reason === "input") {
 						setSearchTerm(value);
+						if (isGpt) {
+							setTypedData({ label: value, value });
+							form.setFieldValue(field.name, value);
+						}
 					} else if (reason === "clear") {
 						setSearchTerm("");
 					}
@@ -116,7 +135,7 @@ function AsyncAutoCompleteField({
 						{...params}
 					/>
 				)}
-				value={data.find((option) => option.value === field.value) ?? null}
+				value={data.find((option) => option.value === field.value) ?? field.value ?? null}
 			/>
 		</FormControl>
 	);
@@ -131,8 +150,19 @@ export const AutocompleteField: React.FC<
 		onValueChange?: (value: ListDto) => void;
 		multiple?: boolean;
 		isRequired?: boolean;
+		isGpt?: boolean;
 	}
-> = ({ field, form, label, options = [], optionUrl, onValueChange, isRequired, ...props }) => {
+> = ({
+	field,
+	form,
+	label,
+	options = [],
+	optionUrl,
+	onValueChange,
+	isRequired,
+	isGpt,
+	...props
+}) => {
 	const errorText = getIn(form.touched, field.name) && getIn(form.errors, field.name);
 
 	if (optionUrl) {
@@ -145,6 +175,7 @@ export const AutocompleteField: React.FC<
 				optionUrl={optionUrl}
 				onValueChange={onValueChange}
 				isRequired={isRequired}
+				isGpt={isGpt}
 				{...props}
 			/>
 		);

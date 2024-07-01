@@ -100,4 +100,9 @@ export class Constants {
 			{ name: "customer_billing_zip", label: "{customer.zip}" },
 		],
 	};
+
+	static readonly dashboardType = {
+		Table: "Table",
+		Graph: "Graph",
+	};
 }

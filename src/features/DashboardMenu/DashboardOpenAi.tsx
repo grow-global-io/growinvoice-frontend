@@ -1,4 +1,7 @@
-import { OpenaiControllerCreate200Item, RequestBodyOpenaiDto } from "@api/services/models";
+import {
+	OpenaiControllerCreate200Item,
+	OpenaiControllerCreateGraph201,
+} from "@api/services/models";
 import { useOpenaiControllerCreate, useOpenaiControllerCreateGraph } from "@api/services/openai";
 import {
 	Box,
@@ -14,13 +17,17 @@ import {
 	SelectChangeEvent,
 } from "@mui/material";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
-import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import Loader from "@shared/components/Loader";
 import { snakeToReadableText } from "@shared/formatter";
 import { Field, Form, Formik, FormikProps } from "formik";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as Yup from "yup";
 import BarChart from "./DashboardChart";
+import { Constants } from "@shared/constants";
+import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
+import { stringToListDto } from "@shared/models/ListDto";
+import NoDataFound from "@shared/components/NoDataFound";
+import { AlertService } from "@shared/services/AlertService";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -42,11 +49,15 @@ function CustomToolbar() {
 }
 
 const DashboardOpenAi = () => {
+	const initialValues = {
+		prompt: "",
+		type: "Table",
+	};
+	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [rows, setRows] = useState<any[]>([]);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [columns, setColumns] = useState<any[]>([]);
-	const [type, setType] = useState("Card");
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleChange = (event: SelectChangeEvent<any[]>) => {
 		const {
@@ -70,31 +81,26 @@ const DashboardOpenAi = () => {
 
 	const validationSchema = Yup.object().shape({
 		prompt: Yup.string().required("Prompt is required"),
+		type: Yup.string().required("Type is required"),
 	});
 	const openAiApi = useOpenaiControllerCreate();
-	const openAiApiGraph = useOpenaiControllerCreateGraph();
+	const openAiApiGraph = useOpenaiControllerCreateGraph({
+		mutation: {
+			onError: (error) => {
+				AlertService.instance?.errorMessage("Error occured! please try again after 30secs");
+				console.error(error);
+			},
+		},
+	});
 
-	const initialValues: RequestBodyOpenaiDto = {
-		prompt: "",
-	};
+	const [graphData, setGraphData] = useState<OpenaiControllerCreateGraph201>();
 
-	const [graphData, setGraphData] = useState({ options: null, series: null });
-
-	const handleChangeType = (
-		event: SelectChangeEvent,
-		formik: FormikProps<RequestBodyOpenaiDto>,
-	) => {
-		setType(event.target.value as string);
+	const handleSubmit = async (values: typeof initialValues) => {
 		setRows([]);
 		setColumns([]);
-		setGraphData({ options: null, series: null });
-		formik.setFieldValue("prompt", "");
-	};
-	const handleSubmit = async (values: RequestBodyOpenaiDto) => {
-		if (type == "Card") {
+		setGraphData(undefined);
+		if (values?.type === "Table") {
 			try {
-				setRows([]);
-				setColumns([]);
 				const a = await openAiApi.mutateAsync({
 					data: {
 						prompt: values.prompt,
@@ -146,13 +152,11 @@ const DashboardOpenAi = () => {
 						prompt: values.prompt,
 					},
 				});
-				setGraphData({
-					options: response?.options,
-					series: response?.series,
-				});
+				const keysData = response as OpenaiControllerCreateGraph201;
+				setGraphData(keysData);
 			} catch (error) {
 				console.error(error);
-				setGraphData({ options: null, series: null });
+				setGraphData(undefined);
 			}
 		}
 	};
@@ -164,10 +168,10 @@ const DashboardOpenAi = () => {
 					initialValues={initialValues}
 					onSubmit={handleSubmit}
 					validationSchema={validationSchema}
+					innerRef={formikRef}
 				>
-					{(formik) => {
-						const buttonText =
-							rows.length > 0 || (graphData.options && graphData.series) ? "Regenerate" : "Submit";
+					{() => {
+						const buttonText = openAiApi?.isPending ? "Loading..." : "Submit";
 						return (
 							<Form>
 								<Box
@@ -183,27 +187,22 @@ const DashboardOpenAi = () => {
 									}}
 								>
 									<Box sx={{ minWidth: 120 }}>
-										<FormControl fullWidth>
-											{/* <InputLabel id="demo-simple-select-label">Type</InputLabel> */}
-											<Select
-												// labelId="demo-simple-select-label"
-												id="demo-simple-select"
-												value={type}
-												// label="Type"
-												onChange={(event) => handleChangeType(event, formik)}
-											>
-												<MenuItem value={"Card"}>Card</MenuItem>
-												<MenuItem value={"Graph"}>Graph</MenuItem>
-											</Select>
-										</FormControl>
+										<Field
+											name="type"
+											label="Type"
+											component={AutocompleteField}
+											options={Object.keys(Constants.dashboardType).map(stringToListDto)}
+										/>
 									</Box>
 									<Field
 										name="prompt"
 										label="Prompt"
 										placeholder="Prompt"
-										component={TextFormField}
+										component={AutocompleteField}
+										optionUrl="/api/openai/suggestions"
+										isGpt
 									/>
-									<Button type="submit" variant="contained">
+									<Button type="submit" variant="contained" disabled={openAiApi?.isPending}>
 										{buttonText}
 									</Button>
 								</Box>
@@ -212,17 +211,27 @@ const DashboardOpenAi = () => {
 					}}
 				</Formik>
 			</Grid>
-
-			{openAiApi?.isPending || openAiApi.isPending ? (
+			{openAiApi?.isPending && (
 				<Grid item xs={12}>
 					<Loader />
 				</Grid>
-			) : rows.length === 0 && (!graphData.options || !graphData.series) ? (
-				<Grid item xs={12} textAlign={"center"}>
-					Prompt to get data
+			)}
+
+			{openAiApi?.isError && rows?.length === 0 && graphData === undefined && (
+				<Grid item xs={12}>
+					<NoDataFound message="Error occured! please try again after 30secs" />
 				</Grid>
-			) : type === "Card" ? (
-				<Grid item xs={12} textAlign={"right"}>
+			)}
+
+			{formikRef?.current?.values?.type === "" ||
+				(formikRef?.current?.values?.prompt === "" && (
+					<Grid item xs={12} textAlign={"center"}>
+						Prompt to get data
+					</Grid>
+				))}
+
+			{rows?.length > 0 && (
+				<Grid item xs={12}>
 					<FormControl sx={{ m: 1, width: 300 }}>
 						<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
 						<Select
@@ -254,9 +263,11 @@ const DashboardOpenAi = () => {
 						slots={{ toolbar: CustomToolbar }}
 					/>
 				</Grid>
-			) : (
+			)}
+
+			{formikRef?.current?.values?.type === Constants.dashboardType.Graph && graphData && (
 				<Grid item sm={12}>
-					<BarChart options={graphData?.options} series={graphData?.series} />
+					<BarChart graphData={graphData} />
 				</Grid>
 			)}
 		</Grid>
