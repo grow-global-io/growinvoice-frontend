@@ -11,7 +11,7 @@ import type { Quotation } from "./quotation";
 export interface QuotationProducts {
 	createdAt: string;
 	/** @nullable */
-	hsnCode: number | null;
+	hsnCode: string | null;
 	id: string;
 	isExist: boolean;
 	price: number;

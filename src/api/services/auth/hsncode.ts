@@ -16,7 +16,7 @@ import type {
 	UseQueryResult,
 } from "@tanstack/react-query";
 import type {
-	CreateHSNCodeDto,
+	CreateHSNCodeTaxDto,
 	HSNCodeDto,
 	HsncodeControllerCreate201,
 	HsncodeControllerUpdate201,
@@ -26,12 +26,12 @@ import type {
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
-export const hsncodeControllerCreate = (createHSNCodeDto: CreateHSNCodeDto) => {
+export const hsncodeControllerCreate = (createHSNCodeTaxDto: CreateHSNCodeTaxDto) => {
 	return authInstance<HsncodeControllerCreate201>({
 		url: `/api/hsncode`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		data: createHSNCodeDto,
+		data: createHSNCodeTaxDto,
 	});
 };
 
@@ -42,20 +42,20 @@ export const getHsncodeControllerCreateMutationOptions = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof hsncodeControllerCreate>>,
 		TError,
-		{ data: CreateHSNCodeDto },
+		{ data: CreateHSNCodeTaxDto },
 		TContext
 	>;
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof hsncodeControllerCreate>>,
 	TError,
-	{ data: CreateHSNCodeDto },
+	{ data: CreateHSNCodeTaxDto },
 	TContext
 > => {
 	const { mutation: mutationOptions } = options ?? {};
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof hsncodeControllerCreate>>,
-		{ data: CreateHSNCodeDto }
+		{ data: CreateHSNCodeTaxDto }
 	> = (props) => {
 		const { data } = props ?? {};
 
@@ -68,7 +68,7 @@ export const getHsncodeControllerCreateMutationOptions = <
 export type HsncodeControllerCreateMutationResult = NonNullable<
 	Awaited<ReturnType<typeof hsncodeControllerCreate>>
 >;
-export type HsncodeControllerCreateMutationBody = CreateHSNCodeDto;
+export type HsncodeControllerCreateMutationBody = CreateHSNCodeTaxDto;
 export type HsncodeControllerCreateMutationError = ErrorType<unknown>;
 
 export const useHsncodeControllerCreate = <
@@ -78,13 +78,13 @@ export const useHsncodeControllerCreate = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof hsncodeControllerCreate>>,
 		TError,
-		{ data: CreateHSNCodeDto },
+		{ data: CreateHSNCodeTaxDto },
 		TContext
 	>;
 }): UseMutationResult<
 	Awaited<ReturnType<typeof hsncodeControllerCreate>>,
 	TError,
-	{ data: CreateHSNCodeDto },
+	{ data: CreateHSNCodeTaxDto },
 	TContext
 > => {
 	const mutationOptions = getHsncodeControllerCreateMutationOptions(options);

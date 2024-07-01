@@ -49,7 +49,7 @@ const Invoices = () => {
 	const deleteInvoiceSetting = useInvoicesettingsControllerRemove();
 
 	const initialValues: CreateInvoiceSettingsDto = {
-		invoicePrefix: invoiceSettings?.data?.invoicePrefix ?? "",
+		invoicePrefix: invoiceSettings?.data?.invoicePrefix ?? "INV",
 		autoArchive: invoiceSettings?.data?.autoArchive ?? false,
 		footer: invoiceSettings?.data?.footer ?? "",
 		dueNotice: invoiceSettings?.data?.dueNotice ?? 0,

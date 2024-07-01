@@ -13,7 +13,7 @@ import CreateTaxes from "../ProductTaxes/CreateTaxes";
 import { useCreateProductStore } from "@store/createProductStore";
 import { CreateProductDto, CreateProductDtoType } from "@api/services/models";
 import { useAuthStore } from "@store/auth";
-import { stringToListDto } from "@shared/models/ListDto";
+import { ListDto, stringToListDto } from "@shared/models/ListDto";
 import {
 	getProductControllerFindAllQueryKey,
 	useProductControllerCreate,
@@ -141,7 +141,7 @@ const ProductForm = () => {
 
 			<Box sx={{ mb: 2, mt: 2 }}>
 				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
-					{() => (
+					{({ setFieldValue }) => (
 						<Form>
 							<Grid container>
 								<Grid item xs={12}>
@@ -203,10 +203,16 @@ const ProductForm = () => {
 										loading={hsnCodes.isLoading || hsnCodes.isFetching}
 										options={hsnCodes?.data?.map((item) => {
 											return {
-												label: `${item?.code} - ${item.tax}`,
+												label: `${item?.code}`,
 												value: item?.id,
 											};
 										})}
+										onValueChange={(value: ListDto) => {
+											if (value) {
+												const hsnCode = hsnCodes?.data?.find((item) => item.id === value.value);
+												setFieldValue("tax_id", hsnCode?.tax_id);
+											}
+										}}
 									/>
 									{!openHsnCodeForm && (
 										<Button variant="text" onClick={handleHsnCodeOpen} startIcon={<AddIcon />}>
@@ -228,6 +234,14 @@ const ProductForm = () => {
 												value: item?.id,
 											};
 										})}
+										onValueChange={(value: ListDto) => {
+											if (value === undefined) {
+												setFieldValue("hsnCode_id", "");
+											} else if (value) {
+												const taxCode = hsnCodes?.data?.find((item) => item.tax_id === value.value);
+												setFieldValue("hsnCode_id", taxCode?.id ?? "");
+											}
+										}}
 									/>
 									{!openTaxesForm && (
 										<Button variant="text" onClick={handleTaxesOpen} startIcon={<AddIcon />}>

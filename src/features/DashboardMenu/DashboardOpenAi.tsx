@@ -17,7 +17,6 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-g
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import Loader from "@shared/components/Loader";
 import { snakeToReadableText } from "@shared/formatter";
-import { useAuthStore } from "@store/auth";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -42,7 +41,6 @@ function CustomToolbar() {
 }
 
 const DashboardOpenAi = () => {
-	const { user } = useAuthStore();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [rows, setRows] = useState<any[]>([]);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,7 +82,7 @@ const DashboardOpenAi = () => {
 			setColumns([]);
 			const a = await openAiApi.mutateAsync({
 				data: {
-					prompt: values.prompt + ". i want data related to my account: user_id=" + user?.id,
+					prompt: values.prompt,
 				},
 			});
 			const keysData = a as OpenaiControllerCreate200Item[];
@@ -122,6 +120,8 @@ const DashboardOpenAi = () => {
 
 			setColumns(columns.filter((item) => item !== null));
 		} catch (error) {
+			setRows([]);
+			setColumns([]);
 			console.error(error);
 		}
 	};

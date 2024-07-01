@@ -7,10 +7,10 @@
  */
 import type { Customer } from "./customer";
 import type { InvoicePaidStatus } from "./invoicePaidStatus";
-import type { PaymentDetails } from "./paymentDetails";
+import type { InvoicePayment } from "./invoicePayment";
 import type { InvoiceRecurring } from "./invoiceRecurring";
 import type { InvoiceTax } from "./invoiceTax";
-import type { InvoiceTemplate } from "./invoiceTemplate";
+import type { InvoiceTemplateProperty } from "./invoiceTemplateProperty";
 import type { User } from "./user";
 
 export interface Invoice {
@@ -28,8 +28,10 @@ export interface Invoice {
 	/** @nullable */
 	notes: string | null;
 	paid_status: InvoicePaidStatus;
-	payment?: PaymentDetails;
-	paymentId: string;
+	/** @nullable */
+	payment?: InvoicePayment;
+	/** @nullable */
+	paymentId: string | null;
 	/** @nullable */
 	recurring: InvoiceRecurring;
 	/** @nullable */
@@ -39,8 +41,10 @@ export interface Invoice {
 	tax?: InvoiceTax;
 	/** @nullable */
 	tax_id: string | null;
-	template?: InvoiceTemplate;
-	template_id: string;
+	/** @nullable */
+	template?: InvoiceTemplateProperty;
+	/** @nullable */
+	template_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

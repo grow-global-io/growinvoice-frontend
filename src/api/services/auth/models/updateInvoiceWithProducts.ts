@@ -18,7 +18,8 @@ export interface UpdateInvoiceWithProducts {
 	is_recurring?: boolean;
 	/** @nullable */
 	notes?: string | null;
-	paymentId?: string;
+	/** @nullable */
+	paymentId?: string | null;
 	product: OmitCreateInvoiceProductsDto[];
 	/** @nullable */
 	recurring?: UpdateInvoiceWithProductsRecurring;
@@ -27,7 +28,8 @@ export interface UpdateInvoiceWithProducts {
 	sub_total?: number;
 	/** @nullable */
 	tax_id?: string | null;
-	template_id?: string;
+	/** @nullable */
+	template_id?: string | null;
 	total?: number;
 	user_id?: string;
 }

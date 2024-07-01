@@ -8,7 +8,7 @@
 
 export interface OmitCreateQuotationProductsDto {
 	/** @nullable */
-	hsnCode?: number | null;
+	hsnCode?: string | null;
 	price: number;
 	product_id: string;
 	quantity: number;

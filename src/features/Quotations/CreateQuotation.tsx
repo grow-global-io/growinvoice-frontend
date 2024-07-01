@@ -24,7 +24,9 @@ import moment from "moment";
 import Loader from "@shared/components/Loader";
 import SubtotalFooter from "@shared/components/SubtotalFooter";
 import { formatToIso } from "@shared/formatter";
+import { useNavigate } from "react-router-dom";
 const CreateQuotation = ({ id }: { id?: string }) => {
+	const navigate = useNavigate();
 	const [errorText, setErrorText] = useState<string | undefined>(undefined);
 	const queryClient = useQueryClient();
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
@@ -48,6 +50,8 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					product_id: product.product_id,
 					quantity: product.quantity,
 					price: product.price,
+					tax: product.tax,
+					hsnCode: product.hsnCode,
 					total: product.total,
 					isNew: true,
 					isEditPosible: false,
@@ -123,13 +127,15 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 			});
 		}
 
-		queryClient.refetchQueries({
+		await queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindOneQueryKey(id ?? ""),
 		});
-		queryClient.refetchQueries({
+		await queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindAllQueryKey(),
 		});
 		actions.resetForm();
+		setRows([]);
+		navigate("/quotation/quotationlist");
 	};
 
 	const options = [

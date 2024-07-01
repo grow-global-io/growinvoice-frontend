@@ -28,6 +28,7 @@ import CreateProduct from "@features/Products/CreateProduct";
 import { FormikProps } from "formik";
 import { OmitCreateInvoiceProductsDto } from "@api/services/models";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
+import { useHsncodeControllerFindAll } from "@api/services/hsncode";
 
 export default function FullFeaturedCrudGrid({
 	rows,
@@ -44,9 +45,10 @@ export default function FullFeaturedCrudGrid({
 	formik: FormikProps<any>;
 }) {
 	const taxCodes = useTaxcodeControllerFindAll();
+	const hsnCodes = useHsncodeControllerFindAll();
 
 	const handleTotal = (rows: GridRowsProp) => {
-		const subtotal = rows.reduce((acc, row) => acc + ((row.price * row.quantity) as number), 0);
+		const subtotal = rows.reduce((acc, row) => acc + (row.total as number), 0);
 		formik?.setFieldValue(
 			"product",
 			rows.map((row) => {
@@ -55,6 +57,8 @@ export default function FullFeaturedCrudGrid({
 					quantity: Number(row.quantity),
 					price: row.price,
 					total: row.total,
+					tax: row.tax,
+					hsnCode: row.hsnCode,
 				} as OmitCreateInvoiceProductsDto;
 			}),
 		);
@@ -117,10 +121,10 @@ export default function FullFeaturedCrudGrid({
 			[id]: { mode: GridRowModes.View, ignoreModifications: true },
 		});
 
-		const editedRow = rows.find((row) => row.id === id);
-		if (editedRow!.isNew) {
-			setRows(rows.filter((row) => row.id !== id));
-		}
+		// const editedRow = rows.find((row) => row.id === id);
+		// if (editedRow!.isNew) {
+		// 	setRows(rows.filter((row) => row.id !== id));
+		// }
 	};
 
 	const processRowUpdate = (newRow: GridRowModel) => {
@@ -150,6 +154,8 @@ export default function FullFeaturedCrudGrid({
 				quantity: "",
 				price: "",
 				total: "",
+				tax: "",
+				hsnCode: "",
 				isNew: true,
 				isEditPosible: false,
 				isEditble: true,
@@ -173,6 +179,13 @@ export default function FullFeaturedCrudGrid({
 				const handleProductChange = (event: SelectChangeEvent) => {
 					const value = event.target.value as string;
 					const selectedProduct = productList?.data?.find((product) => product.id === value);
+					const taxPercentage =
+						taxCodes?.data?.find((tax) => tax.id === selectedProduct?.tax_id)?.percentage ?? 0;
+					const hsnCode =
+						hsnCodes?.data?.find((hsn) => hsn.id === selectedProduct?.hsnCode_id)?.code ?? "";
+					const total = selectedProduct?.price
+						? selectedProduct?.price + (selectedProduct?.price * taxPercentage) / 100
+						: 0;
 					const updatedRows = rows.map((row) => {
 						if (row.id === params.id) {
 							return {
@@ -180,7 +193,9 @@ export default function FullFeaturedCrudGrid({
 								product_id: value,
 								quantity: 1,
 								price: selectedProduct?.price,
-								total: selectedProduct?.price,
+								total: total,
+								tax: taxPercentage,
+								hsnCode: hsnCode,
 							};
 						}
 						return row;
@@ -195,12 +210,23 @@ export default function FullFeaturedCrudGrid({
 					params.api.setEditCellValue({
 						id: params.id,
 						field: "price",
-						value: productList?.data?.find((product) => product.id === value)?.price,
+						value: selectedProduct?.price,
+					});
+					params.api.setEditCellValue({
+						id: params.id,
+						field: "tax",
+						value: taxPercentage,
 					});
 					params.api.setEditCellValue({
 						id: params.id,
 						field: "total",
-						value: productList?.data?.find((product) => product.id === value)?.price,
+						value: total,
+					});
+
+					params.api.setEditCellValue({
+						id: params.id,
+						field: "hsnCode",
+						value: hsnCode,
 					});
 				};
 				return (
@@ -242,11 +268,23 @@ export default function FullFeaturedCrudGrid({
 					const price = productList?.data?.find(
 						(product) => product.id === params.row.product_id,
 					)?.price;
+					const taxPercentage = params.row.tax;
 					params.api.setEditCellValue({
 						id: params.id,
 						field: "total",
-						value: price ? Number(value) * price : 0,
+						value: price ? price * value + (price * value * taxPercentage) / 100 : 0,
 					});
+					const updatedRows = rows.map((row) => {
+						if (row.id === params.id) {
+							return {
+								...row,
+								quantity: value,
+								total: price ? price * value + (price * value * taxPercentage) / 100 : 0,
+							};
+						}
+						return row;
+					});
+					setRows(updatedRows);
 				};
 				return (
 					<GridTextField
@@ -280,6 +318,30 @@ export default function FullFeaturedCrudGrid({
 						)}
 					</Typography>
 				);
+			},
+		},
+		{
+			field: "tax",
+			headerName: "Tax",
+			flex: 0.8,
+			editable: true,
+			renderEditCell: (params) => (
+				<GridTextField params={params} label="Tax" type="number" disabled={true} />
+			),
+			renderCell: (params) => {
+				return <Typography>{params.value}%</Typography>;
+			},
+		},
+		{
+			field: "hsnCode",
+			headerName: "HSN Code",
+			flex: 0.8,
+			editable: true,
+			renderEditCell: (params) => (
+				<GridTextField params={params} label="HSN Code" disabled={true} />
+			),
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
 			},
 		},
 		{

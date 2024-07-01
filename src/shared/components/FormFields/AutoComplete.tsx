@@ -172,6 +172,7 @@ export const AutocompleteField: React.FC<
 				onChange={(_, value) => {
 					if (value === null) {
 						form.setFieldValue(field.name, "");
+						onValueChange?.(undefined as unknown as ListDto);
 					}
 					if (value) {
 						if (Array.isArray(value)) {

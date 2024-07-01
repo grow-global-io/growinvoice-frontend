@@ -95,6 +95,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					quantity: product?.quantity,
 					price: product?.price,
 					total: product?.total,
+					tax: product?.tax,
+					hsnCode: product?.hsnCode,
 					isNew: true,
 					isEditPosible: false,
 					isEditble: true,

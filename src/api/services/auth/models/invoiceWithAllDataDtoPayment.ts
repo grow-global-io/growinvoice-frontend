@@ -5,9 +5,9 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { PaymentDetails } from "./paymentDetails";
 
-export interface UpdateHSNCodeDto {
-	code?: string;
-	tax_id?: string;
-	user_id?: string;
-}
+/**
+ * @nullable
+ */
+export type InvoiceWithAllDataDtoPayment = PaymentDetails | null;

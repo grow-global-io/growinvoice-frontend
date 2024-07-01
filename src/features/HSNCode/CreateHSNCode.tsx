@@ -2,7 +2,7 @@ import {
 	getHsncodeControllerFindAllQueryKey,
 	useHsncodeControllerCreate,
 } from "@api/services/hsncode";
-import { CreateHSNCodeDto } from "@api/services/models";
+import { CreateHSNCodeTaxDto } from "@api/services/models";
 import { Box, Button } from "@mui/material";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { useAuthStore } from "@store/auth";
@@ -10,6 +10,7 @@ import { Formik, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useQueryClient } from "@tanstack/react-query";
 import { RegexExp } from "@shared/regex";
+import { getTaxcodeControllerFindAllQueryKey } from "@api/services/tax-code";
 
 const style = {
 	bgcolor: "custom.lightBlue",
@@ -22,8 +23,8 @@ const CreateHSNCode = ({ handleClose }: { handleClose?: () => void }) => {
 	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const createHSNCode = useHsncodeControllerCreate();
-	const validationSchema: Yup.Schema<CreateHSNCodeDto> = Yup.object().shape({
-		code: Yup.string()
+	const validationSchema: Yup.Schema<CreateHSNCodeTaxDto> = Yup.object().shape({
+		hsn_code: Yup.string()
 			.required("HSN Code is required")
 			.matches(RegexExp?.numberRegex, "Invalid HSN Code"),
 		tax: Yup.number()
@@ -33,24 +34,30 @@ const CreateHSNCode = ({ handleClose }: { handleClose?: () => void }) => {
 		user_id: Yup.string().required("User id is required"),
 	});
 
-	const initialValues: CreateHSNCodeDto = {
-		code: "",
+	const initialValues: CreateHSNCodeTaxDto = {
+		hsn_code: "",
 		tax: 0,
 		user_id: user?.id ?? "",
 	};
 
 	const handleSubmit = async (
-		values: CreateHSNCodeDto,
-		action: FormikHelpers<CreateHSNCodeDto>,
+		values: CreateHSNCodeTaxDto,
+		action: FormikHelpers<CreateHSNCodeTaxDto>,
 	) => {
 		action.setSubmitting(true);
 		await createHSNCode.mutateAsync({
-			data: values,
+			data: {
+				...values,
+				hsn_code: values.hsn_code.toString(),
+			},
 		});
 		action.resetForm();
 		if (handleClose) handleClose();
 		queryClient.invalidateQueries({
 			queryKey: getHsncodeControllerFindAllQueryKey(),
+		});
+		queryClient.invalidateQueries({
+			queryKey: getTaxcodeControllerFindAllQueryKey(),
 		});
 		action.setSubmitting(false);
 	};
@@ -65,7 +72,7 @@ const CreateHSNCode = ({ handleClose }: { handleClose?: () => void }) => {
 				{({ handleSubmit }) => {
 					return (
 						<>
-							<Field component={TextFormField} name="code" label="HSN Code" type="number" />
+							<Field component={TextFormField} name="hsn_code" label="HSN Code" type="number" />
 							<Field
 								component={TextFormField}
 								type="number"

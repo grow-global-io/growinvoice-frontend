@@ -5,9 +5,9 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { InvoiceTemplate } from "./invoiceTemplate";
 
-export interface CreateHSNCodeDto {
-	code: string;
-	tax: number;
-	user_id: string;
-}
+/**
+ * @nullable
+ */
+export type InvoiceWithAllDataDtoTemplate = InvoiceTemplate | null;

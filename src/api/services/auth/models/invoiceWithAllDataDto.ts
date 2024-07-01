@@ -7,11 +7,11 @@
  */
 import type { Customer } from "./customer";
 import type { InvoiceWithAllDataDtoPaidStatus } from "./invoiceWithAllDataDtoPaidStatus";
-import type { PaymentDetails } from "./paymentDetails";
+import type { InvoiceWithAllDataDtoPayment } from "./invoiceWithAllDataDtoPayment";
 import type { InvoiceProducts } from "./invoiceProducts";
 import type { InvoiceWithAllDataDtoRecurring } from "./invoiceWithAllDataDtoRecurring";
 import type { InvoiceWithAllDataDtoTax } from "./invoiceWithAllDataDtoTax";
-import type { InvoiceTemplate } from "./invoiceTemplate";
+import type { InvoiceWithAllDataDtoTemplate } from "./invoiceWithAllDataDtoTemplate";
 import type { User } from "./user";
 
 export interface InvoiceWithAllDataDto {
@@ -35,8 +35,10 @@ export interface InvoiceWithAllDataDto {
 	/** @nullable */
 	notes: string | null;
 	paid_status: InvoiceWithAllDataDtoPaidStatus;
-	payment?: PaymentDetails;
-	paymentId: string;
+	/** @nullable */
+	payment?: InvoiceWithAllDataDtoPayment;
+	/** @nullable */
+	paymentId: string | null;
 	product?: InvoiceProducts[];
 	/** @nullable */
 	recurring: InvoiceWithAllDataDtoRecurring;
@@ -47,8 +49,10 @@ export interface InvoiceWithAllDataDto {
 	tax?: InvoiceWithAllDataDtoTax;
 	/** @nullable */
 	tax_id: string | null;
-	template?: InvoiceTemplate;
-	template_id: string;
+	/** @nullable */
+	template?: InvoiceWithAllDataDtoTemplate;
+	/** @nullable */
+	template_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

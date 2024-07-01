@@ -6,13 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface HSNCodeDto {
-	code: string;
-	createdAt: string;
-	id: string;
-	isExist: boolean;
-	tax_id: string;
-	/** @nullable */
-	updatedAt: string | null;
+export interface CreateHSNCodeTaxDto {
+	hsn_code: string;
+	tax: number;
 	user_id: string;
 }

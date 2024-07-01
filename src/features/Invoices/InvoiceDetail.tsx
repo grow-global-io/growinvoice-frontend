@@ -58,6 +58,8 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
 		query: {
 			enabled: invoiceId !== undefined,
+			gcTime: 0,
+			staleTime: 0,
 		},
 	});
 

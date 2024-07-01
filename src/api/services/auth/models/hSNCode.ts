@@ -5,6 +5,7 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { Tax } from "./tax";
 import type { User } from "./user";
 
 export interface HSNCode {
@@ -12,7 +13,8 @@ export interface HSNCode {
 	createdAt: string;
 	id: string;
 	isExist: boolean;
-	tax: number;
+	tax?: Tax;
+	tax_id: string;
 	/** @nullable */
 	updatedAt: string | null;
 	user?: User;

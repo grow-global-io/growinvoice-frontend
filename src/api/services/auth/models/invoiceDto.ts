@@ -22,7 +22,8 @@ export interface InvoiceDto {
 	/** @nullable */
 	notes: string | null;
 	paid_status: InvoiceDtoPaidStatus;
-	paymentId: string;
+	/** @nullable */
+	paymentId: string | null;
 	/** @nullable */
 	recurring: InvoiceDtoRecurring;
 	/** @nullable */
@@ -30,7 +31,8 @@ export interface InvoiceDto {
 	sub_total: number;
 	/** @nullable */
 	tax_id: string | null;
-	template_id: string;
+	/** @nullable */
+	template_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;
