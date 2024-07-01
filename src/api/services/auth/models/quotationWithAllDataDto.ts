@@ -8,6 +8,7 @@
 import type { Customer } from "./customer";
 import type { QuotationProducts } from "./quotationProducts";
 import type { QuotationWithAllDataDtoTax } from "./quotationWithAllDataDtoTax";
+import type { QuotationWithAllDataDtoTemplate } from "./quotationWithAllDataDtoTemplate";
 import type { User } from "./user";
 
 export interface QuotationWithAllDataDto {
@@ -33,6 +34,10 @@ export interface QuotationWithAllDataDto {
 	tax?: QuotationWithAllDataDtoTax;
 	/** @nullable */
 	tax_id: string | null;
+	/** @nullable */
+	template?: QuotationWithAllDataDtoTemplate;
+	/** @nullable */
+	template_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

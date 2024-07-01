@@ -25,6 +25,8 @@ export interface QuotationDto {
 	sub_total: number;
 	/** @nullable */
 	tax_id: string | null;
+	/** @nullable */
+	template_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;
