@@ -24,6 +24,8 @@ export interface CreateQuotationWithProducts {
 	sub_total: number;
 	/** @nullable */
 	tax_id?: string | null;
+	/** @nullable */
+	template_id?: string | null;
 	total: number;
 	user_id: string;
 }

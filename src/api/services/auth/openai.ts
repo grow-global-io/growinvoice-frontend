@@ -5,17 +5,22 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
 	MutationFunction,
+	QueryFunction,
+	QueryKey,
 	UseMutationOptions,
 	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult,
 } from "@tanstack/react-query";
 import type {
 	OpenaiControllerCreate200Item,
 	OpenaiControllerCreate201,
 	OpenaiControllerCreateGraph200Item,
 	OpenaiControllerCreateGraph201,
+	OpenaiControllerSuggestionsParams,
 	RequestBodyOpenaiDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
@@ -150,4 +155,67 @@ export const useOpenaiControllerCreateGraph = <
 	const mutationOptions = getOpenaiControllerCreateGraphMutationOptions(options);
 
 	return useMutation(mutationOptions);
+};
+export const openaiControllerSuggestions = (
+	params?: OpenaiControllerSuggestionsParams,
+	signal?: AbortSignal,
+) => {
+	return authInstance<void>({ url: `/api/openai/suggestions`, method: "GET", params, signal });
+};
+
+export const getOpenaiControllerSuggestionsQueryKey = (
+	params?: OpenaiControllerSuggestionsParams,
+) => {
+	return [`/api/openai/suggestions`, ...(params ? [params] : [])] as const;
+};
+
+export const getOpenaiControllerSuggestionsQueryOptions = <
+	TData = Awaited<ReturnType<typeof openaiControllerSuggestions>>,
+	TError = ErrorType<unknown>,
+>(
+	params?: OpenaiControllerSuggestionsParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof openaiControllerSuggestions>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getOpenaiControllerSuggestionsQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof openaiControllerSuggestions>>> = ({
+		signal,
+	}) => openaiControllerSuggestions(params, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof openaiControllerSuggestions>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type OpenaiControllerSuggestionsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof openaiControllerSuggestions>>
+>;
+export type OpenaiControllerSuggestionsQueryError = ErrorType<unknown>;
+
+export const useOpenaiControllerSuggestions = <
+	TData = Awaited<ReturnType<typeof openaiControllerSuggestions>>,
+	TError = ErrorType<unknown>,
+>(
+	params?: OpenaiControllerSuggestionsParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof openaiControllerSuggestions>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getOpenaiControllerSuggestionsQueryOptions(params, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
 };

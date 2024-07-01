@@ -7,6 +7,7 @@
  */
 import type { Customer } from "./customer";
 import type { QuotationTax } from "./quotationTax";
+import type { QuotationTemplateProperty } from "./quotationTemplateProperty";
 import type { User } from "./user";
 
 export interface Quotation {
@@ -31,6 +32,10 @@ export interface Quotation {
 	tax?: QuotationTax;
 	/** @nullable */
 	tax_id: string | null;
+	/** @nullable */
+	template?: QuotationTemplateProperty;
+	/** @nullable */
+	template_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

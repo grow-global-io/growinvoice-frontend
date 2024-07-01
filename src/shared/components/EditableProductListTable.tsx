@@ -57,8 +57,8 @@ export default function FullFeaturedCrudGrid({
 					quantity: Number(row.quantity),
 					price: row.price,
 					total: row.total,
-					tax: row.tax,
-					hsnCode: row.hsnCode,
+					tax_id: row.tax_id,
+					hsnCode_id: row.hsnCode_id,
 				} as OmitCreateInvoiceProductsDto;
 			}),
 		);
@@ -120,11 +120,6 @@ export default function FullFeaturedCrudGrid({
 			...rowModesModel,
 			[id]: { mode: GridRowModes.View, ignoreModifications: true },
 		});
-
-		// const editedRow = rows.find((row) => row.id === id);
-		// if (editedRow!.isNew) {
-		// 	setRows(rows.filter((row) => row.id !== id));
-		// }
 	};
 
 	const processRowUpdate = (newRow: GridRowModel) => {
@@ -154,8 +149,8 @@ export default function FullFeaturedCrudGrid({
 				quantity: "",
 				price: "",
 				total: "",
-				tax: "",
-				hsnCode: "",
+				hsnCode_id: "",
+				tax_id: "",
 				isNew: true,
 				isEditPosible: false,
 				isEditble: true,
@@ -181,8 +176,6 @@ export default function FullFeaturedCrudGrid({
 					const selectedProduct = productList?.data?.find((product) => product.id === value);
 					const taxPercentage =
 						taxCodes?.data?.find((tax) => tax.id === selectedProduct?.tax_id)?.percentage ?? 0;
-					const hsnCode =
-						hsnCodes?.data?.find((hsn) => hsn.id === selectedProduct?.hsnCode_id)?.code ?? "";
 					const total = selectedProduct?.price
 						? selectedProduct?.price + (selectedProduct?.price * taxPercentage) / 100
 						: 0;
@@ -194,8 +187,8 @@ export default function FullFeaturedCrudGrid({
 								quantity: 1,
 								price: selectedProduct?.price,
 								total: total,
-								tax: taxPercentage,
-								hsnCode: hsnCode,
+								tax_id: selectedProduct?.tax_id,
+								hsnCode_id: selectedProduct?.hsnCode_id,
 							};
 						}
 						return row;
@@ -214,8 +207,8 @@ export default function FullFeaturedCrudGrid({
 					});
 					params.api.setEditCellValue({
 						id: params.id,
-						field: "tax",
-						value: taxPercentage,
+						field: "tax_id",
+						value: selectedProduct?.tax_id,
 					});
 					params.api.setEditCellValue({
 						id: params.id,
@@ -225,8 +218,8 @@ export default function FullFeaturedCrudGrid({
 
 					params.api.setEditCellValue({
 						id: params.id,
-						field: "hsnCode",
-						value: hsnCode,
+						field: "hsnCode_id",
+						value: selectedProduct?.hsnCode_id,
 					});
 				};
 				return (
@@ -268,7 +261,8 @@ export default function FullFeaturedCrudGrid({
 					const price = productList?.data?.find(
 						(product) => product.id === params.row.product_id,
 					)?.price;
-					const taxPercentage = params.row.tax;
+					const taxPercentage =
+						taxCodes?.data?.find((item) => item.id === params.row.tax_id)?.percentage ?? 0;
 					params.api.setEditCellValue({
 						id: params.id,
 						field: "total",
@@ -321,27 +315,39 @@ export default function FullFeaturedCrudGrid({
 			},
 		},
 		{
-			field: "tax",
+			field: "tax_id",
 			headerName: "Tax",
 			flex: 0.8,
 			editable: true,
 			renderEditCell: (params) => (
-				<GridTextField params={params} label="Tax" type="number" disabled={true} />
+				<GridTextField
+					params={params}
+					label="Tax"
+					value={taxCodes?.data?.find((tax) => tax.id === params.row.tax_id)?.percentage}
+					disabled={true}
+				/>
 			),
 			renderCell: (params) => {
-				return <Typography>{params.value}%</Typography>;
+				const tax = taxCodes?.data?.find((tax) => tax.id === params.value);
+				return <Typography>{tax?.percentage} %</Typography>;
 			},
 		},
 		{
-			field: "hsnCode",
+			field: "hsnCode_id",
 			headerName: "HSN Code",
 			flex: 0.8,
 			editable: true,
 			renderEditCell: (params) => (
-				<GridTextField params={params} label="HSN Code" disabled={true} />
+				<GridTextField
+					params={params}
+					label="HSN Code"
+					value={hsnCodes?.data?.find((hsnCode) => hsnCode.id === params.row.hsnCode_id)?.code}
+					disabled={true}
+				/>
 			),
 			renderCell: (params) => {
-				return <Typography>{params.value}</Typography>;
+				const hsnCode = hsnCodes?.data?.find((hsnCode) => hsnCode.id === params.value);
+				return <Typography>{hsnCode?.code}</Typography>;
 			},
 		},
 		{
