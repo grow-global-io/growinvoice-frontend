@@ -7,7 +7,7 @@ const BarChart = ({ graphData }: { graphData: OpenaiControllerCreateGraph201 }) 
 			<ReactApexChart
 				options={graphData?.options ?? {}}
 				series={graphData?.series ?? { data: [] }}
-				type="bar"
+				type={graphData?.options?.chart?.type ?? "bar"}
 				height={350}
 			/>
 		</div>
