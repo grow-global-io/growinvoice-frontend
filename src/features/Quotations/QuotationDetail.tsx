@@ -7,9 +7,7 @@ import {
 	MoreVertOutlined,
 	FileDownloadOutlined,
 	EmailOutlined,
-	WhatsApp,
 	CreateOutlined,
-	PaymentsOutlined,
 	ShareOutlined,
 	DeleteOutline,
 	PaidOutlined,
@@ -21,15 +19,14 @@ import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
 import { useMailControllerSendMail } from "@api/services/mail";
-import {
-	useInvoiceControllerInvoicePublicFindOne,
-	useInvoiceControllerTest,
-} from "@api/services/invoice";
 import { usePdfExport } from "@shared/hooks/usePdfExport";
 import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useQuotationControllerFindOne, useQuotationControllerTest } from "@api/services/quotation";
+import {
+	useQuotationControllerQuotationPublicFindOne,
+	useQuotationControllerTest,
+} from "@api/services/quotation";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -69,7 +66,7 @@ const QuotationDetail = ({
 		},
 	});
 
-	const getInvoiceData = useQuotationControllerFindOne(quotationId ?? "", {
+	const getInvoiceData = useQuotationControllerQuotationPublicFindOne(quotationId ?? "", {
 		query: {
 			enabled: quotationId !== undefined,
 		},

@@ -25,6 +25,8 @@ export interface CreateInvoiceWithProducts {
 	recurring?: CreateInvoiceWithProductsRecurring;
 	/** @nullable */
 	reference_number?: string | null;
+	/** @nullable */
+	status?: string | null;
 	sub_total: number;
 	/** @nullable */
 	tax_id?: string | null;

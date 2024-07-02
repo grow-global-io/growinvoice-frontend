@@ -218,7 +218,9 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
-														{quotationSettings?.data?.quotationPrefix ?? Constants?.quotationDefaultPrefix} -
+														{quotationSettings?.data?.quotationPrefix ??
+															Constants?.quotationDefaultPrefix}{" "}
+														-
 													</InputAdornment>
 												),
 											}}

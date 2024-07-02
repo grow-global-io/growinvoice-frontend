@@ -18,9 +18,20 @@ import type {
 import type {
 	CreateQuotationWithProducts,
 	Quotation,
+	QuotationControllerConvertToInvoice200,
+	QuotationControllerConvertToInvoiceParams,
 	QuotationControllerCreate201,
+	QuotationControllerInvoiceSentToMail200,
+	QuotationControllerInvoiceSentToMailParams,
+	QuotationControllerMarkedAsAccepted200,
+	QuotationControllerMarkedAsAcceptedParams,
+	QuotationControllerMarkedAsMailed200,
+	QuotationControllerMarkedAsMailedParams,
+	QuotationControllerMarkedAsRejected200,
+	QuotationControllerMarkedAsRejectedParams,
 	QuotationControllerUpdate200,
 	QuotationWithAllDataDto,
+	SendMailDto,
 	SuccessResponseDto,
 	UpdateQuotationWithProducts,
 } from "./models";
@@ -395,4 +406,410 @@ export const useQuotationControllerTest = <
 	query.queryKey = queryOptions.queryKey;
 
 	return query;
+};
+
+export const quotationControllerQuotationPublicFindOne = (id: string, signal?: AbortSignal) => {
+	return authInstance<QuotationWithAllDataDto>({
+		url: `/api/quotation/quotationPublicFindOne/${id}`,
+		method: "GET",
+		signal,
+	});
+};
+
+export const getQuotationControllerQuotationPublicFindOneQueryKey = (id: string) => {
+	return [`/api/quotation/quotationPublicFindOne/${id}`] as const;
+};
+
+export const getQuotationControllerQuotationPublicFindOneQueryOptions = <
+	TData = Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>,
+				TError,
+				TData
+			>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getQuotationControllerQuotationPublicFindOneQueryKey(id);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>
+	> = ({ signal }) => quotationControllerQuotationPublicFindOne(id, signal);
+
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type QuotationControllerQuotationPublicFindOneQueryResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>
+>;
+export type QuotationControllerQuotationPublicFindOneQueryError = ErrorType<unknown>;
+
+export const useQuotationControllerQuotationPublicFindOne = <
+	TData = Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof quotationControllerQuotationPublicFindOne>>,
+				TError,
+				TData
+			>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getQuotationControllerQuotationPublicFindOneQueryOptions(id, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const quotationControllerInvoiceSentToMail = (
+	sendMailDto: SendMailDto,
+	params: QuotationControllerInvoiceSentToMailParams,
+) => {
+	return authInstance<QuotationControllerInvoiceSentToMail200 | void>({
+		url: `/api/quotation/quotationSentToMail`,
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		data: sendMailDto,
+		params,
+	});
+};
+
+export const getQuotationControllerInvoiceSentToMailMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerInvoiceSentToMail>>,
+		TError,
+		{ data: SendMailDto; params: QuotationControllerInvoiceSentToMailParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof quotationControllerInvoiceSentToMail>>,
+	TError,
+	{ data: SendMailDto; params: QuotationControllerInvoiceSentToMailParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof quotationControllerInvoiceSentToMail>>,
+		{ data: SendMailDto; params: QuotationControllerInvoiceSentToMailParams }
+	> = (props) => {
+		const { data, params } = props ?? {};
+
+		return quotationControllerInvoiceSentToMail(data, params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type QuotationControllerInvoiceSentToMailMutationResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerInvoiceSentToMail>>
+>;
+export type QuotationControllerInvoiceSentToMailMutationBody = SendMailDto;
+export type QuotationControllerInvoiceSentToMailMutationError = ErrorType<unknown>;
+
+export const useQuotationControllerInvoiceSentToMail = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerInvoiceSentToMail>>,
+		TError,
+		{ data: SendMailDto; params: QuotationControllerInvoiceSentToMailParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof quotationControllerInvoiceSentToMail>>,
+	TError,
+	{ data: SendMailDto; params: QuotationControllerInvoiceSentToMailParams },
+	TContext
+> => {
+	const mutationOptions = getQuotationControllerInvoiceSentToMailMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const quotationControllerMarkedAsRejected = (
+	params: QuotationControllerMarkedAsRejectedParams,
+) => {
+	return authInstance<QuotationControllerMarkedAsRejected200 | void>({
+		url: `/api/quotation/markedAsRejected`,
+		method: "POST",
+		params,
+	});
+};
+
+export const getQuotationControllerMarkedAsRejectedMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsRejected>>,
+		TError,
+		{ params: QuotationControllerMarkedAsRejectedParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsRejected>>,
+	TError,
+	{ params: QuotationControllerMarkedAsRejectedParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsRejected>>,
+		{ params: QuotationControllerMarkedAsRejectedParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return quotationControllerMarkedAsRejected(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type QuotationControllerMarkedAsRejectedMutationResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsRejected>>
+>;
+
+export type QuotationControllerMarkedAsRejectedMutationError = ErrorType<unknown>;
+
+export const useQuotationControllerMarkedAsRejected = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsRejected>>,
+		TError,
+		{ params: QuotationControllerMarkedAsRejectedParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsRejected>>,
+	TError,
+	{ params: QuotationControllerMarkedAsRejectedParams },
+	TContext
+> => {
+	const mutationOptions = getQuotationControllerMarkedAsRejectedMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const quotationControllerMarkedAsAccepted = (
+	params: QuotationControllerMarkedAsAcceptedParams,
+) => {
+	return authInstance<QuotationControllerMarkedAsAccepted200 | void>({
+		url: `/api/quotation/markedAsAccepted`,
+		method: "POST",
+		params,
+	});
+};
+
+export const getQuotationControllerMarkedAsAcceptedMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsAccepted>>,
+		TError,
+		{ params: QuotationControllerMarkedAsAcceptedParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsAccepted>>,
+	TError,
+	{ params: QuotationControllerMarkedAsAcceptedParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsAccepted>>,
+		{ params: QuotationControllerMarkedAsAcceptedParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return quotationControllerMarkedAsAccepted(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type QuotationControllerMarkedAsAcceptedMutationResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsAccepted>>
+>;
+
+export type QuotationControllerMarkedAsAcceptedMutationError = ErrorType<unknown>;
+
+export const useQuotationControllerMarkedAsAccepted = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsAccepted>>,
+		TError,
+		{ params: QuotationControllerMarkedAsAcceptedParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsAccepted>>,
+	TError,
+	{ params: QuotationControllerMarkedAsAcceptedParams },
+	TContext
+> => {
+	const mutationOptions = getQuotationControllerMarkedAsAcceptedMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const quotationControllerMarkedAsMailed = (
+	params: QuotationControllerMarkedAsMailedParams,
+) => {
+	return authInstance<QuotationControllerMarkedAsMailed200 | void>({
+		url: `/api/quotation/markedAsMailed`,
+		method: "POST",
+		params,
+	});
+};
+
+export const getQuotationControllerMarkedAsMailedMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsMailed>>,
+		TError,
+		{ params: QuotationControllerMarkedAsMailedParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsMailed>>,
+	TError,
+	{ params: QuotationControllerMarkedAsMailedParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsMailed>>,
+		{ params: QuotationControllerMarkedAsMailedParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return quotationControllerMarkedAsMailed(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type QuotationControllerMarkedAsMailedMutationResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsMailed>>
+>;
+
+export type QuotationControllerMarkedAsMailedMutationError = ErrorType<unknown>;
+
+export const useQuotationControllerMarkedAsMailed = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerMarkedAsMailed>>,
+		TError,
+		{ params: QuotationControllerMarkedAsMailedParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof quotationControllerMarkedAsMailed>>,
+	TError,
+	{ params: QuotationControllerMarkedAsMailedParams },
+	TContext
+> => {
+	const mutationOptions = getQuotationControllerMarkedAsMailedMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const quotationControllerConvertToInvoice = (
+	params: QuotationControllerConvertToInvoiceParams,
+) => {
+	return authInstance<QuotationControllerConvertToInvoice200 | void>({
+		url: `/api/quotation/convertToInvoice`,
+		method: "POST",
+		params,
+	});
+};
+
+export const getQuotationControllerConvertToInvoiceMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerConvertToInvoice>>,
+		TError,
+		{ params: QuotationControllerConvertToInvoiceParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof quotationControllerConvertToInvoice>>,
+	TError,
+	{ params: QuotationControllerConvertToInvoiceParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof quotationControllerConvertToInvoice>>,
+		{ params: QuotationControllerConvertToInvoiceParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return quotationControllerConvertToInvoice(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type QuotationControllerConvertToInvoiceMutationResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerConvertToInvoice>>
+>;
+
+export type QuotationControllerConvertToInvoiceMutationError = ErrorType<unknown>;
+
+export const useQuotationControllerConvertToInvoice = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerConvertToInvoice>>,
+		TError,
+		{ params: QuotationControllerConvertToInvoiceParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof quotationControllerConvertToInvoice>>,
+	TError,
+	{ params: QuotationControllerConvertToInvoiceParams },
+	TContext
+> => {
+	const mutationOptions = getQuotationControllerConvertToInvoiceMutationOptions(options);
+
+	return useMutation(mutationOptions);
 };

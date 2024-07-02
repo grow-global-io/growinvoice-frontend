@@ -44,6 +44,8 @@ export interface InvoiceWithAllDataDto {
 	recurring: InvoiceWithAllDataDtoRecurring;
 	/** @nullable */
 	reference_number: string | null;
+	/** @nullable */
+	status: string | null;
 	sub_total: number;
 	/** @nullable */
 	tax?: InvoiceWithAllDataDtoTax;

@@ -27,6 +27,8 @@ export interface Quotation {
 	quatation_number: string;
 	/** @nullable */
 	reference_number: string | null;
+	/** @nullable */
+	status: string | null;
 	sub_total: number;
 	/** @nullable */
 	tax?: QuotationTax;
