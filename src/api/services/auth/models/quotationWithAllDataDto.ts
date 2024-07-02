@@ -12,9 +12,15 @@ import type { QuotationWithAllDataDtoTemplate } from "./quotationWithAllDataDtoT
 import type { User } from "./user";
 
 export interface QuotationWithAllDataDto {
+	/** @nullable */
+	companyAddress?: string | null;
 	createdAt: string;
 	customer?: Customer;
 	customer_id: string;
+	/** @nullable */
+	customerBillingAddress?: string | null;
+	/** @nullable */
+	customerShippingAddress?: string | null;
 	date: string;
 	/** @nullable */
 	discountPercentage: number | null;

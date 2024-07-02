@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import { FileDownloadOutlined, ErrorOutline } from "@mui/icons-material";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useAuthStore } from "@store/auth";
-import { useInvoiceControllerFindOne } from "@api/services/invoice";
+import { useInvoiceControllerInvoicePublicFindOne } from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
 
 const InvoiceTemplateCard = ({
@@ -13,7 +13,7 @@ const InvoiceTemplateCard = ({
 	downloadfunc: () => void;
 }) => {
 	const { user } = useAuthStore();
-	const invoiceFindOne = useInvoiceControllerFindOne(invoiceId ?? "", {
+	const invoiceFindOne = useInvoiceControllerInvoicePublicFindOne(invoiceId ?? "", {
 		query: {
 			enabled: invoiceId !== undefined,
 		},

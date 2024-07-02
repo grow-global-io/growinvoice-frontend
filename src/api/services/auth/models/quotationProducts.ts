@@ -5,13 +5,17 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { QuotationProductsHsnCode } from "./quotationProductsHsnCode";
 import type { Product } from "./product";
 import type { Quotation } from "./quotation";
+import type { QuotationProductsTax } from "./quotationProductsTax";
 
 export interface QuotationProducts {
 	createdAt: string;
 	/** @nullable */
-	hsnCode: string | null;
+	hsnCode?: QuotationProductsHsnCode;
+	/** @nullable */
+	hsnCode_id: string | null;
 	id: string;
 	isExist: boolean;
 	price: number;
@@ -21,7 +25,9 @@ export interface QuotationProducts {
 	quotation?: Quotation;
 	quotation_id: string;
 	/** @nullable */
-	tax: number | null;
+	tax?: QuotationProductsTax;
+	/** @nullable */
+	tax_id: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

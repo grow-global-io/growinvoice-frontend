@@ -31,6 +31,10 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 			path: "/setting/invoices",
 		},
 		{
+			menuName: "Quotation",
+			path: "/setting/quotation",
+		},
+		{
 			menuName: "Products",
 			path: "/setting/productunit",
 		},

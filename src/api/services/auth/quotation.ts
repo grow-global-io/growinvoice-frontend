@@ -338,3 +338,61 @@ export const useQuotationControllerRemove = <
 
 	return useMutation(mutationOptions);
 };
+export const quotationControllerTest = (id: string, signal?: AbortSignal) => {
+	return authInstance<string>({ url: `/api/quotation/test/${id}`, method: "GET", signal });
+};
+
+export const getQuotationControllerTestQueryKey = (id: string) => {
+	return [`/api/quotation/test/${id}`] as const;
+};
+
+export const getQuotationControllerTestQueryOptions = <
+	TData = Awaited<ReturnType<typeof quotationControllerTest>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof quotationControllerTest>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getQuotationControllerTestQueryKey(id);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof quotationControllerTest>>> = ({
+		signal,
+	}) => quotationControllerTest(id, signal);
+
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof quotationControllerTest>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type QuotationControllerTestQueryResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerTest>>
+>;
+export type QuotationControllerTestQueryError = ErrorType<unknown>;
+
+export const useQuotationControllerTest = <
+	TData = Awaited<ReturnType<typeof quotationControllerTest>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof quotationControllerTest>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getQuotationControllerTestQueryOptions(id, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};

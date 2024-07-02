@@ -105,4 +105,8 @@ export class Constants {
 		Table: "Table",
 		Graph: "Graph",
 	};
+
+	static readonly invoiceDefaultPrefix = "INV";
+
+	static readonly quotationDefaultPrefix = "QUO";
 }

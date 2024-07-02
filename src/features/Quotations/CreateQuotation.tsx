@@ -25,6 +25,9 @@ import Loader from "@shared/components/Loader";
 import SubtotalFooter from "@shared/components/SubtotalFooter";
 import { formatToIso } from "@shared/formatter";
 import { useNavigate } from "react-router-dom";
+import { useQuotationtemplateControllerFindAll } from "@api/services/quotationtemplate";
+import { useQuotationsettingsControllerFindFirst } from "@api/services/quotationsettings";
+
 const CreateQuotation = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
 	const [errorText, setErrorText] = useState<string | undefined>(undefined);
@@ -34,6 +37,8 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 	const [rows, setRows] = useState<GridRowsProp>([]);
 	const { user } = useAuthStore();
 	const createQuotation = useQuotationControllerCreate();
+	const quotationTemplate = useQuotationtemplateControllerFindAll();
+	const quotationSettings = useQuotationsettingsControllerFindFirst();
 	const quotationFindOne = useQuotationControllerFindOne(id ?? "", {
 		query: {
 			enabled: id !== undefined,
@@ -50,8 +55,8 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					product_id: product.product_id,
 					quantity: product.quantity,
 					price: product.price,
-					tax: product.tax,
-					hsnCode: product.hsnCode,
+					tax_id: product.tax_id,
+					hsnCode_id: product.hsnCode_id,
 					total: product.total,
 					isNew: true,
 					isEditPosible: false,
@@ -74,6 +79,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		total: quotationFindOne?.data?.total ?? 0,
 		discountPercentage: quotationFindOne?.data?.discountPercentage ?? 0,
 		product: quotationFindOne?.data?.product ?? [],
+		template_id: quotationFindOne?.data?.template_id ?? "",
 	};
 
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
@@ -102,6 +108,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 				}),
 			)
 			.min(1, "At least one product is required"),
+		template_id: yup.string().required("Template is required"),
 	});
 
 	const handleSubmit = async (
@@ -138,13 +145,12 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		navigate("/quotation/quotationlist");
 	};
 
-	const options = [
-		{ value: "1", label: "Option 1" },
-		{ value: "2", label: "Option 2" },
-		{ value: "3", label: "Option 3" },
-	];
-
-	if (quotationFindOne.isLoading || quotationFindOne.isFetching || quotationFindOne?.isRefetching) {
+	if (
+		quotationFindOne.isLoading ||
+		quotationFindOne.isFetching ||
+		quotationFindOne?.isRefetching ||
+		quotationSettings.isLoading
+	) {
 		return <Loader />;
 	}
 
@@ -210,7 +216,11 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											component={TextFormField}
 											label="Quotation Number"
 											InputProps={{
-												startAdornment: <InputAdornment position="start">QTN -</InputAdornment>,
+												startAdornment: (
+													<InputAdornment position="start">
+														{quotationSettings?.data?.quotationPrefix ?? Constants?.quotationDefaultPrefix} -
+													</InputAdornment>
+												),
 											}}
 											isRequired={true}
 										/>
@@ -285,10 +295,14 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 									</Grid>
 									<Grid item xs={12} sm={3.5}>
 										<Field
-											name="quotation_template"
+											name="template_id"
 											label="Invoice Template"
 											component={AutocompleteField}
-											options={options}
+											options={quotationTemplate?.data?.map((template) => ({
+												value: template.id,
+												label: template.name,
+											}))}
+											loading={quotationTemplate.isLoading}
 											isRequired={true}
 										/>
 									</Grid>

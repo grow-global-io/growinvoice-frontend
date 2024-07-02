@@ -1,50 +1,138 @@
-import { Box, Typography } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import { useEffect, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import {
 	MoreVertOutlined,
 	FileDownloadOutlined,
 	EmailOutlined,
+	WhatsApp,
 	CreateOutlined,
+	PaymentsOutlined,
+	ShareOutlined,
+	DeleteOutline,
+	PaidOutlined,
+	SendOutlined,
 } from "@mui/icons-material";
+
+import { Box, Typography, useMediaQuery } from "@mui/material";
+import Loader from "@shared/components/Loader";
+import NoDataFound from "@shared/components/NoDataFound";
+import { useNavigate } from "react-router-dom";
+import { useMailControllerSendMail } from "@api/services/mail";
+import {
+	useInvoiceControllerInvoicePublicFindOne,
+	useInvoiceControllerTest,
+} from "@api/services/invoice";
+import { usePdfExport } from "@shared/hooks/usePdfExport";
+import DownloadIcon from "@mui/icons-material/Download";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useQuotationControllerFindOne, useQuotationControllerTest } from "@api/services/quotation";
+
 const styles = {
+	width: { xs: "100%", sm: "auto" },
 	py: 1,
 	px: 3,
 	color: "secondary.dark",
 	fontWeight: 500,
 	textTransform: "capitalize",
 	my: { xs: 1 },
+	borderColor: "custom.invDetailBtnBorder",
+	borderStyle: "solid",
+	borderWidth: { xs: "1px", lg: "0" },
+	display: "flex",
+	justifyContent: "flex-start",
+	bgcolor: "custom.transparentWhite",
 };
 
-const QuotationDetail = () => {
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const QuotationDetail = ({
+	quotationId,
+	IsPublic,
+}: {
+	quotationId: string;
+	IsPublic?: boolean;
+}) => {
+	const navigate = useNavigate();
+	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
+	const [menuIconAnchorEl, setMenuIconAnchorEl] = useState<null | HTMLElement>(null);
+	const iframeRef = useRef<HTMLIFrameElement | null>(null);
+	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
+	const isMobile = useMediaQuery("(max-width:800px)");
 
-	const [htmlContent, setHtmlContent] = useState<string>("");
+	const getHtmlText = useQuotationControllerTest(quotationId ?? "", {
+		query: {
+			enabled: quotationId !== undefined,
+			gcTime: 0,
+			staleTime: 0,
+		},
+	});
+
+	const getInvoiceData = useQuotationControllerFindOne(quotationId ?? "", {
+		query: {
+			enabled: quotationId !== undefined,
+		},
+	});
 
 	useEffect(() => {
-		fetch("./../../../public/quotationtemplate/Template_1.html")
-			.then((response) => response.text())
-			.then((data) => setHtmlContent(data));
+		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
+			const iframe = iframeRef.current;
+			iframe.srcdoc = getHtmlText?.data;
+		}
+	}, [getHtmlText.isSuccess]);
 
-		const loadCSS = (href: string) => {
-			const link = document.createElement("link");
-			link.rel = "stylesheet";
-			link.href = href;
-			document.head.appendChild(link);
-		};
-
-		loadCSS("./../../../public/quotationtemplate/style/style.css");
-	}, []);
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
+		setMoreAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = () => {
-		setAnchorEl(null);
+	const handleMoreClose = () => {
+		setMoreAnchorEl(null);
 	};
+
+	const handleMenuIconClick = (event: React.MouseEvent<HTMLElement>) => {
+		setMenuIconAnchorEl(event.currentTarget);
+	};
+
+	const handleMenuIconClose = () => {
+		setMenuIconAnchorEl(null);
+	};
+
+	const { mutateAsync: sendMail } = useMailControllerSendMail();
+	const invoiceLink = `${window.location.origin}/invoice/invoicetemplate/${quotationId}`;
+	const handleSendMail = async () => {
+		try {
+			const email = getInvoiceData?.data?.customer?.email ?? "";
+
+			const sendMailDto = {
+				email: email,
+				subject: "Invoice Details",
+				body: `
+                <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
+                <a href="${invoiceLink}" style="text-decoration: none;">
+                    <button style="
+                        display: inline-block;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        color: white;
+                        background-color: #007BFF;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">
+                        View Invoice
+                    </button>
+                </a>
+            `,
+			};
+
+			await sendMail({ data: sendMailDto });
+		} catch (error) {
+			console.error("Error generating PDF:", error);
+			alert("Failed to generate PDF");
+		}
+	};
+
 	const menuLists = [
 		{ name: "Share", func: () => console.log("Share") },
 		{ name: "Marked Paid", func: () => console.log("Marked Paid") },
@@ -55,12 +143,22 @@ const QuotationDetail = () => {
 		{
 			name: "Download",
 			icon: FileDownloadOutlined,
-			func: () => console.log("Download"),
+			func: () => {
+				if (isMobile) {
+					generatePdfFromHtml({
+						html: getHtmlText?.data ?? "",
+					});
+					return;
+				}
+				generatePdfFromRef({
+					iframeRef,
+				});
+			},
 		},
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
-			func: () => console.log("Send Mail"),
+			func: handleSendMail,
 		},
 		{
 			name: "Convert to invoice",
@@ -70,7 +168,9 @@ const QuotationDetail = () => {
 		{
 			name: "Edit",
 			icon: CreateOutlined,
-			func: () => console.log("Edit"),
+			func: () => {
+				navigate(`/quotation/createquotation/${quotationId}`);
+			},
 		},
 
 		{
@@ -79,36 +179,129 @@ const QuotationDetail = () => {
 			func: handleMoreClick,
 		},
 	];
+
+	const buttonListForSmallSrn = [
+		...buttonList,
+		{
+			name: "Share",
+			icon: ShareOutlined,
+			func: () => {
+				navigate(`/invoice/invoicetemplate/${quotationId}`);
+			},
+		},
+
+		{
+			name: "Marked Paid",
+			icon: PaidOutlined,
+			func: () => console.log("Marked Paid"),
+		},
+
+		{
+			name: "Mark Send",
+			icon: SendOutlined,
+			func: () => console.log("Mark Send"),
+		},
+
+		{
+			name: "Delete",
+			icon: DeleteOutline,
+			func: () => console.log("Delete"),
+		},
+	];
+
+	if (
+		getHtmlText.isLoading ||
+		getInvoiceData?.isLoading ||
+		getInvoiceData?.isRefetching ||
+		getInvoiceData?.isFetching ||
+		getHtmlText?.isRefetching ||
+		getHtmlText?.isFetching
+	) {
+		return <Loader />;
+	}
+	if (!getHtmlText?.data) return <NoDataFound message="No Data Found" />;
+
+	const openMore = Boolean(moreAnchorEl);
+	const openMenuIcon = Boolean(menuIconAnchorEl);
+
 	return (
-		<>
-			<Typography variant="h3" color={"secondary.dark"} mb={3}>
-				#INV-000001
-			</Typography>
-			<ButtonGroup
+		<Box
+			sx={{
+				p: IsPublic ? 2 : 0,
+			}}
+		>
+			<Box
 				sx={{
-					width: "100%",
-					bgcolor: "custom.transparentWhite",
 					display: "flex",
-					// flexDirection: { xs: "column", sm: "row" },
-					flexWrap: { xs: "wrap" },
-					my: 2,
+					justifyContent: "space-between",
+					alignItems: "center",
+					mb: 2,
 				}}
-				variant="text"
-				aria-label="Basic button group"
 			>
-				{buttonList.map((item, index) => (
-					<Button sx={styles} onClick={item.func} key={index}>
-						<item.icon sx={{ mr: 1 }} />
-						{item.name}
+				<Typography variant="h3" color={"secondary.dark"}>
+					#INV-{getInvoiceData?.data?.quatation_number}
+				</Typography>
+
+				{!IsPublic && (
+					<Box display={{ xs: "block", lg: "none" }}>
+						<IconButton
+							aria-label="more"
+							id="menu-icon-button"
+							aria-controls={openMenuIcon ? "menu-icon-menu" : undefined}
+							aria-expanded={openMenuIcon ? "true" : undefined}
+							aria-haspopup="true"
+							onClick={handleMenuIconClick}
+						>
+							<MenuIcon />
+						</IconButton>
+					</Box>
+				)}
+				{IsPublic && (
+					<Button
+						variant="contained"
+						startIcon={<DownloadIcon />}
+						onClick={() => {
+							if (isMobile) {
+								generatePdfFromHtml({
+									html: getHtmlText?.data ?? "",
+								});
+								return;
+							}
+							generatePdfFromRef({
+								iframeRef,
+							});
+						}}
+					>
+						Download
 					</Button>
-				))}
-			</ButtonGroup>
-			<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+				)}
+			</Box>
+			{!IsPublic && (
+				<ButtonGroup
+					sx={{
+						width: "100%",
+						bgcolor: { xs: "", md: "custom.transparentWhite" },
+						display: { xs: "none", lg: "flex" },
+						flexWrap: { xs: "wrap" },
+						my: 2,
+					}}
+					variant="text"
+					aria-label="Basic button group"
+				>
+					{buttonList.map((item, index) => (
+						<Button sx={styles} onClick={item.func} key={index}>
+							<item.icon sx={{ mr: 1 }} />
+							{item.name}
+						</Button>
+					))}
+				</ButtonGroup>
+			)}
+			<Menu anchorEl={moreAnchorEl} open={openMore} onClose={handleMoreClose}>
 				{menuLists.map((item, index) => (
 					<MenuItem
 						onClick={() => {
 							item.func();
-							handleClose();
+							handleMoreClose;
 						}}
 						sx={{ pr: 6 }}
 						key={index}
@@ -117,12 +310,65 @@ const QuotationDetail = () => {
 					</MenuItem>
 				))}
 			</Menu>
-			<Box display={"flex"} justifyContent={"center"} mt={4}>
-				<Box sx={{ width: { xs: "85vw", sm: "70vw" }, overflowX: { xs: "scroll", sm: "visible" } }}>
-					<div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-				</Box>
-			</Box>
-		</>
+
+			<Menu
+				id="menu-icon-menu"
+				MenuListProps={{
+					"aria-labelledby": "menu-icon-button",
+				}}
+				anchorEl={menuIconAnchorEl}
+				open={openMenuIcon}
+				onClose={handleMenuIconClose}
+				PaperProps={{
+					style: {
+						maxHeight: "100%",
+						width: "20ch",
+					},
+				}}
+			>
+				{buttonListForSmallSrn
+					.filter((item) => item.name !== "")
+					.map((item, index) => {
+						return (
+							<MenuItem onClick={item.func} key={index}>
+								<item.icon sx={{ mr: 1 }} />
+								{item.name}
+							</MenuItem>
+						);
+					})}
+			</Menu>
+
+			{!isMobile ? (
+				<Box
+					ref={iframeRef}
+					component="iframe"
+					sx={{
+						width: {
+							xs: "1100px",
+							md: "100%",
+						},
+						height: "80vh",
+						overflowX: { xs: "scroll", sm: "visible" },
+					}}
+				></Box>
+			) : (
+				<></>
+				// <InvoiceTemplateCard
+				// 	invoiceId={quotationId}
+				// 	downloadfunc={() => {
+				// 		if (isMobile) {
+				// 			generatePdfFromHtml({
+				// 				html: getHtmlText?.data ?? "",
+				// 			});
+				// 		} else {
+				// 			generatePdfFromRef({
+				// 				iframeRef,
+				// 			});
+				// 		}
+				// 	}}
+				// />
+			)}
+		</Box>
 	);
 };
 

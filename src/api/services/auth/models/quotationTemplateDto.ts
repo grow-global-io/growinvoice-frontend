@@ -6,13 +6,14 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface OmitCreateQuotationProductsDto {
+export interface QuotationTemplateDto {
+	createdAt: string;
+	id: string;
+	isExist: boolean;
+	name: string;
 	/** @nullable */
-	hsnCode_id?: string | null;
-	price: number;
-	product_id: string;
-	quantity: number;
+	path: string | null;
 	/** @nullable */
-	tax_id?: string | null;
-	total: number;
+	updatedAt: string | null;
+	view: string;
 }
