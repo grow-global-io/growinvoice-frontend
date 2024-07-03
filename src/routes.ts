@@ -26,6 +26,7 @@ import QuotationDetailPage from "@pages/QuotationDetailPage";
 import InvoiceTemplatePage from "@pages/InvoiceTemplatePage";
 import DashboardPage from "@pages/DashboardPage";
 import QuotationSettingsPage from "@pages/QuotationSettingsPage";
+import QuotationTemplatePage from "@pages/QuotationTemplatePage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -46,6 +47,10 @@ export const unProtectedRoutes: Route[] = [
 	{
 		path: "/invoice/invoicetemplate/:id",
 		Component: InvoiceTemplatePage,
+	},
+	{
+		path: "/quotation/quotationtemplate/:id",
+		Component: QuotationTemplatePage,
 	},
 ];
 
@@ -157,6 +162,10 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/invoice/invoicetemplate/:id",
 		Component: InvoiceTemplatePage,
+	},
+	{
+		path: "/quotation/quotationtemplate/:id",
+		Component: QuotationTemplatePage,
 	},
 	{
 		path: "/dashboard",

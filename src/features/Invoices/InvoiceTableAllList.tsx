@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Tooltip, Typography } from "@mui/material";
+import { Button, Tooltip, Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 import {
 	getInvoiceControllerFindAllQueryKey,
@@ -54,6 +54,21 @@ export default function InvoiceTableAllList() {
 			flex: 1,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "status",
+			headerName: "Status",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Button
+						variant="contained"
+						sx={{ bgcolor: "secondary.dark", textTransform: "capitalize" }}
+					>
+						{params.value}
+					</Button>
+				);
 			},
 		},
 		{

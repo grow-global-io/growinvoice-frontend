@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 import { useInvoiceControllerFindPaidInvoices } from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
@@ -41,6 +41,21 @@ const InvoiceTablePaidList = () => {
 			flex: 1,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "status",
+			headerName: "Status",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Button
+						variant="contained"
+						sx={{ bgcolor: "secondary.dark", textTransform: "capitalize" }}
+					>
+						{params.value}
+					</Button>
+				);
 			},
 		},
 		{
