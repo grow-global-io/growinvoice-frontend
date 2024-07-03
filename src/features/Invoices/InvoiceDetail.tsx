@@ -65,7 +65,6 @@ const styles = {
 };
 
 const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
-	console.log(invoiceId, "invoiceId");
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -74,9 +73,6 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const isMobile = useMediaQuery("(max-width:800px)");
-	const params = {
-		id: invoiceId,
-	};
 
 	const currentDate = moment().format("YYYY-MM-DD");
 	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
@@ -86,21 +82,19 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			staleTime: 0,
 		},
 	});
-	console.log(getHtmlText, "gethmlkj");
 
 	const getInvoiceData = useInvoiceControllerInvoicePublicFindOne(invoiceId ?? "", {
 		query: {
 			enabled: invoiceId !== undefined,
 		},
 	});
-	console.log(getInvoiceData, "invoicedata");
 
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText.isSuccess]);
+	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
@@ -136,6 +130,11 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
 
+		// queryClient?.refetchQueries({
+		// 	queryKey: getInvoiceControllerTestQueryKey(invoiceId ?? ""),
+		// });
+		getHtmlText.refetch();
+
 		handleMenuIconClose();
 		handleMoreClose();
 	};
@@ -164,20 +163,30 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 
 		await sendInvoiceToMail.mutateAsync({
 			data: sendMailDto,
-			params,
+			params: {
+				id: invoiceId,
+			},
 		});
 		refetchQuery();
 	};
 
 	const markedPaid = useInvoiceControllerMarkedAsPaid();
 	const handleMarkedPaid = async () => {
-		await markedPaid.mutateAsync({ params });
+		await markedPaid.mutateAsync({
+			params: {
+				id: invoiceId,
+			},
+		});
 		refetchQuery();
 	};
 
 	const markedMailedSent = useInvoiceControllerMarkedAsMailed();
 	const markedAsMailedSent = async () => {
-		await markedMailedSent.mutateAsync({ params });
+		await markedMailedSent.mutateAsync({
+			params: {
+				id: invoiceId,
+			},
+		});
 		refetchQuery();
 	};
 
