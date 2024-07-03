@@ -813,3 +813,70 @@ export const useQuotationControllerConvertToInvoice = <
 
 	return useMutation(mutationOptions);
 };
+export const quotationControllerQuotationPreviewFromBody = (
+	createQuotationWithProducts: CreateQuotationWithProducts,
+) => {
+	return authInstance<string | void>({
+		url: `/api/quotation/quotationPreviewFromBody`,
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		data: createQuotationWithProducts,
+	});
+};
+
+export const getQuotationControllerQuotationPreviewFromBodyMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerQuotationPreviewFromBody>>,
+		TError,
+		{ data: CreateQuotationWithProducts },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof quotationControllerQuotationPreviewFromBody>>,
+	TError,
+	{ data: CreateQuotationWithProducts },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof quotationControllerQuotationPreviewFromBody>>,
+		{ data: CreateQuotationWithProducts }
+	> = (props) => {
+		const { data } = props ?? {};
+
+		return quotationControllerQuotationPreviewFromBody(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type QuotationControllerQuotationPreviewFromBodyMutationResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerQuotationPreviewFromBody>>
+>;
+export type QuotationControllerQuotationPreviewFromBodyMutationBody = CreateQuotationWithProducts;
+export type QuotationControllerQuotationPreviewFromBodyMutationError = ErrorType<unknown>;
+
+export const useQuotationControllerQuotationPreviewFromBody = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof quotationControllerQuotationPreviewFromBody>>,
+		TError,
+		{ data: CreateQuotationWithProducts },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof quotationControllerQuotationPreviewFromBody>>,
+	TError,
+	{ data: CreateQuotationWithProducts },
+	TContext
+> => {
+	const mutationOptions = getQuotationControllerQuotationPreviewFromBodyMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};

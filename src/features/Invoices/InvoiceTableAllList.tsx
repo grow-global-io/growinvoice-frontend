@@ -2,39 +2,25 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Chip, Tooltip, Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
-import {
-	getInvoiceControllerFindAllQueryKey,
-	getInvoiceControllerFindDueInvoicesQueryKey,
-	getInvoiceControllerFindDueMonthQueryKey,
-	getInvoiceControllerFindDueTodayQueryKey,
-	getInvoiceControllerFindPaidInvoicesQueryKey,
-	getInvoiceControllerInvoiceCountQueryKey,
-	getInvoiceControllerOutstandingReceivableQueryKey,
-	getInvoiceControllerTotalDueQueryKey,
-	useInvoiceControllerFindAll,
-	useInvoiceControllerRemove,
-} from "@api/services/invoice";
+import { useInvoiceControllerFindAll } from "@api/services/invoice";
 import Loader from "@shared/components/Loader";
 import { Invoice } from "@api/services/models";
-import { currencyFormatter, formatDateToIso, parseDateStringToFormat } from "@shared/formatter";
+import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
 import EditIcon from "@mui/icons-material/Edit";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
-import { useNavigate } from "react-router-dom";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useQueryClient } from "@tanstack/react-query";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import moment from "moment";
+import { useInvoiceHook } from "./invoiceHooks/useInvoiceHook";
 
-export default function InvoiceTableAllList() {
-	const queryClient = useQueryClient();
-	const navigate = useNavigate();
+const InvoiceTableAllList = () => {
 	const { user } = useAuthStore();
 	const invoiceData = useInvoiceControllerFindAll();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
-	const removeInvoice = useInvoiceControllerRemove();
-	const currentDate = moment().format("YYYY-MM-DD");
+
+	const { handleDelete, handleEdit, handleView } = useInvoiceHook();
+
 	const columns: GridColDef<Invoice>[] = [
 		{
 			field: "invoice_number",
@@ -57,30 +43,6 @@ export default function InvoiceTableAllList() {
 			},
 		},
 		{
-			field: "status",
-			headerName: "Status",
-			flex: 1,
-			renderCell: (params) => {
-				return (
-					<Chip
-						label={params.value}
-						color={
-							params.value === "Draft"
-								? "warning"
-								: params.value === "Mailed to customer"
-									? "info"
-									: params.value === "Viewed"
-										? "warning"
-										: params.value === "Paid"
-											? "success"
-											: "error"
-						}
-						variant="filled"
-					/>
-				);
-			},
-		},
-		{
 			field: "due_date",
 			headerName: "Due Date",
 			flex: 1,
@@ -89,44 +51,31 @@ export default function InvoiceTableAllList() {
 			},
 		},
 		{
+			field: "status",
+			headerName: "Status",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Chip
+						label={params.value}
+						color={Constants?.invoiceStatusColorEnums[params.value] ?? "default"}
+						variant="filled"
+					/>
+				);
+			},
+		},
+
+		{
 			field: "paid_status",
 			headerName: "Paid Status",
 			flex: 1,
 			renderCell: (params) => {
 				return (
-					<Box sx={{ flex: 0.8 }}>
-						<Box
-							bgcolor={
-								params.row.paid_status == "Paid"
-									? "custom.lightGreenColor"
-									: "custom.lightOrangeColor"
-							}
-							px={3}
-							borderRadius={"40px"}
-							py={"10px"}
-							display={"flex"}
-							justifyContent={"center"}
-							alignItems={"center"}
-							flex={1}
-						>
-							<img
-								src={
-									params.row.paid_status == "Paid"
-										? Constants.customImages.GreenCheck
-										: Constants.customImages.UnpaidSymbol
-								}
-								width={"20px"}
-								alt={params.row.paid_status == "Paid" ? "greenCheck" : "UnpaidSymbol"}
-							/>
-							<Typography
-								variant="h6"
-								color={params.row.paid_status == "Paid" ? "custom.darkGreen" : "custom.darkOrange"}
-								ml={1}
-							>
-								{params.row.paid_status}
-							</Typography>
-						</Box>
-					</Box>
+					<Chip
+						label={params.value}
+						color={Constants?.invoiceStatusColorEnums[params.value] ?? "default"}
+						variant="filled"
+					/>
 				);
 			},
 		},
@@ -151,7 +100,7 @@ export default function InvoiceTableAllList() {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								navigate("/invoice/invoicedetails/" + params.row.id);
+								handleView(params.row.id);
 							}}
 							src={VisibilityIcon}
 						/>
@@ -161,7 +110,7 @@ export default function InvoiceTableAllList() {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								navigate(`/invoice/createinvoice/${params.row.id}`);
+								handleEdit(params.row.id);
 							}}
 							src={EditIcon}
 						/>
@@ -178,35 +127,7 @@ export default function InvoiceTableAllList() {
 									title: "Delete Invoice",
 									message: "Are you sure you want to delete this invoice?",
 									onConfirm: async () => {
-										await removeInvoice.mutateAsync({ id: params.row.id });
-										queryClient.refetchQueries({
-											queryKey: getInvoiceControllerFindAllQueryKey(),
-										});
-										queryClient.refetchQueries({
-											queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
-										});
-										queryClient.refetchQueries({
-											queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
-										});
-										await queryClient.refetchQueries({
-											queryKey: getInvoiceControllerInvoiceCountQueryKey(),
-										});
-										await queryClient.refetchQueries({
-											queryKey: getInvoiceControllerTotalDueQueryKey(),
-										});
-										await queryClient.refetchQueries({
-											queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
-										});
-										await queryClient.refetchQueries({
-											queryKey: getInvoiceControllerFindDueTodayQueryKey({
-												date: formatDateToIso(currentDate),
-											}),
-										});
-										await queryClient.refetchQueries({
-											queryKey: getInvoiceControllerFindDueMonthQueryKey({
-												date: formatDateToIso(currentDate),
-											}),
-										});
+										await handleDelete(params.row.id);
 									},
 									onCancel: () => {
 										cleanUp();
@@ -225,7 +146,9 @@ export default function InvoiceTableAllList() {
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={invoiceData?.data} columns={columns} />
+			<DataGrid autoHeight rows={invoiceData?.data ?? []} columns={columns} />
 		</Box>
 	);
-}
+};
+
+export default InvoiceTableAllList;

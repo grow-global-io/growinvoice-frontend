@@ -109,4 +109,16 @@ export class Constants {
 	static readonly invoiceDefaultPrefix = "INV";
 
 	static readonly quotationDefaultPrefix = "QUO";
+
+	static readonly invoiceStatusColorEnums: {
+		[key: string]: "default" | "info" | "warning" | "success" | "secondary" | "primary" | "error";
+	} = {
+		Draft: "error",
+		"Mailed to customer": "info",
+		Viewed: "warning",
+		Paid: "success",
+		Unpaid: "warning",
+		Accepted: "success",
+		Rejected: "error",
+	};
 }

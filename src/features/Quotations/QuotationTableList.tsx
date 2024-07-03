@@ -4,26 +4,21 @@ import { Chip, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import {
-	getQuotationControllerFindAllQueryKey,
-	useQuotationControllerFindAll,
-	useQuotationControllerRemove,
-} from "@api/services/quotation";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useQuotationControllerFindAll } from "@api/services/quotation";
 import { useAuthStore } from "@store/auth";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
 import { Quotation } from "@api/services/models";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import Loader from "@shared/components/Loader";
+import { useQuotationHook } from "./QuotationHooks/useQuotationHook";
+import { Constants } from "@shared/constants";
+
 const QuotationTableList = () => {
-	const queryClient = useQueryClient();
-	const navigate = useNavigate();
 	const { user } = useAuthStore();
 	const quationdata = useQuotationControllerFindAll();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
-	const removeQuotation = useQuotationControllerRemove();
+	const { handleDelete, handleEdit, handleView } = useQuotationHook();
 	const columns: GridColDef<Quotation>[] = [
 		{
 			field: "quatation_number",
@@ -61,17 +56,7 @@ const QuotationTableList = () => {
 				return (
 					<Chip
 						label={params.value}
-						color={
-							params.value === "Draft"
-								? "warning"
-								: params.value === "Mailed to customer"
-									? "info"
-									: params.value === "Viewed"
-										? "warning"
-										: params.value === "Paid"
-											? "success"
-											: "error"
-						}
+						color={Constants?.invoiceStatusColorEnums[params?.value] ?? "default"}
 						variant="filled"
 					/>
 				);
@@ -98,7 +83,7 @@ const QuotationTableList = () => {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								navigate(`/quotation/quotationdetails/${params.row.id}`);
+								handleView(params.row.id);
 							}}
 							src={VisibilityIcon}
 						/>
@@ -108,7 +93,7 @@ const QuotationTableList = () => {
 					<Box>
 						<CustomIconButton
 							onClick={() => {
-								navigate(`/quotation/createquotation/${params.row.id}`);
+								handleEdit(params.row.id);
 							}}
 							src={EditIcon}
 						/>
@@ -125,10 +110,7 @@ const QuotationTableList = () => {
 									title: "Delete Quotation",
 									message: "Are you sure you want to delete this quotation?",
 									onConfirm: async () => {
-										await removeQuotation.mutateAsync({ id: params.row.id });
-										queryClient.refetchQueries({
-											queryKey: getQuotationControllerFindAllQueryKey(),
-										});
+										await handleDelete(params.row.id);
 									},
 									onCancel: () => {
 										cleanUp();

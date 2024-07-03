@@ -22,20 +22,7 @@ import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
 import InvoiceTemplateCard from "./InvoiceTemplateCard";
 import {
-	getInvoiceControllerFindAllQueryKey,
-	getInvoiceControllerFindDueInvoicesQueryKey,
-	getInvoiceControllerFindDueMonthQueryKey,
-	getInvoiceControllerFindDueTodayQueryKey,
-	getInvoiceControllerFindPaidInvoicesQueryKey,
-	getInvoiceControllerInvoiceCountQueryKey,
-	getInvoiceControllerInvoicePublicFindOneQueryKey,
-	getInvoiceControllerOutstandingReceivableQueryKey,
-	getInvoiceControllerTotalDueQueryKey,
 	useInvoiceControllerInvoicePublicFindOne,
-	useInvoiceControllerInvoiceSentToMail,
-	useInvoiceControllerMarkedAsMailed,
-	useInvoiceControllerMarkedAsPaid,
-	useInvoiceControllerRemove,
 	useInvoiceControllerTest,
 } from "@api/services/invoice";
 import { usePdfExport } from "@shared/hooks/usePdfExport";
@@ -43,10 +30,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Constants } from "@shared/constants";
-import { useQueryClient } from "@tanstack/react-query";
-import { formatDateToIso } from "@shared/formatter";
-import moment from "moment";
 import { useConfirmDialogStore } from "@store/confirmDialog";
+import { useInvoiceHook } from "./invoiceHooks/useInvoiceHook";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -65,7 +50,6 @@ const styles = {
 };
 
 const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
-	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 	const [menuIconAnchorEl, setMenuIconAnchorEl] = useState<null | HTMLElement>(null);
@@ -73,8 +57,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const isMobile = useMediaQuery("(max-width:800px)");
+	const { handleDelete, handleShare, handlePaid, handleMailedSent, handleSendMail, handleEdit } =
+		useInvoiceHook();
 
-	const currentDate = moment().format("YYYY-MM-DD");
 	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
 		query: {
 			enabled: invoiceId !== undefined,
@@ -112,113 +97,18 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		setMenuIconAnchorEl(null);
 	};
 
-	const invoiceLink = `${window.location.origin}/invoice/invoicetemplate/${invoiceId}`;
-	const sendInvoiceToMail = useInvoiceControllerInvoiceSentToMail();
-
-	const refetchQuery = async () => {
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerInvoicePublicFindOneQueryKey(invoiceId ?? ""),
-		});
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindAllQueryKey(),
-		});
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
-		});
-
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
-		});
-
-		// queryClient?.refetchQueries({
-		// 	queryKey: getInvoiceControllerTestQueryKey(invoiceId ?? ""),
-		// });
-		getHtmlText.refetch();
-
+	const handleCloseAll = async () => {
 		handleMenuIconClose();
 		handleMoreClose();
 	};
-	const handleSendMail = async () => {
-		const sendMailDto = {
-			email: getInvoiceData?.data?.customer?.email ?? "",
-			subject: "Invoice Details",
-			body: `
-                <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
-                <a href="${invoiceLink}" style="text-decoration: none;">
-                    <button style="
-                        display: inline-block;
-                        padding: 10px 20px;
-                        font-size: 16px;
-                        color: white;
-                        background-color: #007BFF;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    ">
-                        View Invoice
-                    </button>
-                </a>
-            `,
-		};
-
-		await sendInvoiceToMail.mutateAsync({
-			data: sendMailDto,
-			params: {
-				id: invoiceId,
-			},
-		});
-		refetchQuery();
-	};
-
-	const markedPaid = useInvoiceControllerMarkedAsPaid();
-	const handleMarkedPaid = async () => {
-		await markedPaid.mutateAsync({
-			params: {
-				id: invoiceId,
-			},
-		});
-		refetchQuery();
-	};
-
-	const markedMailedSent = useInvoiceControllerMarkedAsMailed();
-	const markedAsMailedSent = async () => {
-		await markedMailedSent.mutateAsync({
-			params: {
-				id: invoiceId,
-			},
-		});
-		refetchQuery();
-	};
-
-	const removeInvoice = useInvoiceControllerRemove();
 
 	const handleInvoiceDelete = () => {
 		handleOpen({
 			title: "Delete Invoice",
 			message: "Are you sure you want to delete this invoice?",
 			onConfirm: async () => {
-				await removeInvoice.mutateAsync({ id: invoiceId });
-				refetchQuery();
-
-				await queryClient.refetchQueries({
-					queryKey: getInvoiceControllerInvoiceCountQueryKey(),
-				});
-				await queryClient.refetchQueries({
-					queryKey: getInvoiceControllerTotalDueQueryKey(),
-				});
-				await queryClient.refetchQueries({
-					queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
-				});
-				await queryClient.refetchQueries({
-					queryKey: getInvoiceControllerFindDueTodayQueryKey({
-						date: formatDateToIso(currentDate),
-					}),
-				});
-				await queryClient.refetchQueries({
-					queryKey: getInvoiceControllerFindDueMonthQueryKey({
-						date: formatDateToIso(currentDate),
-					}),
-				});
+				await handleDelete(invoiceId);
+				navigate("/invoice/invoicelist");
 			},
 			onCancel: () => {
 				cleanUp();
@@ -231,12 +121,31 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		{
 			name: "Share",
 			func: () => {
-				navigate(`/invoice/invoicetemplate/${invoiceId}`);
+				handleShare(invoiceId);
+				handleCloseAll();
 			},
 		},
-		{ name: "Marked Paid", func: handleMarkedPaid },
-		{ name: "Mark Send", func: markedAsMailedSent },
-		{ name: "Delete", func: handleInvoiceDelete },
+		{
+			name: "Marked Paid",
+			func: async () => {
+				await handlePaid(invoiceId);
+				handleCloseAll();
+			},
+		},
+		{
+			name: "Mark Send",
+			func: async () => {
+				await handleMailedSent(invoiceId);
+				handleCloseAll();
+			},
+		},
+		{
+			name: "Delete",
+			func: async () => {
+				handleInvoiceDelete();
+				handleCloseAll();
+			},
+		},
 	];
 	const buttonList = [
 		{
@@ -257,7 +166,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
-			func: handleSendMail,
+			func: async () => {
+				await handleSendMail(invoiceId, getInvoiceData?.data?.customer?.email ?? "");
+			},
 		},
 		{
 			name: "Send Whatsapp",
@@ -272,7 +183,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		{
 			name: "Edit",
 			icon: CreateOutlined,
-			func: () => navigate(`/invoice/createinvoice/${invoiceId}`),
+			func: () => handleEdit(invoiceId),
 		},
 		{
 			name: "Enter Payment",
@@ -299,19 +210,25 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		{
 			name: "Marked Paid",
 			icon: PaidOutlined,
-			func: handleMarkedPaid,
+			func: async () => {
+				await handlePaid(invoiceId);
+			},
 		},
 
 		{
 			name: "Mark Send",
 			icon: SendOutlined,
-			func: markedAsMailedSent,
+			func: async () => {
+				await handleMailedSent(invoiceId);
+			},
 		},
 
 		{
 			name: "Delete",
 			icon: DeleteOutline,
-			func: handleInvoiceDelete,
+			func: () => {
+				handleInvoiceDelete();
+			},
 		},
 	];
 	if (
@@ -343,17 +260,31 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					mb: 2,
 				}}
 			>
-				<Box display={"flex"} gap={2}>
+				<Box>
 					<Typography variant="h3" color={"secondary.dark"}>
 						#{Constants?.invoiceDefaultPrefix}-{getInvoiceData?.data?.invoice_number}
 					</Typography>
-					<Chip
-						label={getInvoiceData?.data?.status}
-						sx={{ bgcolor: "secondary.dark", color: "secondary.contrastText" }}
-					/>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 1,
+						}}
+					>
+						<Typography variant="body1" color={"secondary.dark"}>
+							Status:
+						</Typography>
+						<Chip
+							label={getInvoiceData?.data?.status}
+							variant="filled"
+							color={
+								Constants?.invoiceStatusColorEnums[getInvoiceData?.data?.status ?? ""] ?? "default"
+							}
+						/>
+					</Box>
 				</Box>
 
-				{!IsPublic && (
+				{!IsPublic && getInvoiceData?.data?.paid_status === "Unpaid" && (
 					<Box display={{ xs: "block", lg: "none" }}>
 						<IconButton
 							aria-label="more"
@@ -367,7 +298,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 						</IconButton>
 					</Box>
 				)}
-				{IsPublic && (
+				{(IsPublic || getInvoiceData?.data?.paid_status === "Paid") && (
 					<Button
 						variant="contained"
 						startIcon={<DownloadIcon />}
@@ -387,7 +318,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					</Button>
 				)}
 			</Box>
-			{!IsPublic && (
+			{!IsPublic && getInvoiceData?.data?.paid_status === "Unpaid" && (
 				<ButtonGroup
 					sx={{
 						width: "100%",

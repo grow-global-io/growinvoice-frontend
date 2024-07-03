@@ -1,4 +1,13 @@
-import { Box, Typography, Grid, Button, Divider, InputAdornment } from "@mui/material";
+import {
+	Box,
+	Typography,
+	Grid,
+	Button,
+	Divider,
+	InputAdornment,
+	Dialog,
+	DialogContent,
+} from "@mui/material";
 import { Formik, Form, Field, FormikProps, FormikHelpers } from "formik";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { DateFormField } from "@shared/components/FormFields/DateFormField";
@@ -17,6 +26,7 @@ import {
 	getQuotationControllerQuotationPublicFindOneQueryKey,
 	useQuotationControllerCreate,
 	useQuotationControllerFindOne,
+	useQuotationControllerQuotationPreviewFromBody,
 	useQuotationControllerUpdate,
 } from "@api/services/quotation";
 import { useAuthStore } from "@store/auth";
@@ -28,23 +38,38 @@ import { formatToIso } from "@shared/formatter";
 import { useNavigate } from "react-router-dom";
 import { useQuotationtemplateControllerFindAll } from "@api/services/quotationtemplate";
 import { useQuotationsettingsControllerFindFirst } from "@api/services/quotationsettings";
+import { useDialog } from "@shared/hooks/useDialog";
+import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 
 const CreateQuotation = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
 	const [errorText, setErrorText] = useState<string | undefined>(undefined);
 	const queryClient = useQueryClient();
 	const { setOpenCustomerForm } = useCreateCustomerStore.getState();
+	const [previewString, setPreviewString] = useState<string | undefined>(undefined);
 	const customerData = useCustomerControllerFindAll();
 	const [rows, setRows] = useState<GridRowsProp>([]);
 	const { user } = useAuthStore();
 	const createQuotation = useQuotationControllerCreate();
 	const quotationTemplate = useQuotationtemplateControllerFindAll();
 	const quotationSettings = useQuotationsettingsControllerFindFirst();
+	const quotationPreview = useQuotationControllerQuotationPreviewFromBody();
 	const quotationFindOne = useQuotationControllerFindOne(id ?? "", {
 		query: {
 			enabled: id !== undefined,
 		},
 	});
+
+	const {
+		open: openQuotationPreview,
+		handleClickOpen: handleClickOpenQuotationPreview,
+		handleClose: handleCloseQuotationPreview,
+	} = useDialog();
+
+	const handleClosePreview = () => {
+		setPreviewString(undefined);
+		handleCloseQuotationPreview();
+	};
 
 	const quotationUpdate = useQuotationControllerUpdate();
 
@@ -312,8 +337,36 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 											isRequired={true}
 										/>
 									</Grid>
-									<Grid item xs={12} sm={6} display="flex" alignItems="center">
-										<Button variant="outlined">Preview</Button>
+									<Grid
+										item
+										xs={12}
+										sm={6}
+										display="flex"
+										alignItems="center"
+										sx={{
+											display: {
+												xs: "none",
+												sm: "flex",
+											},
+											alignItems: "center",
+										}}
+									>
+										<Button
+											variant="outlined"
+											onClick={async () => {
+												const data = await quotationPreview.mutateAsync({
+													data: {
+														...formik.values,
+														tax_id: formik.values.tax_id === "" ? null : formik.values.tax_id,
+													},
+												});
+												setPreviewString(data as string);
+												handleClickOpenQuotationPreview();
+											}}
+											disabled={formik.isValid === false || rows?.length === 0}
+										>
+											Preview
+										</Button>
 									</Grid>
 									<Grid item xs={12} textAlign={"center"}>
 										<Button variant="contained" type="submit">
@@ -326,6 +379,23 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					}}
 				</Formik>
 			</Box>
+			<Dialog open={openQuotationPreview} onClose={handleClosePreview} fullWidth maxWidth="md">
+				<AppDialogHeader title="Quotation Preview" handleClose={handleClosePreview} />
+				<DialogContent>
+					<Box
+						component="iframe"
+						srcDoc={previewString}
+						sx={{
+							width: {
+								xs: "1100px",
+								md: "100%",
+							},
+							height: "75vh",
+							overflowX: { xs: "scroll", sm: "visible" },
+						}}
+					></Box>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };

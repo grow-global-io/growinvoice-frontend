@@ -24,26 +24,13 @@ import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
-	getQuotationControllerFindAllQueryKey,
-	getQuotationControllerQuotationPublicFindOneQueryKey,
-	getQuotationControllerTestQueryKey,
-	useQuotationControllerConvertToInvoice,
-	useQuotationControllerInvoiceSentToMail,
-	useQuotationControllerMarkedAsAccepted,
-	useQuotationControllerMarkedAsMailed,
-	useQuotationControllerMarkedAsRejected,
 	useQuotationControllerQuotationPublicFindOne,
-	useQuotationControllerRemove,
 	useQuotationControllerTest,
 } from "@api/services/quotation";
-import { useQueryClient } from "@tanstack/react-query";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import InvoiceTemplateCard from "@features/Invoices/InvoiceTemplateCard";
-import {
-	getInvoiceControllerFindAllQueryKey,
-	getInvoiceControllerFindDueInvoicesQueryKey,
-	getInvoiceControllerFindPaidInvoicesQueryKey,
-} from "@api/services/invoice";
+import { useQuotationHook } from "./QuotationHooks/useQuotationHook";
+import { Constants } from "@shared/constants";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -68,7 +55,6 @@ const QuotationDetail = ({
 	quotationId: string;
 	IsPublic?: boolean;
 }) => {
-	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 	const [menuIconAnchorEl, setMenuIconAnchorEl] = useState<null | HTMLElement>(null);
@@ -76,16 +62,18 @@ const QuotationDetail = ({
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
 	const isMobile = useMediaQuery("(max-width:800px)");
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
-	const params = {
-		id: quotationId,
-	};
-	const refetchQuery = async () => {
-		await queryClient.refetchQueries({
-			queryKey: getQuotationControllerQuotationPublicFindOneQueryKey(quotationId),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getQuotationControllerFindAllQueryKey(),
-		});
+	const {
+		handleConvertToInvoice,
+		handleDelete,
+		handleEdit,
+		handleMarkedAccepted,
+		handleMarkedRejected,
+		handleMarkedSendMail,
+		handleSendMail,
+		handleShare,
+	} = useQuotationHook();
+
+	const handleCloseAll = async () => {
 		handleMenuIconClose();
 		handleMoreClose();
 	};
@@ -103,7 +91,6 @@ const QuotationDetail = ({
 			enabled: quotationId !== undefined,
 		},
 	});
-	console.log(getQuotationData, "data");
 
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
@@ -128,82 +115,13 @@ const QuotationDetail = ({
 		setMenuIconAnchorEl(null);
 	};
 
-	const invoiceLink = `${window.location.origin}/quotation/quotationtemplate/${quotationId}`;
-	const sendQuotationMail = useQuotationControllerInvoiceSentToMail();
-	const handleSendMail = async () => {
-		const sendMailDto = {
-			email: getQuotationData?.data?.customer?.email ?? "",
-			subject: "Quotation Details",
-			body: `
-                <p>Please find the attached quotation. You can also view the quotation online by clicking the button below:</p>
-                <a href="${invoiceLink}" style="text-decoration: none;">
-                    <button style="
-                        display: inline-block;
-                        padding: 10px 20px;
-                        font-size: 16px;
-                        color: white;
-                        background-color: #007BFF;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    ">
-                        View Quotation
-                    </button>
-                </a>
-            `,
-		};
-
-		await sendQuotationMail.mutateAsync({
-			data: sendMailDto,
-			params,
-		});
-		refetchQuery();
-	};
-	const convertToInvoice = useQuotationControllerConvertToInvoice();
-	const handleConvertToInvoice = async () => {
-		await convertToInvoice.mutateAsync({ params });
-
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
-		});
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindAllQueryKey(),
-		});
-		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
-		});
-		getHtmlText?.refetch();
-		refetchQuery();
-		navigate("/invoice/invoicelist");
-	};
-	const markedAccepted = useQuotationControllerMarkedAsAccepted();
-	const handleMarkedAccepted = async () => {
-		await markedAccepted.mutateAsync({ params });
-		refetchQuery();
-	};
-
-	const markedRejected = useQuotationControllerMarkedAsRejected();
-	const handleMarkedRejected = async () => {
-		await markedRejected.mutateAsync({ params });
-		refetchQuery();
-	};
-
-	const markedMailedSent = useQuotationControllerMarkedAsMailed();
-	const handleMarkedSendMail = async () => {
-		await markedMailedSent.mutateAsync({ params });
-		refetchQuery();
-	};
-	const removeQuotation = useQuotationControllerRemove();
 	const handleQuotationDelete = async () => {
 		handleOpen({
 			title: "Delete Quotation",
 			message: "Are you sure you want to delete this quotation?",
 			onConfirm: async () => {
-				await removeQuotation.mutateAsync({ id: quotationId });
-				refetchQuery();
-				await queryClient.refetchQueries({
-					queryKey: getQuotationControllerTestQueryKey(quotationId),
-				});
+				await handleDelete(quotationId);
+				navigate("/quotation/quotationlist");
 			},
 			onCancel: () => {
 				cleanUp();
@@ -217,12 +135,37 @@ const QuotationDetail = ({
 			name: "Share",
 			func: () => {
 				navigate(`/quotation/quotationtemplate/${quotationId}`);
+				handleCloseAll();
 			},
 		},
-		{ name: "Mark Accepted", func: handleMarkedAccepted },
-		{ name: "Mark Rejected", func: handleMarkedRejected },
-		{ name: "Mark Sent", func: handleMarkedSendMail },
-		{ name: "Delete", func: handleQuotationDelete },
+		{
+			name: "Mark Accepted",
+			func: () => {
+				handleMarkedAccepted(quotationId);
+				handleCloseAll();
+			},
+		},
+		{
+			name: "Mark Rejected",
+			func: () => {
+				handleMarkedRejected(quotationId);
+				handleCloseAll();
+			},
+		},
+		{
+			name: "Mark Sent",
+			func: () => {
+				handleMarkedSendMail(quotationId);
+				handleCloseAll();
+			},
+		},
+		{
+			name: "Delete",
+			func: async () => {
+				await handleQuotationDelete();
+				handleCloseAll();
+			},
+		},
 	];
 	const buttonList = [
 		{
@@ -243,18 +186,22 @@ const QuotationDetail = ({
 		{
 			name: "Send Mail",
 			icon: EmailOutlined,
-			func: handleSendMail,
+			func: async () => {
+				await handleSendMail(quotationId, getQuotationData?.data?.customer?.email ?? "");
+			},
 		},
 		{
 			name: "Convert to invoice",
 			icon: "WhatsApp",
-			func: handleConvertToInvoice,
+			func: async () => {
+				await handleConvertToInvoice(quotationId);
+			},
 		},
 		{
 			name: "Edit",
 			icon: CreateOutlined,
 			func: () => {
-				navigate(`/quotation/createquotation/${quotationId}`);
+				handleEdit(quotationId);
 			},
 		},
 
@@ -271,31 +218,39 @@ const QuotationDetail = ({
 			name: "Share",
 			icon: ShareOutlined,
 			func: () => {
-				navigate(`/invoice/invoicetemplate/${quotationId}`);
+				handleShare(quotationId);
 			},
 		},
 
 		{
 			name: "Mark Accepted",
 			icon: SwipeRightOutlined,
-			func: handleMarkedAccepted,
+			func: async () => {
+				await handleMarkedAccepted(quotationId);
+			},
 		},
 
 		{
 			name: "Mark Rejected",
 			icon: SwipeLeftOutlined,
-			func: handleMarkedRejected,
+			func: async () => {
+				await handleMarkedRejected(quotationId);
+			},
 		},
 		{
 			name: "Mark Sent",
 			icon: SendOutlined,
-			func: handleMarkedSendMail,
+			func: async () => {
+				await handleMarkedSendMail(quotationId);
+			},
 		},
 
 		{
 			name: "Delete",
 			icon: DeleteOutline,
-			func: handleQuotationDelete,
+			func: async () => {
+				await handleQuotationDelete();
+			},
 		},
 	];
 
@@ -328,14 +283,29 @@ const QuotationDetail = ({
 					mb: 2,
 				}}
 			>
-				<Box display={"flex"} gap={2}>
+				<Box>
 					<Typography variant="h3" color={"secondary.dark"}>
-						#QUO-{getQuotationData?.data?.quatation_number}
+						#{Constants?.quotationDefaultPrefix}-{getQuotationData?.data?.quatation_number}
 					</Typography>
-					<Chip
-						label={getQuotationData?.data?.status}
-						sx={{ bgcolor: "secondary.dark", color: "secondary.contrastText" }}
-					/>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 1,
+						}}
+					>
+						<Typography variant="body1" color={"secondary.dark"}>
+							Status:
+						</Typography>
+						<Chip
+							label={getQuotationData?.data?.status}
+							variant="filled"
+							color={
+								Constants?.invoiceStatusColorEnums[getQuotationData?.data?.status ?? ""] ??
+								"default"
+							}
+						/>
+					</Box>
 				</Box>
 
 				{!IsPublic && (

@@ -9,10 +9,12 @@ import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
+import { useInvoiceHook } from "./invoiceHooks/useInvoiceHook";
 
 const InvoiceTablePaidList = () => {
 	const { user } = useAuthStore();
 	const invoiceData = useInvoiceControllerFindPaidInvoices();
+	const { handleView } = useInvoiceHook();
 
 	const columns: GridColDef<Invoice>[] = [
 		{
@@ -22,7 +24,7 @@ const InvoiceTablePaidList = () => {
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color={"secondary"}>
-						{params.value}
+						{params?.value}
 					</Typography>
 				);
 			},
@@ -32,7 +34,7 @@ const InvoiceTablePaidList = () => {
 			headerName: "Invoice Date",
 			flex: 1,
 			renderCell: (params) => {
-				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+				return <Typography>{parseDateStringToFormat(params?.value)}</Typography>;
 			},
 		},
 		{
@@ -40,7 +42,7 @@ const InvoiceTablePaidList = () => {
 			headerName: "Due Date",
 			flex: 1,
 			renderCell: (params) => {
-				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+				return <Typography>{parseDateStringToFormat(params?.value)}</Typography>;
 			},
 		},
 		{
@@ -50,18 +52,8 @@ const InvoiceTablePaidList = () => {
 			renderCell: (params) => {
 				return (
 					<Chip
-						label={params.value}
-						color={
-							params.value === "Draft"
-								? "warning"
-								: params.value === "Mailed to customer"
-									? "info"
-									: params.value === "Viewed"
-										? "warning"
-										: params.value === "Paid"
-											? "success"
-											: "error"
-						}
+						label={params?.value}
+						color={Constants?.invoiceStatusColorEnums[params?.value] ?? "default"}
 						variant="filled"
 					/>
 				);
@@ -73,39 +65,11 @@ const InvoiceTablePaidList = () => {
 			flex: 1,
 			renderCell: (params) => {
 				return (
-					<Box sx={{ flex: 0.8 }}>
-						<Box
-							bgcolor={
-								params.row.paid_status == "Paid"
-									? "custom.lightGreenColor"
-									: "custom.lightOrangeColor"
-							}
-							px={3}
-							borderRadius={"40px"}
-							py={"10px"}
-							display={"flex"}
-							justifyContent={"center"}
-							alignItems={"center"}
-							flex={1}
-						>
-							<img
-								src={
-									params.row.paid_status == "Paid"
-										? Constants.customImages.GreenCheck
-										: Constants.customImages.UnpaidSymbol
-								}
-								width={"20px"}
-								alt={params.row.paid_status == "Paid" ? "greenCheck" : "UnpaidSymbol"}
-							/>
-							<Typography
-								variant="h6"
-								color={params.row.paid_status == "Paid" ? "custom.darkGreen" : "custom.darkOrange"}
-								ml={1}
-							>
-								{params.row.paid_status}
-							</Typography>
-						</Box>
-					</Box>
+					<Chip
+						label={params?.value}
+						color={Constants?.invoiceStatusColorEnums[params?.value] ?? "default"}
+						variant="filled"
+					/>
 				);
 			},
 		},
@@ -115,7 +79,7 @@ const InvoiceTablePaidList = () => {
 			flex: 1,
 			renderCell: (params) => {
 				return (
-					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
+					<Typography>{currencyFormatter(params?.value, user?.currency?.short_code)}</Typography>
 				);
 			},
 		},
@@ -124,7 +88,14 @@ const InvoiceTablePaidList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
-			renderCell: () => <CustomIconButton src={VisibilityIcon} onClick={() => {}} />,
+			renderCell: (params) => (
+				<CustomIconButton
+					src={VisibilityIcon}
+					onClick={() => {
+						handleView(params?.row?.id);
+					}}
+				/>
+			),
 		},
 	];
 
@@ -132,7 +103,7 @@ const InvoiceTablePaidList = () => {
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={invoiceData?.data} columns={columns} />
+			<DataGrid autoHeight rows={invoiceData?.data ?? []} columns={columns} />
 		</Box>
 	);
 };
