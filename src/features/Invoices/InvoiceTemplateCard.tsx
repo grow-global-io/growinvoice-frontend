@@ -1,25 +1,35 @@
 import Button from "@mui/material/Button";
-import { FileDownloadOutlined, ErrorOutline } from "@mui/icons-material";
+import { FileDownloadOutlined, ErrorOutline, Check } from "@mui/icons-material";
+
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useAuthStore } from "@store/auth";
 import { useInvoiceControllerInvoicePublicFindOne } from "@api/services/invoice";
+import { useQuotationControllerQuotationPublicFindOne } from "@api/services/quotation";
 import Loader from "@shared/components/Loader";
+import { parseDateStringToFormat } from "@shared/formatter";
 
 const InvoiceTemplateCard = ({
-	invoiceId,
+	id,
+	templateName,
 	downloadfunc,
 }: {
-	invoiceId: string;
+	id: string;
+	templateName: string;
 	downloadfunc: () => void;
 }) => {
 	const { user } = useAuthStore();
-	const invoiceFindOne = useInvoiceControllerInvoicePublicFindOne(invoiceId ?? "", {
+	const invoiceFindOne = useInvoiceControllerInvoicePublicFindOne(id ?? "", {
 		query: {
-			enabled: invoiceId !== undefined,
+			enabled: id !== undefined,
+		},
+	});
+	const getQuotationData = useQuotationControllerQuotationPublicFindOne(id ?? "", {
+		query: {
+			enabled: id !== undefined,
 		},
 	});
 
-	if (invoiceFindOne.isLoading) return <Loader />;
+	if (invoiceFindOne.isLoading || getQuotationData.isLoading) return <Loader />;
 	return (
 		<Card sx={{ display: { xs: "block", md: "none" } }}>
 			<CardContent>
@@ -27,35 +37,52 @@ const InvoiceTemplateCard = ({
 					Hi, {user?.name}!
 				</Typography>
 				<Typography variant="h5" textAlign={"center"} color={"secondary.dark"}>
-					Invoice from {user?.company?.[0]?.name}
+					{templateName} from {user?.company?.[0]?.name}
 				</Typography>
-				<Box display={"flex"} justifyContent={"center"} alignItems={"center"} my={1}>
-					<ErrorOutline sx={{ fontSize: "15px", mr: 1, color: "custom.apiBtnBgColor" }} />
-					<Typography color={"custom.apiBtnBgColor"}>
-						{invoiceFindOne?.data?.paid_status}
-					</Typography>
-				</Box>
+				{templateName == "Invoice" && (
+					<Box display={"flex"} justifyContent={"center"} alignItems={"center"} my={1}>
+						{invoiceFindOne?.data?.paid_status !== "Unpaid" ? (
+							<Check sx={{ fontSize: "15px", mr: 1, color: "custom.GreenBtnColor" }} />
+						) : (
+							<ErrorOutline sx={{ fontSize: "15px", mr: 1, color: "custom.apiBtnBgColor" }} />
+						)}
+						<Typography
+							color={
+								invoiceFindOne?.data?.paid_status !== "Unpaid"
+									? "custom.GreenBtnColor"
+									: "custom.apiBtnBgColor"
+							}
+						>
+							{invoiceFindOne?.data?.paid_status}
+						</Typography>
+					</Box>
+				)}
 				<Typography variant="h6" textAlign={"center"} color={"custom.grayColor"}>
 					Total Amount
 				</Typography>
 				<Typography variant="h1" textAlign={"center"} color={"secondary.dark"}>
-					{invoiceFindOne?.data?.total}
+					{templateName == "Invoice" ? invoiceFindOne?.data?.total : getQuotationData?.data?.total}
 				</Typography>
 				<Box my={2}>
 					<Box display={"flex"} justifyContent={"space-between"} my={0.5}>
 						<Typography variant="h6" fontWeight={500} color={"secondary.dark"}>
-							Invoice #
+							{templateName} #
 						</Typography>
 						<Typography variant="h6" color={"secondary.dark"}>
-							INV-{invoiceFindOne?.data?.invoice_number}
+							INV-
+							{templateName == "Invoice"
+								? invoiceFindOne?.data?.invoice_number
+								: getQuotationData?.data?.quatation_number}
 						</Typography>
 					</Box>
 					<Box display={"flex"} justifyContent={"space-between"} my={0.5}>
 						<Typography variant="h6" fontWeight={500} color={"secondary.dark"}>
-							Invoice Date
+							{templateName} Date
 						</Typography>
 						<Typography variant="h6" color={"secondary.dark"}>
-							{invoiceFindOne?.data?.date}
+							{templateName == "Invoice"
+								? parseDateStringToFormat(invoiceFindOne?.data?.date ?? "")
+								: parseDateStringToFormat(getQuotationData?.data?.date ?? "")}
 						</Typography>
 					</Box>
 				</Box>

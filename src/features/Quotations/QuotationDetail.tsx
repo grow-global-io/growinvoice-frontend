@@ -10,23 +10,40 @@ import {
 	CreateOutlined,
 	ShareOutlined,
 	DeleteOutline,
-	PaidOutlined,
 	SendOutlined,
+	SwipeRightOutlined,
+	SwipeLeftOutlined,
 } from "@mui/icons-material";
 
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, Chip, Typography, useMediaQuery } from "@mui/material";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
-import { useMailControllerSendMail } from "@api/services/mail";
 import { usePdfExport } from "@shared/hooks/usePdfExport";
 import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
+	getQuotationControllerFindAllQueryKey,
+	getQuotationControllerQuotationPublicFindOneQueryKey,
+	getQuotationControllerTestQueryKey,
+	useQuotationControllerConvertToInvoice,
+	useQuotationControllerInvoiceSentToMail,
+	useQuotationControllerMarkedAsAccepted,
+	useQuotationControllerMarkedAsMailed,
+	useQuotationControllerMarkedAsRejected,
 	useQuotationControllerQuotationPublicFindOne,
+	useQuotationControllerRemove,
 	useQuotationControllerTest,
 } from "@api/services/quotation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import InvoiceTemplateCard from "@features/Invoices/InvoiceTemplateCard";
+import {
+	getInvoiceControllerFindAllQueryKey,
+	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
+} from "@api/services/invoice";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -51,12 +68,27 @@ const QuotationDetail = ({
 	quotationId: string;
 	IsPublic?: boolean;
 }) => {
+	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 	const [menuIconAnchorEl, setMenuIconAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
 	const isMobile = useMediaQuery("(max-width:800px)");
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const params = {
+		id: quotationId,
+	};
+	const refetchQuery = async () => {
+		await queryClient.refetchQueries({
+			queryKey: getQuotationControllerQuotationPublicFindOneQueryKey(quotationId),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getQuotationControllerFindAllQueryKey(),
+		});
+		handleMenuIconClose();
+		handleMoreClose();
+	};
 
 	const getHtmlText = useQuotationControllerTest(quotationId ?? "", {
 		query: {
@@ -66,18 +98,19 @@ const QuotationDetail = ({
 		},
 	});
 
-	const getInvoiceData = useQuotationControllerQuotationPublicFindOne(quotationId ?? "", {
+	const getQuotationData = useQuotationControllerQuotationPublicFindOne(quotationId ?? "", {
 		query: {
 			enabled: quotationId !== undefined,
 		},
 	});
+	console.log(getQuotationData, "data");
 
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText.isSuccess]);
+	}, [getHtmlText.isSuccess, isMobile, getHtmlText?.isRefetching]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
@@ -95,17 +128,14 @@ const QuotationDetail = ({
 		setMenuIconAnchorEl(null);
 	};
 
-	const { mutateAsync: sendMail } = useMailControllerSendMail();
-	const invoiceLink = `${window.location.origin}/invoice/invoicetemplate/${quotationId}`;
+	const invoiceLink = `${window.location.origin}/quotation/quotationtemplate/${quotationId}`;
+	const sendQuotationMail = useQuotationControllerInvoiceSentToMail();
 	const handleSendMail = async () => {
-		try {
-			const email = getInvoiceData?.data?.customer?.email ?? "";
-
-			const sendMailDto = {
-				email: email,
-				subject: "Invoice Details",
-				body: `
-                <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
+		const sendMailDto = {
+			email: getQuotationData?.data?.customer?.email ?? "",
+			subject: "Quotation Details",
+			body: `
+                <p>Please find the attached quotation. You can also view the quotation online by clicking the button below:</p>
                 <a href="${invoiceLink}" style="text-decoration: none;">
                     <button style="
                         display: inline-block;
@@ -117,24 +147,82 @@ const QuotationDetail = ({
                         border-radius: 5px;
                         cursor: pointer;
                     ">
-                        View Invoice
+                        View Quotation
                     </button>
                 </a>
             `,
-			};
+		};
 
-			await sendMail({ data: sendMailDto });
-		} catch (error) {
-			console.error("Error generating PDF:", error);
-			alert("Failed to generate PDF");
-		}
+		await sendQuotationMail.mutateAsync({
+			data: sendMailDto,
+			params,
+		});
+		refetchQuery();
+	};
+	const convertToInvoice = useQuotationControllerConvertToInvoice();
+	const handleConvertToInvoice = async () => {
+		await convertToInvoice.mutateAsync({ params });
+
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindAllQueryKey(),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+		});
+		getHtmlText?.refetch();
+		refetchQuery();
+		navigate("/invoice/invoicelist");
+	};
+	const markedAccepted = useQuotationControllerMarkedAsAccepted();
+	const handleMarkedAccepted = async () => {
+		await markedAccepted.mutateAsync({ params });
+		refetchQuery();
+	};
+
+	const markedRejected = useQuotationControllerMarkedAsRejected();
+	const handleMarkedRejected = async () => {
+		await markedRejected.mutateAsync({ params });
+		refetchQuery();
+	};
+
+	const markedMailedSent = useQuotationControllerMarkedAsMailed();
+	const handleMarkedSendMail = async () => {
+		await markedMailedSent.mutateAsync({ params });
+		refetchQuery();
+	};
+	const removeQuotation = useQuotationControllerRemove();
+	const handleQuotationDelete = async () => {
+		handleOpen({
+			title: "Delete Quotation",
+			message: "Are you sure you want to delete this quotation?",
+			onConfirm: async () => {
+				await removeQuotation.mutateAsync({ id: quotationId });
+				refetchQuery();
+				await queryClient.refetchQueries({
+					queryKey: getQuotationControllerTestQueryKey(quotationId),
+				});
+			},
+			onCancel: () => {
+				cleanUp();
+			},
+			confirmButtonText: "Delete",
+		});
 	};
 
 	const menuLists = [
-		{ name: "Share", func: () => console.log("Share") },
-		{ name: "Marked Paid", func: () => console.log("Marked Paid") },
-		{ name: "Mark Send", func: () => console.log("Mark Send") },
-		{ name: "Delete", func: () => console.log("Delete") },
+		{
+			name: "Share",
+			func: () => {
+				navigate(`/quotation/quotationtemplate/${quotationId}`);
+			},
+		},
+		{ name: "Mark Accepted", func: handleMarkedAccepted },
+		{ name: "Mark Rejected", func: handleMarkedRejected },
+		{ name: "Mark Sent", func: handleMarkedSendMail },
+		{ name: "Delete", func: handleQuotationDelete },
 	];
 	const buttonList = [
 		{
@@ -160,7 +248,7 @@ const QuotationDetail = ({
 		{
 			name: "Convert to invoice",
 			icon: "WhatsApp",
-			func: () => console.log("Send Whatsapp"),
+			func: handleConvertToInvoice,
 		},
 		{
 			name: "Edit",
@@ -188,29 +276,34 @@ const QuotationDetail = ({
 		},
 
 		{
-			name: "Marked Paid",
-			icon: PaidOutlined,
-			func: () => console.log("Marked Paid"),
+			name: "Mark Accepted",
+			icon: SwipeRightOutlined,
+			func: handleMarkedAccepted,
 		},
 
 		{
-			name: "Mark Send",
+			name: "Mark Rejected",
+			icon: SwipeLeftOutlined,
+			func: handleMarkedRejected,
+		},
+		{
+			name: "Mark Sent",
 			icon: SendOutlined,
-			func: () => console.log("Mark Send"),
+			func: handleMarkedSendMail,
 		},
 
 		{
 			name: "Delete",
 			icon: DeleteOutline,
-			func: () => console.log("Delete"),
+			func: handleQuotationDelete,
 		},
 	];
 
 	if (
 		getHtmlText.isLoading ||
-		getInvoiceData?.isLoading ||
-		getInvoiceData?.isRefetching ||
-		getInvoiceData?.isFetching ||
+		getQuotationData?.isLoading ||
+		getQuotationData?.isRefetching ||
+		getQuotationData?.isFetching ||
 		getHtmlText?.isRefetching ||
 		getHtmlText?.isFetching
 	) {
@@ -235,9 +328,15 @@ const QuotationDetail = ({
 					mb: 2,
 				}}
 			>
-				<Typography variant="h3" color={"secondary.dark"}>
-					#INV-{getInvoiceData?.data?.quatation_number}
-				</Typography>
+				<Box display={"flex"} gap={2}>
+					<Typography variant="h3" color={"secondary.dark"}>
+						#QUO-{getQuotationData?.data?.quatation_number}
+					</Typography>
+					<Chip
+						label={getQuotationData?.data?.status}
+						sx={{ bgcolor: "secondary.dark", color: "secondary.contrastText" }}
+					/>
+				</Box>
 
 				{!IsPublic && (
 					<Box display={{ xs: "block", lg: "none" }}>
@@ -349,21 +448,21 @@ const QuotationDetail = ({
 					}}
 				></Box>
 			) : (
-				<></>
-				// <InvoiceTemplateCard
-				// 	invoiceId={quotationId}
-				// 	downloadfunc={() => {
-				// 		if (isMobile) {
-				// 			generatePdfFromHtml({
-				// 				html: getHtmlText?.data ?? "",
-				// 			});
-				// 		} else {
-				// 			generatePdfFromRef({
-				// 				iframeRef,
-				// 			});
-				// 		}
-				// 	}}
-				// />
+				<InvoiceTemplateCard
+					id={quotationId}
+					templateName="Quotation"
+					downloadfunc={() => {
+						if (isMobile) {
+							generatePdfFromHtml({
+								html: getHtmlText?.data ?? "",
+							});
+						} else {
+							generatePdfFromRef({
+								iframeRef,
+							});
+						}
+					}}
+				/>
 			)}
 		</Box>
 	);

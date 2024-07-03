@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Tooltip, Typography } from "@mui/material";
+import { Chip, Tooltip, Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 import {
 	getInvoiceControllerFindAllQueryKey,
@@ -63,6 +63,36 @@ const InvoiceTableDueList = () => {
 			flex: 1,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "status",
+			headerName: "Status",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					// <Button
+					// 	variant="contained"
+					// 	sx={{ bgcolor: "secondary.dark", textTransform: "capitalize" }}
+					// >
+					// 	{params.value}
+					// </Button>
+					<Chip
+						label={params.value}
+						color={
+							params.value === "Draft"
+								? "warning"
+								: params.value === "Mailed to customer"
+									? "info"
+									: params.value === "Viewed"
+										? "warning"
+										: params.value === "Paid"
+											? "success"
+											: "error"
+						}
+						variant="filled"
+					/>
+				);
 			},
 		},
 		{

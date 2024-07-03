@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Tooltip, Typography } from "@mui/material";
+import { Chip, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -51,6 +51,30 @@ const QuotationTableList = () => {
 			flex: 1,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "status",
+			headerName: "Status",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Chip
+						label={params.value}
+						color={
+							params.value === "Draft"
+								? "warning"
+								: params.value === "Mailed to customer"
+									? "info"
+									: params.value === "Viewed"
+										? "warning"
+										: params.value === "Paid"
+											? "success"
+											: "error"
+						}
+						variant="filled"
+					/>
+				);
 			},
 		},
 

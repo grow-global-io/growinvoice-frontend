@@ -14,6 +14,7 @@ import { useCustomerControllerFindAll } from "@api/services/customer";
 import {
 	getQuotationControllerFindAllQueryKey,
 	getQuotationControllerFindOneQueryKey,
+	getQuotationControllerQuotationPublicFindOneQueryKey,
 	useQuotationControllerCreate,
 	useQuotationControllerFindOne,
 	useQuotationControllerUpdate,
@@ -136,6 +137,9 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 
 		await queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindOneQueryKey(id ?? ""),
+		});
+		await queryClient.refetchQueries({
+			queryKey: getQuotationControllerQuotationPublicFindOneQueryKey(id ?? ""),
 		});
 		await queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindAllQueryKey(),
@@ -298,7 +302,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 									<Grid item xs={12} sm={3.5}>
 										<Field
 											name="template_id"
-											label="Invoice Template"
+											label="Quotation Template"
 											component={AutocompleteField}
 											options={quotationTemplate?.data?.map((template) => ({
 												value: template.id,

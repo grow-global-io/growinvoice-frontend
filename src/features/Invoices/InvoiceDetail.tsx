@@ -16,14 +16,26 @@ import {
 	SendOutlined,
 } from "@mui/icons-material";
 
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, Chip, Typography, useMediaQuery } from "@mui/material";
 import Loader from "@shared/components/Loader";
 import NoDataFound from "@shared/components/NoDataFound";
 import { useNavigate } from "react-router-dom";
-import { useMailControllerSendMail } from "@api/services/mail";
 import InvoiceTemplateCard from "./InvoiceTemplateCard";
 import {
+	getInvoiceControllerFindAllQueryKey,
+	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindDueMonthQueryKey,
+	getInvoiceControllerFindDueTodayQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
+	getInvoiceControllerInvoiceCountQueryKey,
+	getInvoiceControllerInvoicePublicFindOneQueryKey,
+	getInvoiceControllerOutstandingReceivableQueryKey,
+	getInvoiceControllerTotalDueQueryKey,
 	useInvoiceControllerInvoicePublicFindOne,
+	useInvoiceControllerInvoiceSentToMail,
+	useInvoiceControllerMarkedAsMailed,
+	useInvoiceControllerMarkedAsPaid,
+	useInvoiceControllerRemove,
 	useInvoiceControllerTest,
 } from "@api/services/invoice";
 import { usePdfExport } from "@shared/hooks/usePdfExport";
@@ -31,7 +43,10 @@ import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Constants } from "@shared/constants";
-import { useInvoicesettingsControllerFindFirst } from "@api/services/invoicesettings";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatDateToIso } from "@shared/formatter";
+import moment from "moment";
+import { useConfirmDialogStore } from "@store/confirmDialog";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -50,13 +65,16 @@ const styles = {
 };
 
 const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: boolean }) => {
+	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 	const [menuIconAnchorEl, setMenuIconAnchorEl] = useState<null | HTMLElement>(null);
 	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const isMobile = useMediaQuery("(max-width:800px)");
 
+	const currentDate = moment().format("YYYY-MM-DD");
 	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
 		query: {
 			enabled: invoiceId !== undefined,
@@ -76,7 +94,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText.isSuccess]);
+	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching, isMobile]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
@@ -94,16 +112,37 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		setMenuIconAnchorEl(null);
 	};
 
-	const { mutateAsync: sendMail } = useMailControllerSendMail();
 	const invoiceLink = `${window.location.origin}/invoice/invoicetemplate/${invoiceId}`;
-	const handleSendMail = async () => {
-		try {
-			const email = getInvoiceData?.data?.customer?.email ?? "";
+	const sendInvoiceToMail = useInvoiceControllerInvoiceSentToMail();
 
-			const sendMailDto = {
-				email: email,
-				subject: "Invoice Details",
-				body: `
+	const refetchQuery = async () => {
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerInvoicePublicFindOneQueryKey(invoiceId ?? ""),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindAllQueryKey(),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+		});
+
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+		});
+
+		// queryClient?.refetchQueries({
+		// 	queryKey: getInvoiceControllerTestQueryKey(invoiceId ?? ""),
+		// });
+		getHtmlText.refetch();
+
+		handleMenuIconClose();
+		handleMoreClose();
+	};
+	const handleSendMail = async () => {
+		const sendMailDto = {
+			email: getInvoiceData?.data?.customer?.email ?? "",
+			subject: "Invoice Details",
+			body: `
                 <p>Please find the attached invoice. You can also view the invoice online by clicking the button below:</p>
                 <a href="${invoiceLink}" style="text-decoration: none;">
                     <button style="
@@ -120,13 +159,72 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
                     </button>
                 </a>
             `,
-			};
+		};
 
-			await sendMail({ data: sendMailDto });
-		} catch (error) {
-			console.error("Error generating PDF:", error);
-			alert("Failed to generate PDF");
-		}
+		await sendInvoiceToMail.mutateAsync({
+			data: sendMailDto,
+			params: {
+				id: invoiceId,
+			},
+		});
+		refetchQuery();
+	};
+
+	const markedPaid = useInvoiceControllerMarkedAsPaid();
+	const handleMarkedPaid = async () => {
+		await markedPaid.mutateAsync({
+			params: {
+				id: invoiceId,
+			},
+		});
+		refetchQuery();
+	};
+
+	const markedMailedSent = useInvoiceControllerMarkedAsMailed();
+	const markedAsMailedSent = async () => {
+		await markedMailedSent.mutateAsync({
+			params: {
+				id: invoiceId,
+			},
+		});
+		refetchQuery();
+	};
+
+	const removeInvoice = useInvoiceControllerRemove();
+
+	const handleInvoiceDelete = () => {
+		handleOpen({
+			title: "Delete Invoice",
+			message: "Are you sure you want to delete this invoice?",
+			onConfirm: async () => {
+				await removeInvoice.mutateAsync({ id: invoiceId });
+				refetchQuery();
+
+				await queryClient.refetchQueries({
+					queryKey: getInvoiceControllerInvoiceCountQueryKey(),
+				});
+				await queryClient.refetchQueries({
+					queryKey: getInvoiceControllerTotalDueQueryKey(),
+				});
+				await queryClient.refetchQueries({
+					queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
+				});
+				await queryClient.refetchQueries({
+					queryKey: getInvoiceControllerFindDueTodayQueryKey({
+						date: formatDateToIso(currentDate),
+					}),
+				});
+				await queryClient.refetchQueries({
+					queryKey: getInvoiceControllerFindDueMonthQueryKey({
+						date: formatDateToIso(currentDate),
+					}),
+				});
+			},
+			onCancel: () => {
+				cleanUp();
+			},
+			confirmButtonText: "Delete",
+		});
 	};
 
 	const menuLists = [
@@ -136,9 +234,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				navigate(`/invoice/invoicetemplate/${invoiceId}`);
 			},
 		},
-		{ name: "Marked Paid", func: () => console.log("Marked Paid") },
-		{ name: "Mark Send", func: () => console.log("Mark Send") },
-		{ name: "Delete", func: () => console.log("Delete") },
+		{ name: "Marked Paid", func: handleMarkedPaid },
+		{ name: "Mark Send", func: markedAsMailedSent },
+		{ name: "Delete", func: handleInvoiceDelete },
 	];
 	const buttonList = [
 		{
@@ -201,19 +299,19 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		{
 			name: "Marked Paid",
 			icon: PaidOutlined,
-			func: () => console.log("Marked Paid"),
+			func: handleMarkedPaid,
 		},
 
 		{
 			name: "Mark Send",
 			icon: SendOutlined,
-			func: () => console.log("Mark Send"),
+			func: markedAsMailedSent,
 		},
 
 		{
 			name: "Delete",
 			icon: DeleteOutline,
-			func: () => console.log("Delete"),
+			func: handleInvoiceDelete,
 		},
 	];
 	if (
@@ -245,9 +343,15 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					mb: 2,
 				}}
 			>
-				<Typography variant="h3" color={"secondary.dark"}>
-					#{Constants?.invoiceDefaultPrefix}-{getInvoiceData?.data?.invoice_number}
-				</Typography>
+				<Box display={"flex"} gap={2}>
+					<Typography variant="h3" color={"secondary.dark"}>
+						#{Constants?.invoiceDefaultPrefix}-{getInvoiceData?.data?.invoice_number}
+					</Typography>
+					<Chip
+						label={getInvoiceData?.data?.status}
+						sx={{ bgcolor: "secondary.dark", color: "secondary.contrastText" }}
+					/>
+				</Box>
 
 				{!IsPublic && (
 					<Box display={{ xs: "block", lg: "none" }}>
@@ -360,7 +464,8 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				></Box>
 			) : (
 				<InvoiceTemplateCard
-					invoiceId={invoiceId}
+					id={invoiceId}
+					templateName="Invoice"
 					downloadfunc={() => {
 						if (isMobile) {
 							generatePdfFromHtml({
