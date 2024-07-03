@@ -6,6 +6,7 @@ import { useAuthStore } from "@store/auth";
 import { useInvoiceControllerInvoicePublicFindOne } from "@api/services/invoice";
 import { useQuotationControllerQuotationPublicFindOne } from "@api/services/quotation";
 import Loader from "@shared/components/Loader";
+import { parseDateStringToFormat } from "@shared/formatter";
 
 const InvoiceTemplateCard = ({
 	id,
@@ -80,8 +81,8 @@ const InvoiceTemplateCard = ({
 						</Typography>
 						<Typography variant="h6" color={"secondary.dark"}>
 							{templateName == "Invoice"
-								? invoiceFindOne?.data?.date
-								: getQuotationData?.data?.date}
+								? parseDateStringToFormat(invoiceFindOne?.data?.date ?? "")
+								: parseDateStringToFormat(getQuotationData?.data?.date ?? "")}
 						</Typography>
 					</Box>
 				</Box>

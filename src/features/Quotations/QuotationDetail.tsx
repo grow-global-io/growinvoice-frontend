@@ -110,7 +110,7 @@ const QuotationDetail = ({
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText.isSuccess]);
+	}, [getHtmlText.isSuccess, isMobile, getHtmlText?.isRefetching]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
@@ -172,6 +172,7 @@ const QuotationDetail = ({
 		queryClient.refetchQueries({
 			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
+		getHtmlText?.refetch();
 		refetchQuery();
 		navigate("/invoice/invoicelist");
 	};
@@ -329,7 +330,7 @@ const QuotationDetail = ({
 			>
 				<Box display={"flex"} gap={2}>
 					<Typography variant="h3" color={"secondary.dark"}>
-						#INV-{getQuotationData?.data?.quatation_number}
+						#QUO-{getQuotationData?.data?.quatation_number}
 					</Typography>
 					<Chip
 						label={getQuotationData?.data?.status}

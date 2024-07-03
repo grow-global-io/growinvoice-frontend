@@ -94,7 +94,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching]);
+	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching, isMobile]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
