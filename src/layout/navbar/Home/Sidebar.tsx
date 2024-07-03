@@ -28,6 +28,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Constants } from "@shared/constants";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PaymentIcon from "@mui/icons-material/Payment";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
@@ -116,6 +117,12 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				{ path: "/quotation/quotationlist", label: "Quotation" },
 				{ path: "/quotation/createquotation", label: "Create Quotation" },
 			],
+		},
+		{
+			path: "/payment/paymentList",
+			icon: <PaymentIcon />,
+			menuName: "Payment",
+			menuItems: [],
 		},
 	];
 

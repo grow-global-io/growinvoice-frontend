@@ -32,6 +32,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Constants } from "@shared/constants";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import { useInvoiceHook } from "./invoiceHooks/useInvoiceHook";
+import { useCreatePaymentStore } from "@store/createPaymentStore";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -59,6 +60,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	const isMobile = useMediaQuery("(max-width:800px)");
 	const { handleDelete, handleShare, handlePaid, handleMailedSent, handleSendMail, handleEdit } =
 		useInvoiceHook();
+	const { setOpenPaymentFormWithInvoiceId } = useCreatePaymentStore.getState();
 
 	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
 		query: {
@@ -188,7 +190,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		{
 			name: "Enter Payment",
 			icon: PaymentsOutlined,
-			func: () => console.log("Enter Payment"),
+			func: () => {
+				setOpenPaymentFormWithInvoiceId(true, invoiceId);
+			},
 		},
 		{
 			name: "",

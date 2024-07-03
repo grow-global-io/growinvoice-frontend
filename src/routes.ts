@@ -27,6 +27,7 @@ import InvoiceTemplatePage from "@pages/InvoiceTemplatePage";
 import DashboardPage from "@pages/DashboardPage";
 import QuotationSettingsPage from "@pages/QuotationSettingsPage";
 import QuotationTemplatePage from "@pages/QuotationTemplatePage";
+import PaymentsListPage from "@pages/PaymentsListPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -174,5 +175,9 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/setting/quotation",
 		Component: QuotationSettingsPage,
+	},
+	{
+		path: "/payment/paymentList",
+		Component: PaymentsListPage,
 	},
 ];

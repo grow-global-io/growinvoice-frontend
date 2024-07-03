@@ -21,6 +21,8 @@ import { ProductDrawer } from "@features/Products/CreateProduct";
 import { useCreateCustomerStore } from "@store/createCustomerStore";
 import { CustomerDrawer } from "@features/Customer/CreateCustomer";
 import ParentofSidebar from "@layout/navbar/Settings/Sidebar";
+import { useCreatePaymentStore } from "@store/createPaymentStore";
+import { PaymentDrawer } from "@features/Payments/CreatePayments";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -104,6 +106,7 @@ function App() {
 	const [backdropOpen, setBackdropOpen] = useState(false);
 	const [openProductForm, setOpenProductForm] = useState(false);
 	const [openCustomerForm, setOpenCustomerForm] = useState(false);
+	const [openPaymentForm, setOpenPaymentForm] = useState(false);
 
 	const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
 		console.log("handleClose", event);
@@ -122,10 +125,15 @@ function App() {
 		setOpenCustomerForm(false);
 	};
 
+	const handleClosePaymentForm = () => {
+		setOpenPaymentForm(false);
+	};
+
 	const alertRef = useRef(useAlertStore.getState());
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
 	const createCustomer = useRef(useCreateCustomerStore.getState());
+	const createPayment = useRef(useCreatePaymentStore.getState());
 
 	useEffect(() => {
 		const unsubscribeAlert = useAlertStore.subscribe((state) => {
@@ -147,11 +155,17 @@ function App() {
 			setOpenCustomerForm(state.open);
 		});
 
+		const unsubscribePaymentForm = useCreatePaymentStore.subscribe((state) => {
+			createPayment.current = state;
+			setOpenPaymentForm(state.open);
+		});
+
 		return () => {
 			unsubscribeAlert();
 			unsubscribeLoading();
 			unsubscribeProductForm();
 			unsubscribeCustomerForm();
+			unsubscribePaymentForm();
 		};
 	}, []);
 
@@ -181,6 +195,7 @@ function App() {
 			<ConfirmDialog />
 			<ProductDrawer open={openProductForm} handleClose={handleCloseProductForm} />
 			<CustomerDrawer open={openCustomerForm} handleClose={handleCloseCustomerForm} />
+			<PaymentDrawer open={openPaymentForm} handleClose={handleClosePaymentForm} />
 		</>
 	);
 }
