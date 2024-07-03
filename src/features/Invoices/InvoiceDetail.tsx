@@ -30,6 +30,8 @@ import { usePdfExport } from "@shared/hooks/usePdfExport";
 import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Constants } from "@shared/constants";
+import { useInvoicesettingsControllerFindFirst } from "@api/services/invoicesettings";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -244,7 +246,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				}}
 			>
 				<Typography variant="h3" color={"secondary.dark"}>
-					#INV-{getInvoiceData?.data?.invoice_number}
+					#{Constants?.invoiceDefaultPrefix}-{getInvoiceData?.data?.invoice_number}
 				</Typography>
 
 				{!IsPublic && (
