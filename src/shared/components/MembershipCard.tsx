@@ -12,7 +12,7 @@ import CheckIcon from "@mui/icons-material/Check";
 
 const style = {
 	color: "secondary.dark",
-	p: 3,
+
 	borderRadius: 1.5,
 };
 
@@ -41,10 +41,10 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
 			}}
 		>
 			<Grid container sx={style} key={key}>
-				<Typography variant="h6" textAlign={"start"}>
+				<Typography variant="h6" textAlign={"start"} p={3}>
 					Demo
 				</Typography>
-				<Grid item xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"} mt={3}>
+				<Grid item xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"}>
 					<Typography variant="h3">{packValue}</Typography> /
 					<Typography variant="body2">{packValuePer}</Typography>
 				</Grid>
@@ -55,7 +55,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
 					{list.map((item, index) => (
 						<ListItem key={index}>
 							<ListItemIcon sx={{ minWidth: "30px" }}>
-								<CheckIcon htmlColor="custom.greenCheck" />
+								<CheckIcon sx={{ color: "custom.greenCheck" }} />
 							</ListItemIcon>
 							<ListItemText
 								primary={
@@ -67,7 +67,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
 						</ListItem>
 					))}
 				</List>
-				<Grid item xs={12} sm={12} textAlign={"center"} mt={2}>
+				<Grid item xs={12} sm={12} textAlign={"center"} mt={2} pb={2}>
 					<Button variant="outlined">Upgrade</Button>
 				</Grid>
 			</Grid>

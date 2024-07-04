@@ -50,6 +50,9 @@ export const useQuotationHook = () => {
 		await queryClient.refetchQueries({
 			queryKey: getQuotationControllerFindAllQueryKey(),
 		});
+		await queryClient.refetchQueries({
+			queryKey: getQuotationControllerTestQueryKey(quotationId),
+		});
 	};
 
 	const handleSendMail = async (quotationId: string, email: string) => {

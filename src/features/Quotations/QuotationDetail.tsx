@@ -97,7 +97,7 @@ const QuotationDetail = ({
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText.isSuccess, isMobile, getHtmlText?.isRefetching]);
+	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching, isMobile, getHtmlText?.data]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
@@ -181,6 +181,7 @@ const QuotationDetail = ({
 				generatePdfFromRef({
 					iframeRef,
 				});
+				handleCloseAll();
 			},
 		},
 		{
@@ -188,6 +189,7 @@ const QuotationDetail = ({
 			icon: EmailOutlined,
 			func: async () => {
 				await handleSendMail(quotationId, getQuotationData?.data?.customer?.email ?? "");
+				handleCloseAll();
 			},
 		},
 		{
@@ -195,6 +197,7 @@ const QuotationDetail = ({
 			icon: "WhatsApp",
 			func: async () => {
 				await handleConvertToInvoice(quotationId);
+				handleCloseAll();
 			},
 		},
 		{
@@ -202,6 +205,7 @@ const QuotationDetail = ({
 			icon: CreateOutlined,
 			func: () => {
 				handleEdit(quotationId);
+				handleCloseAll();
 			},
 		},
 
@@ -219,6 +223,7 @@ const QuotationDetail = ({
 			icon: ShareOutlined,
 			func: () => {
 				handleShare(quotationId);
+				handleCloseAll();
 			},
 		},
 
@@ -227,6 +232,7 @@ const QuotationDetail = ({
 			icon: SwipeRightOutlined,
 			func: async () => {
 				await handleMarkedAccepted(quotationId);
+				handleCloseAll();
 			},
 		},
 
@@ -235,6 +241,7 @@ const QuotationDetail = ({
 			icon: SwipeLeftOutlined,
 			func: async () => {
 				await handleMarkedRejected(quotationId);
+				handleCloseAll();
 			},
 		},
 		{
@@ -242,6 +249,7 @@ const QuotationDetail = ({
 			icon: SendOutlined,
 			func: async () => {
 				await handleMarkedSendMail(quotationId);
+				handleCloseAll();
 			},
 		},
 
@@ -250,6 +258,7 @@ const QuotationDetail = ({
 			icon: DeleteOutline,
 			func: async () => {
 				await handleQuotationDelete();
+				handleCloseAll();
 			},
 		},
 	];

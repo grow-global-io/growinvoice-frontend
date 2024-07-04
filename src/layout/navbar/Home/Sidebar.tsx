@@ -29,6 +29,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Constants } from "@shared/constants";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PaymentIcon from "@mui/icons-material/Payment";
+import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
@@ -122,6 +124,18 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			path: "/payment/paymentList",
 			icon: <PaymentIcon />,
 			menuName: "Payment",
+			menuItems: [],
+		},
+		{
+			path: "/plan/planspage",
+			icon: <BusinessCenterOutlinedIcon />,
+			menuName: "Plans",
+			menuItems: [],
+		},
+		{
+			path: "/vendors/vendorslist",
+			icon: <SellOutlinedIcon />,
+			menuName: "Vendors",
 			menuItems: [],
 		},
 	];

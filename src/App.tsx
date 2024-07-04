@@ -23,6 +23,8 @@ import { CustomerDrawer } from "@features/Customer/CreateCustomer";
 import ParentofSidebar from "@layout/navbar/Settings/Sidebar";
 import { useCreatePaymentStore } from "@store/createPaymentStore";
 import { PaymentDrawer } from "@features/Payments/CreatePayments";
+import { useCreateVendorsStore } from "@store/createVendorsStore";
+import { VendorsDrawer } from "@features/Vendor/CreateVendors";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -107,6 +109,7 @@ function App() {
 	const [openProductForm, setOpenProductForm] = useState(false);
 	const [openCustomerForm, setOpenCustomerForm] = useState(false);
 	const [openPaymentForm, setOpenPaymentForm] = useState(false);
+	const [openVendorsForm, setOpenVendorsForm] = useState(false);
 
 	const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
 		console.log("handleClose", event);
@@ -129,11 +132,16 @@ function App() {
 		setOpenPaymentForm(false);
 	};
 
+	const handleCloseVendorsForm = () => {
+		setOpenVendorsForm(false);
+	};
+
 	const alertRef = useRef(useAlertStore.getState());
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
 	const createCustomer = useRef(useCreateCustomerStore.getState());
 	const createPayment = useRef(useCreatePaymentStore.getState());
+	const createVendors = useRef(useCreateVendorsStore.getState());
 
 	useEffect(() => {
 		const unsubscribeAlert = useAlertStore.subscribe((state) => {
@@ -159,6 +167,10 @@ function App() {
 			createPayment.current = state;
 			setOpenPaymentForm(state.open);
 		});
+		const unsubscribeVendorsForm = useCreateVendorsStore.subscribe((state) => {
+			createVendors.current = state;
+			setOpenVendorsForm(state.open);
+		});
 
 		return () => {
 			unsubscribeAlert();
@@ -166,6 +178,7 @@ function App() {
 			unsubscribeProductForm();
 			unsubscribeCustomerForm();
 			unsubscribePaymentForm();
+			unsubscribeVendorsForm();
 		};
 	}, []);
 
@@ -196,6 +209,7 @@ function App() {
 			<ProductDrawer open={openProductForm} handleClose={handleCloseProductForm} />
 			<CustomerDrawer open={openCustomerForm} handleClose={handleCloseCustomerForm} />
 			<PaymentDrawer open={openPaymentForm} handleClose={handleClosePaymentForm} />
+			<VendorsDrawer open={openVendorsForm} handleClose={handleCloseVendorsForm} />
 		</>
 	);
 }
