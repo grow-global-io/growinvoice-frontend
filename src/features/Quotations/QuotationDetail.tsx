@@ -97,7 +97,7 @@ const QuotationDetail = ({
 			const iframe = iframeRef.current;
 			iframe.srcdoc = getHtmlText?.data;
 		}
-	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching, isMobile]);
+	}, [getHtmlText?.isSuccess, getHtmlText?.isRefetching, isMobile, getHtmlText?.data]);
 
 	const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
 		setMoreAnchorEl(event.currentTarget);
