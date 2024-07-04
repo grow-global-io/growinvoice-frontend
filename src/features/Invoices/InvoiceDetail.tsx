@@ -163,6 +163,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				generatePdfFromRef({
 					iframeRef,
 				});
+				handleCloseAll();
 			},
 		},
 		{
@@ -170,6 +171,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			icon: EmailOutlined,
 			func: async () => {
 				await handleSendMail(invoiceId, getInvoiceData?.data?.customer?.email ?? "");
+				handleCloseAll();
 			},
 		},
 		{
@@ -180,18 +182,23 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					`https://api.whatsapp.com/send/?phone=${getInvoiceData?.data?.customer?.phone}&text=${window.location.origin}/invoice/invoicetemplate/${invoiceId}&type=url&app_absent=0`,
 					"_blank",
 				);
+				handleCloseAll();
 			},
 		},
 		{
 			name: "Edit",
 			icon: CreateOutlined,
-			func: () => handleEdit(invoiceId),
+			func: () => {
+				handleEdit(invoiceId);
+				handleCloseAll();
+			},
 		},
 		{
 			name: "Enter Payment",
 			icon: PaymentsOutlined,
 			func: () => {
 				setOpenPaymentFormWithInvoiceId(true, invoiceId);
+				handleCloseAll();
 			},
 		},
 		{
@@ -208,6 +215,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			icon: ShareOutlined,
 			func: () => {
 				navigate(`/invoice/invoicetemplate/${invoiceId}`);
+				handleCloseAll();
 			},
 		},
 
@@ -216,6 +224,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			icon: PaidOutlined,
 			func: async () => {
 				await handlePaid(invoiceId);
+				handleCloseAll();
 			},
 		},
 
@@ -224,6 +233,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			icon: SendOutlined,
 			func: async () => {
 				await handleMailedSent(invoiceId);
+				handleCloseAll();
 			},
 		},
 
@@ -232,6 +242,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			icon: DeleteOutline,
 			func: () => {
 				handleInvoiceDelete();
+				handleCloseAll();
 			},
 		},
 	];
