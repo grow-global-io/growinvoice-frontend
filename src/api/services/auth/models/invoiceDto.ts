@@ -14,6 +14,7 @@ export interface InvoiceDto {
 	date: string;
 	/** @nullable */
 	discountPercentage: number | null;
+	due_amount: number;
 	due_date: string;
 	id: string;
 	invoice_number: string;
@@ -21,6 +22,7 @@ export interface InvoiceDto {
 	isExist: boolean;
 	/** @nullable */
 	notes: string | null;
+	paid_amount: number;
 	paid_status: InvoiceDtoPaidStatus;
 	/** @nullable */
 	paymentId: string | null;
@@ -35,6 +37,8 @@ export interface InvoiceDto {
 	tax_id: string | null;
 	/** @nullable */
 	template_id: string | null;
+	/** @nullable */
+	template_url: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;
