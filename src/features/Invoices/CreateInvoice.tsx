@@ -187,6 +187,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
 					date: formatDateToIso(values.date),
 					due_date: formatDateToIso(values.due_date),
+					due_amount: values.total,
+					paid_amount: 0,
 				},
 			});
 		} else {
@@ -196,6 +198,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
 					date: formatDateToIso(values.date),
 					due_date: formatDateToIso(values.due_date),
+					due_amount: values.total,
+					paid_amount: 0,
 				},
 			});
 		}
@@ -525,6 +529,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 														recurring: formik.values
 															.recurring as CreateInvoiceWithProductsRecurring,
 														tax_id: formik.values.tax_id === "" ? null : formik.values.tax_id,
+														due_amount: formik.values.total,
+														paid_amount: 0,
 													},
 												});
 												setPreviewString(data as string);

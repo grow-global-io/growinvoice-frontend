@@ -38,6 +38,8 @@ export interface Quotation {
 	template?: QuotationTemplateProperty;
 	/** @nullable */
 	template_id: string | null;
+	/** @nullable */
+	template_url: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;

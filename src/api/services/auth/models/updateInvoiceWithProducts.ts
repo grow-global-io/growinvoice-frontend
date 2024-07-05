@@ -13,11 +13,13 @@ export interface UpdateInvoiceWithProducts {
 	date?: string;
 	/** @nullable */
 	discountPercentage?: number | null;
+	due_amount?: number;
 	due_date?: string;
 	invoice_number?: string;
 	is_recurring?: boolean;
 	/** @nullable */
 	notes?: string | null;
+	paid_amount?: number;
 	/** @nullable */
 	paymentId?: string | null;
 	product: OmitCreateInvoiceProductsDto[];
@@ -32,6 +34,8 @@ export interface UpdateInvoiceWithProducts {
 	tax_id?: string | null;
 	/** @nullable */
 	template_id?: string | null;
+	/** @nullable */
+	template_url?: string | null;
 	total?: number;
 	user_id?: string;
 }

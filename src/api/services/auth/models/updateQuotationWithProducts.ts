@@ -28,6 +28,8 @@ export interface UpdateQuotationWithProducts {
 	tax_id?: string | null;
 	/** @nullable */
 	template_id?: string | null;
+	/** @nullable */
+	template_url?: string | null;
 	total?: number;
 	user_id?: string;
 }

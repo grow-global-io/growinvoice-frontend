@@ -74,8 +74,8 @@ const InvoiceTablePaidList = () => {
 			},
 		},
 		{
-			field: "total",
-			headerName: "Total",
+			field: "paid_amount",
+			headerName: "Paid Amount",
 			flex: 1,
 			renderCell: (params) => {
 				return (

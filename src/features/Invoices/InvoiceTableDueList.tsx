@@ -77,8 +77,8 @@ const InvoiceTableDueList = () => {
 			},
 		},
 		{
-			field: "total",
-			headerName: "Total",
+			field: "due_amount",
+			headerName: "Due Amount",
 			flex: 1,
 			renderCell: (params) => {
 				return (
