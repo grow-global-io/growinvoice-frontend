@@ -52,11 +52,21 @@ import { useInvoicetemplateControllerFindAll } from "@api/services/invoicetempla
 import { formatDateToIso } from "@shared/formatter";
 import SubtotalFooter from "@shared/components/SubtotalFooter";
 import { useInvoicesettingsControllerFindFirst } from "@api/services/invoicesettings";
+import AppDialogFooter from "@shared/components/Dialog/AppDialogFooter";
+import { usePdfExport } from "@shared/hooks/usePdfExport";
+import {
+	useUploadControllerUploadBase64File,
+	useUploadControllerUploadFile,
+} from "@api/services/upload";
+import { LoaderService } from "@shared/services/LoaderService";
+import pako from "pako";
+import { useUploadControllerUploadPdf } from "@api/services/upload";
 
 const CreateInvoice = ({ id }: { id?: string }) => {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const [rows, setRows] = useState<GridRowsProp>([]);
+	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 	const [productErrorText, setProductErrorText] = useState<string | undefined>(undefined);
 	const { open, handleClickOpen, handleClose } = useDialog();
 	const {
@@ -64,6 +74,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		handleClickOpen: handleClickOpenInvoicePreview,
 		handleClose: handleCloseInvoicePreview,
 	} = useDialog();
+	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
+
 	const { user } = useAuthStore();
 	const customerData = useCustomerControllerFindAll();
 	const paymentData = usePaymentdetailsControllerFindAll();
@@ -167,6 +179,9 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		template_id: yup.string().required("Template is required"),
 	});
 
+	const { mutateAsync, isPending } = useUploadControllerUploadFile();
+	const uploadService = useUploadControllerUploadPdf();
+
 	const handleSubmit = async (
 		values: typeof initialValues,
 		actions: FormikHelpers<typeof initialValues>,
@@ -178,60 +193,76 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			setProductErrorText("Fullfill all the product details");
 			return;
 		}
-
-		if (id) {
-			await invoiceUpdate.mutateAsync({
-				id,
+		if (iframeRef.current) {
+			const doc = await generatePdfFromRef({ iframeRef });
+			if (!doc) return;
+			const blob = new Blob([doc.output("blob")], { type: "application/pdf" });
+			const file = new File([blob], "Invoice.pdf", { type: "application/pdf" });
+			const data = await mutateAsync({
 				data: {
-					...values,
-					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
-					date: formatDateToIso(values.date),
-					due_date: formatDateToIso(values.due_date),
+					file: file,
 				},
 			});
-		} else {
-			await createInvoice.mutateAsync({
-				data: {
-					...values,
-					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
-					date: formatDateToIso(values.date),
-					due_date: formatDateToIso(values.due_date),
-				},
-			});
+			console.log(data);
 		}
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindOneQueryKey(id ?? ""),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindAllQueryKey(),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerTestQueryKey(id ?? ""),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerInvoiceCountQueryKey(),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerTotalDueQueryKey(),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindDueTodayQueryKey({ date: formatDateToIso(currentDate) }),
-		});
-		await queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindDueMonthQueryKey({ date: formatDateToIso(currentDate) }),
-		});
-		actions.resetForm();
-		setRows([]);
-		navigate("/invoice/invoicelist");
+
+		// if (id) {
+		// 	await invoiceUpdate.mutateAsync({
+		// 		id,
+		// 		data: {
+		// 			...values,
+		// 			recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+		// 			date: formatDateToIso(values.date),
+		// 			due_date: formatDateToIso(values.due_date),
+		// 			due_amount: values.total,
+		// 			paid_amount: 0,
+		// 		},
+		// 	});
+		// } else {
+		// 	await createInvoice.mutateAsync({
+		// 		data: {
+		// 			...values,
+		// 			recurring: values.recurring as CreateInvoiceWithProductsRecurring,
+		// 			date: formatDateToIso(values.date),
+		// 			due_date: formatDateToIso(values.due_date),
+		// 			due_amount: values.total,
+		// 			paid_amount: 0,
+		// 		},
+		// 	});
+		// }
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerFindOneQueryKey(id ?? ""),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerFindAllQueryKey(),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerTestQueryKey(id ?? ""),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerInvoiceCountQueryKey(),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerTotalDueQueryKey(),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerOutstandingReceivableQueryKey(),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerFindDueTodayQueryKey({ date: formatDateToIso(currentDate) }),
+		// });
+		// await queryClient.refetchQueries({
+		// 	queryKey: getInvoiceControllerFindDueMonthQueryKey({ date: formatDateToIso(currentDate) }),
+		// });
+		// actions.resetForm();
+		// setRows([]);
+		// navigate("/invoice/invoicelist");
 	};
 
 	if (
@@ -525,6 +556,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 														recurring: formik.values
 															.recurring as CreateInvoiceWithProductsRecurring,
 														tax_id: formik.values.tax_id === "" ? null : formik.values.tax_id,
+														due_amount: formik.values.total,
+														paid_amount: 0,
 													},
 												});
 												setPreviewString(data as string);
@@ -536,9 +569,65 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 										</Button>
 									</Grid>
 									<Grid item xs={12} textAlign={"center"}>
-										<Button variant="contained" type="submit">
+										<Button
+											variant="contained"
+											onClick={async () => {
+												if (formik.isValid === false || rows?.length === 0) {
+													formik.submitForm();
+													return;
+												}
+												const data = await invoicePreview.mutateAsync({
+													data: {
+														...formik.values,
+														recurring: formik.values
+															.recurring as CreateInvoiceWithProductsRecurring,
+														tax_id: formik.values.tax_id === "" ? null : formik.values.tax_id,
+														due_amount: formik.values.total,
+														paid_amount: 0,
+													},
+												});
+												setPreviewString(data as string);
+												handleClickOpenInvoicePreview();
+											}}
+										>
 											Save Invoice
 										</Button>
+									</Grid>
+									<Grid item xs={12}>
+										<Dialog
+											open={openInvoicePreview}
+											onClose={handleClosePreview}
+											fullWidth
+											maxWidth="md"
+										>
+											<AppDialogHeader title="Invoice Preview" handleClose={handleClosePreview} />
+											<DialogContent>
+												<Typography variant="h6" color={"secondary"} mb={1}>
+													Confirm the details before saving the invoice
+												</Typography>
+												<Box
+													component="iframe"
+													ref={iframeRef}
+													srcDoc={previewString}
+													sx={{
+														width: {
+															xs: "1100px",
+															md: "100%",
+														},
+														height: "75vh",
+														overflowX: { xs: "scroll", sm: "visible" },
+													}}
+												></Box>
+											</DialogContent>
+											<AppDialogFooter
+												onClickCancel={() => {
+													handleClosePreview();
+												}}
+												onSaveClick={() => {
+													formik.submitForm();
+												}}
+											/>
+										</Dialog>
 									</Grid>
 								</Grid>
 							</Form>
@@ -546,24 +635,6 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					}}
 				</Formik>
 			</Box>
-
-			<Dialog open={openInvoicePreview} onClose={handleClosePreview} fullWidth maxWidth="md">
-				<AppDialogHeader title="Invoice Preview" handleClose={handleClosePreview} />
-				<DialogContent>
-					<Box
-						component="iframe"
-						srcDoc={previewString}
-						sx={{
-							width: {
-								xs: "1100px",
-								md: "100%",
-							},
-							height: "75vh",
-							overflowX: { xs: "scroll", sm: "visible" },
-						}}
-					></Box>
-				</DialogContent>
-			</Dialog>
 
 			<PaymentDetailsDrawer open={open} handleClose={handleClose} />
 		</>

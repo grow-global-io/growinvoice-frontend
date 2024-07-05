@@ -8,6 +8,7 @@ export default function AppDialogFooter({
 	saveButtonText = "Save",
 	saveButtonDisabled = false,
 	cancelButtonDisabled = false,
+	onSaveClick,
 	children,
 }: {
 	onClickCancel: () => void;
@@ -15,6 +16,7 @@ export default function AppDialogFooter({
 	saveButtonText?: string;
 	saveButtonDisabled?: boolean;
 	cancelButtonDisabled?: boolean;
+	onSaveClick?: () => void;
 	children?: React.ReactNode;
 }) {
 	return (
@@ -35,7 +37,15 @@ export default function AppDialogFooter({
 			>
 				{cancelButtonText}
 			</Button>
-			<Button variant="contained" disabled={saveButtonDisabled} color="primary" type="submit">
+			<Button
+				variant="contained"
+				disabled={saveButtonDisabled}
+				color="primary"
+				type="submit"
+				onClick={() => {
+					if (onSaveClick) onSaveClick();
+				}}
+			>
 				{saveButtonText}
 			</Button>
 		</DialogActions>

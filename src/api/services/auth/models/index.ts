@@ -215,6 +215,7 @@ export * from "./updateQuotationWithProducts";
 export * from "./updateTaxDto";
 export * from "./updateUserCompany";
 export * from "./uploadControllerUploadFileBody";
+export * from "./uploadControllerUploadPdfBody";
 export * from "./uploadResponseDto";
 export * from "./user";
 export * from "./userControllerCreateUser201";

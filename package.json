@@ -37,6 +37,7 @@
     "match-sorter": "^6.3.4",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
+    "pako": "^2.1.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
@@ -53,6 +54,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/pako": "^2.0.3",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

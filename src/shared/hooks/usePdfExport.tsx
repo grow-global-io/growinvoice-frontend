@@ -25,7 +25,7 @@ export const usePdfExport = () => {
 			if (ref) {
 				const canvas = await html2canvas(ref, {
 					allowTaint: true,
-					scale: dpi / 96,
+					scale: dpi / 175,
 					width: cWidth,
 					height: cHeight,
 					useCORS: true,

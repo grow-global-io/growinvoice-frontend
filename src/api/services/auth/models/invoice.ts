@@ -20,6 +20,7 @@ export interface Invoice {
 	date: string;
 	/** @nullable */
 	discountPercentage: number | null;
+	due_amount: number;
 	due_date: string;
 	id: string;
 	invoice_number: string;
@@ -27,6 +28,7 @@ export interface Invoice {
 	isExist: boolean;
 	/** @nullable */
 	notes: string | null;
+	paid_amount: number;
 	paid_status: InvoicePaidStatus;
 	/** @nullable */
 	payment?: InvoicePayment;
@@ -47,6 +49,8 @@ export interface Invoice {
 	template?: InvoiceTemplateProperty;
 	/** @nullable */
 	template_id: string | null;
+	/** @nullable */
+	template_url: string | null;
 	total: number;
 	/** @nullable */
 	updatedAt: string | null;
