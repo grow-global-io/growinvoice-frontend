@@ -11,6 +11,11 @@ import {
 	usePaymentdetailsControllerCreate,
 } from "@api/services/paymentdetails";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+	getInvoiceControllerFindAllQueryKey,
+	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
+} from "@api/services/invoice";
 
 const validationSchema: yup.Schema<CreatePaymentDetailsDto> = yup.object().shape({
 	paymentType: yup
@@ -111,6 +116,17 @@ const PaymentDetailsForm = ({ handleClose }: { handleClose: () => void }) => {
 		queryClient.invalidateQueries({
 			queryKey: getPaymentdetailsControllerFindAllQueryKey(),
 		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindAllQueryKey(),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+		});
+
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
+		});
+
 		handleClose();
 		actions.setSubmitting(false);
 	};
