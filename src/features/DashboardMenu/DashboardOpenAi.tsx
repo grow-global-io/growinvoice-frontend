@@ -4,7 +4,6 @@ import {
 } from "@api/services/models";
 import { useOpenaiControllerCreate, useOpenaiControllerCreateGraph } from "@api/services/openai";
 import {
-	Box,
 	Button,
 	Checkbox,
 	FormControl,
