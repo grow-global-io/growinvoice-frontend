@@ -28,6 +28,7 @@ import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { stringToListDto } from "@shared/models/ListDto";
 import NoDataFound from "@shared/components/NoDataFound";
 import { AlertService } from "@shared/services/AlertService";
+import LottieNoDataFound from "@shared/components/LottieNoDataFound";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -161,6 +162,7 @@ const DashboardOpenAi = () => {
 		}
 	};
 
+	console.log("openAiApi", openAiApi);
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
@@ -174,38 +176,44 @@ const DashboardOpenAi = () => {
 						const buttonText = openAiApi?.isPending ? "Loading..." : "Submit";
 						return (
 							<Form>
-								<Box
-									sx={{
-										display: "flex",
-										flexDirection: {
-											xs: "column",
-											sm: "row",
-										},
-										alignItems: "center",
-										justifyContent: "center",
-										gap: 2,
-									}}
-								>
-									<Box sx={{ minWidth: 120 }}>
+								<Grid container spacing={1}>
+									<Grid item xs={12} md={2}>
 										<Field
 											name="type"
 											label="Type"
 											component={AutocompleteField}
 											options={Object.keys(Constants.dashboardType).map(stringToListDto)}
 										/>
-									</Box>
-									<Field
-										name="prompt"
-										label="Prompt"
-										placeholder="Prompt"
-										component={AutocompleteField}
-										optionUrl="/api/openai/suggestions"
-										isGpt
-									/>
-									<Button type="submit" variant="contained" disabled={openAiApi?.isPending}>
-										{buttonText}
-									</Button>
-								</Box>
+									</Grid>
+									<Grid item xs={12} md={8}>
+										<Field
+											name="prompt"
+											label="Tell us what you want to see?"
+											placeholder="Tell us what you want to see?"
+											component={AutocompleteField}
+											optionUrl="/api/openai/suggestions"
+											isGpt
+										/>
+									</Grid>
+									<Grid
+										item
+										xs={12}
+										md={1}
+										mx={2}
+										display={"flex"}
+										alignItems={"center"}
+										justifyContent={"center"}
+									>
+										<Button
+											type="submit"
+											variant="contained"
+											fullWidth
+											disabled={openAiApi?.isPending}
+										>
+											{buttonText}
+										</Button>
+									</Grid>
+								</Grid>
 							</Form>
 						);
 					}}
@@ -265,6 +273,11 @@ const DashboardOpenAi = () => {
 				</Grid>
 			)}
 
+			{rows?.length === 0 && graphData === undefined && (
+				<Grid item xs={12}>
+					<LottieNoDataFound message="Please request your widget again." />
+				</Grid>
+			)}
 			{formikRef?.current?.values?.type === Constants.dashboardType.Graph && graphData && (
 				<Grid item sm={12}>
 					<BarChart graphData={graphData} />

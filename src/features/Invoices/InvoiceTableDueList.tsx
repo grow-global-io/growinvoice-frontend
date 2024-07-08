@@ -78,6 +78,7 @@ const InvoiceTableDueList = () => {
 		},
 		{
 			field: "due_amount",
+
 			headerName: "Total Due Amount",
 			flex: 1,
 			renderCell: (params) => {
@@ -89,6 +90,9 @@ const InvoiceTableDueList = () => {
 		{
 			field: "total",
 			headerName: "Total",
+
+			headerName: "Due Amount",
+
 			flex: 1,
 			renderCell: (params) => {
 				return (
