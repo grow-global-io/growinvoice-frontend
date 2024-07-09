@@ -76,10 +76,13 @@ const DashboardOpenAi = () => {
 	};
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	const [rows, setRows] = useState<OpenaiControllerCreate200Item[]>([]);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [columns, setColumns] = useState<any[]>([]);
 	const [isError, setIsError] = useState(false);
 	const [prompText, setPromptText] = useState("");
 	const [queryText, setQueryText] = useState("");
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleChange = (event: SelectChangeEvent<any[]>) => {
 		const {
 			target: { value },
