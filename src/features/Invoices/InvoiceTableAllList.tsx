@@ -64,6 +64,26 @@ const InvoiceTableAllList = () => {
 				);
 			},
 		},
+		{
+			field: "due_amount",
+			headerName: "Due Amount",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
+				);
+			},
+		},
+		{
+			field: "paid_amount",
+			headerName: "Paid Amount",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography>{currencyFormatter(params?.value, user?.currency?.short_code)}</Typography>
+				);
+			},
+		},
 
 		{
 			field: "paid_status",

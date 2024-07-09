@@ -5,5 +5,8 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { AIDashboardDto } from "./aIDashboardDto";
 
-export type OpenaiControllerCreate201 = { [key: string]: any };
+export type DashboardsControllerCreate200AllOf = {
+	result?: AIDashboardDto;
+};

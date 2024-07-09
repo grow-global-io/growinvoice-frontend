@@ -1,5 +1,6 @@
 import {
 	getInvoiceControllerFindDueInvoicesQueryKey,
+	getInvoiceControllerFindPaidInvoicesQueryKey,
 	getInvoiceControllerInvoicePublicFindOneQueryKey,
 	getInvoiceControllerTestQueryKey,
 	useInvoiceControllerFindDueInvoices,
@@ -71,13 +72,16 @@ const PaymentForm = () => {
 			queryKey: getPaymentsControllerFindAllQueryKey(),
 		});
 		queryClient.refetchQueries({
-			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
-		});
-		queryClient.refetchQueries({
 			queryKey: getInvoiceControllerTestQueryKey(invoiceId ?? ""),
 		});
 		queryClient.refetchQueries({
 			queryKey: getInvoiceControllerInvoicePublicFindOneQueryKey(invoiceId ?? ""),
+		});
+		queryClient.resetQueries({
+			queryKey: getInvoiceControllerFindDueInvoicesQueryKey(),
+		});
+		queryClient.refetchQueries({
+			queryKey: getInvoiceControllerFindPaidInvoicesQueryKey(),
 		});
 		setOpenPaymentForm(false);
 		setSubmitting(false);

@@ -5,11 +5,13 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { CountInvoiceDto } from "./countInvoiceDto";
 import type { BillingAddressDto } from "./billingAddressDto";
 import type { GetCustomerWithAddressDtoOption } from "./getCustomerWithAddressDtoOption";
 import type { ShippingAddressDto } from "./shippingAddressDto";
 
 export interface GetCustomerWithAddressDto {
+	_count?: CountInvoiceDto;
 	billingAddress?: BillingAddressDto;
 	billingAddress_id: string;
 	createdAt: string;
