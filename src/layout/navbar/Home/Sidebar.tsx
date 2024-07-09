@@ -422,7 +422,11 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			</Box>
 			<Box
 				component="main"
-				sx={{ flexGrow: 1, p: 3, width: { lg: `calc(100% - ${drawerWidth}px)` } }}
+				sx={{
+					flexGrow: 1,
+					p: 3,
+					width: { lg: `calc(95% - ${drawerWidth}px)`, xs: `calc(95% - ${drawerWidth}px)` },
+				}}
 			>
 				<Toolbar></Toolbar>
 				{children}

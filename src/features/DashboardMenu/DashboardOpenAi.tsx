@@ -1,4 +1,5 @@
 import {
+	CreateAIDashboardDtoType,
 	OpenaiControllerCreate200Item,
 	OpenaiControllerCreateGraph200Item,
 } from "@api/services/models";
@@ -8,6 +9,8 @@ import {
 	Card,
 	CardContent,
 	Checkbox,
+	Dialog,
+	DialogContent,
 	FormControl,
 	Grid,
 	InputLabel,
@@ -31,6 +34,15 @@ import NoDataFound from "@shared/components/NoDataFound";
 import { AlertService } from "@shared/services/AlertService";
 import LottieNoDataFound from "@shared/components/LottieNoDataFound";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
+import { useDialog } from "@shared/hooks/useDialog";
+import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
+import AppDialogFooter from "@shared/components/Dialog/AppDialogFooter";
+import {
+	getDashboardsControllerFindAllQueryKey,
+	useDashboardsControllerCreate,
+} from "@api/services/dashboards";
+import { useAuthStore } from "@store/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -43,7 +55,7 @@ const MenuProps = {
 	},
 };
 
-function CustomToolbar() {
+export function CustomToolbar() {
 	return (
 		<GridToolbarContainer>
 			<GridToolbarExport />
@@ -52,16 +64,24 @@ function CustomToolbar() {
 }
 
 const DashboardOpenAi = () => {
+	const queryClient = useQueryClient();
+	const { open, handleClickOpen, handleClose } = useDialog();
+	const { user } = useAuthStore();
 	const initialValues = {
 		prompt: "",
 		type: "Table",
+		title: "",
+		user_id: user?.id ?? "",
+		query: "",
 	};
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [rows, setRows] = useState<OpenaiControllerCreate200Item[]>([]);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [columns, setColumns] = useState<any[]>([]);
 	const [isError, setIsError] = useState(false);
+	const [prompText, setPromptText] = useState("");
+	const [queryText, setQueryText] = useState("");
+
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleChange = (event: SelectChangeEvent<any[]>) => {
 		const {
@@ -87,12 +107,13 @@ const DashboardOpenAi = () => {
 		prompt: Yup.string().required("Prompt is required"),
 		type: Yup.string().required("Type is required"),
 	});
+
 	const openAiApi = useOpenaiControllerCreate();
 	const openAiApiGraph = useOpenaiControllerCreateGraph({
 		mutation: {
-			onError: (error) => {
-				AlertService.instance?.errorMessage("Error occured! please try again after 30secs");
-				console.error(error);
+			onError: () => {
+				AlertService.instance?.errorMessage("Error occurred! please try again after 30 seconds");
+
 				setIsError(true);
 			},
 		},
@@ -107,6 +128,8 @@ const DashboardOpenAi = () => {
 		setColumns([]);
 		setIsError(false);
 		setGraphData(undefined);
+		setPromptText("");
+		setQueryText("");
 		if (values?.type === "Table") {
 			try {
 				const a = await openAiApi.mutateAsync({
@@ -115,6 +138,8 @@ const DashboardOpenAi = () => {
 					},
 				});
 				const keysData = a as OpenaiControllerCreate200Item;
+				setPromptText(keysData?.prompt);
+				setQueryText(keysData?.query);
 				const keys = Object.keys(keysData?.result[0]);
 
 				const rowsData = keysData?.result?.map(
@@ -156,6 +181,8 @@ const DashboardOpenAi = () => {
 				setIsError(true);
 				setColumns([]);
 				console.error(error);
+				setPromptText("");
+				setQueryText("");
 			}
 		} else {
 			try {
@@ -165,13 +192,46 @@ const DashboardOpenAi = () => {
 					},
 				});
 				const keysData = response as OpenaiControllerCreateGraph200Item;
+				setPromptText(keysData?.prompt);
+				setQueryText(keysData?.query);
 				setGraphData(keysData?.graphData);
 			} catch (error) {
 				console.error(error);
 				setIsError(true);
 				setGraphData(undefined);
+				setPromptText("");
+				setQueryText("");
 			}
 		}
+	};
+
+	const handleReset = () => {
+		setRows([]);
+		setColumns([]);
+		setIsError(false);
+		setGraphData(undefined);
+		formikRef.current?.resetForm({
+			values: {
+				...formikRef.current?.values,
+				prompt: formikRef.current?.values.prompt, // Keep the prompt value unchanged
+			},
+		});
+	};
+
+	const createDashboard = useDashboardsControllerCreate();
+	const handleSubmitData = async (values: typeof initialValues) => {
+		await createDashboard.mutateAsync({
+			data: {
+				...values,
+				prompt: prompText,
+				query: queryText,
+				type: graphData ? CreateAIDashboardDtoType?.Chart : CreateAIDashboardDtoType?.Table,
+			},
+		});
+		queryClient.refetchQueries({
+			queryKey: getDashboardsControllerFindAllQueryKey(),
+		});
+		handleClose();
 	};
 
 	return (
@@ -236,7 +296,7 @@ const DashboardOpenAi = () => {
 
 			{openAiApi?.isError && isError && (
 				<Grid item xs={12}>
-					<NoDataFound message="Error occured! please try again after 30secs" />
+					<NoDataFound message="Error occurred! please try again after 30 seconds" />
 				</Grid>
 			)}
 
@@ -248,55 +308,61 @@ const DashboardOpenAi = () => {
 				))}
 
 			{rows?.length > 0 && openAiApi?.isSuccess && (
-				<Grid item xs={11}>
-					<Card
-						sx={{
-							width: {
-								xs: window.innerWidth - 20,
-								sm: "100%",
-								md: "100%",
-							},
-						}}
-					>
-						<CardContent>
-							<FormControl sx={{ m: 1, width: 300 }}>
-								<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
-								<Select
-									labelId="demo-multiple-checkbox-label"
-									id="demo-multiple-checkbox"
-									multiple
-									value={columns?.filter((item) => item?.show)?.map((item) => item?.field)}
-									onChange={handleChange}
-									input={<OutlinedInput label="Column Filter" />}
-									renderValue={(selected) => selected.join(", ")}
-									MenuProps={MenuProps}
-								>
-									{columns.map((column) => (
-										<MenuItem key={column?.field} value={column?.field}>
-											<Checkbox
-												checked={
-													columns.some(
-														(item) => item?.field === column?.field && item?.show,
-													) as boolean
-												}
-											/>
-											<ListItemText primary={column?.headerName} />
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
-							<div style={{ width: "100%" }}>
-								<div style={{ height: 350, width: "100%" }}>
-									<DataGrid
-										rows={rows ?? []}
-										columns={columns?.filter((item) => item?.show) ?? []}
-										slots={{ toolbar: CustomToolbar }}
-									/>
+				<>
+					<Grid item xs={12}>
+						<Card
+							sx={{
+								width: "100%",
+							}}
+						>
+							<CardContent>
+								<FormControl sx={{ m: 1, width: 250 }}>
+									<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
+									<Select
+										labelId="demo-multiple-checkbox-label"
+										id="demo-multiple-checkbox"
+										multiple
+										value={columns?.filter((item) => item?.show)?.map((item) => item?.field)}
+										onChange={handleChange}
+										input={<OutlinedInput label="Column Filter" />}
+										renderValue={(selected) => selected.join(", ")}
+										MenuProps={MenuProps}
+									>
+										{columns.map((column) => (
+											<MenuItem key={column?.field} value={column?.field}>
+												<Checkbox
+													checked={
+														columns.some(
+															(item) => item?.field === column?.field && item?.show,
+														) as boolean
+													}
+												/>
+												<ListItemText primary={column?.headerName} />
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+								<div style={{ width: "100%" }}>
+									<div style={{ height: 350, width: "100%" }}>
+										<DataGrid
+											rows={rows ?? []}
+											columns={columns?.filter((item) => item?.show) ?? []}
+											slots={{ toolbar: CustomToolbar }}
+										/>
+									</div>
 								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</Grid>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item sm={12} textAlign={"center"} gap={1}>
+						<Button variant="contained" onClick={handleClickOpen}>
+							Save
+						</Button>
+						<Button variant="outlined" onClick={handleReset}>
+							Reset
+						</Button>
+					</Grid>
+				</>
 			)}
 
 			{rows?.length === 0 && openAiApi?.isSuccess && graphData === undefined && (
@@ -304,13 +370,46 @@ const DashboardOpenAi = () => {
 					<LottieNoDataFound message="Please request your widget again." />
 				</Grid>
 			)}
-			{formikRef?.current?.values?.type === Constants.dashboardType.Graph &&
-				graphData &&
-				openAiApi?.isSuccess && (
+			{formikRef?.current?.values?.type === Constants.dashboardType.Graph && graphData && (
+				<>
 					<Grid item sm={12}>
 						<BarChart graphData={graphData} />
 					</Grid>
-				)}
+					<Grid item sm={12} textAlign={"center"} gap={1}>
+						<Button variant="contained" onClick={handleClickOpen}>
+							Save
+						</Button>
+						<Button variant="outlined" onClick={handleReset}>
+							Reset
+						</Button>
+					</Grid>
+				</>
+			)}
+
+			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
+				<Formik initialValues={initialValues} onSubmit={handleSubmitData}>
+					{(formik) => {
+						return (
+							<Form>
+								<AppDialogHeader title="save the Data" handleClose={handleClose} />
+								<DialogContent>
+									<Field
+										name="title"
+										label="Title"
+										component={TextFormField}
+										placeholder="Enter Title"
+									/>
+								</DialogContent>
+								<AppDialogFooter
+									onClickCancel={handleClose}
+									saveButtonText="Submit"
+									saveButtonDisabled={!formik.isValid || formik.isSubmitting}
+								/>
+							</Form>
+						);
+					}}
+				</Formik>
+			</Dialog>
 		</Grid>
 	);
 };

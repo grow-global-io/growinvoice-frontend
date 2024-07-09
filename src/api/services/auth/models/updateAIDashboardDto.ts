@@ -10,6 +10,7 @@ import type { UpdateAIDashboardDtoType } from "./updateAIDashboardDtoType";
 export interface UpdateAIDashboardDto {
 	prompt?: string;
 	query?: string;
+	title?: string;
 	type?: UpdateAIDashboardDtoType;
 	user_id?: string;
 }

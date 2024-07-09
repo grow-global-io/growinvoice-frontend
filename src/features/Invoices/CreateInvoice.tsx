@@ -118,6 +118,8 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 		sub_total: invoiceFindOne?.data?.sub_total ?? 0,
 		tax_id: invoiceFindOne?.data?.tax_id ?? "",
 		total: invoiceFindOne?.data?.total ?? 0,
+		paid_amount: invoiceFindOne?.data?.paid_amount ?? 0,
+		due_amount: invoiceFindOne?.data?.due_amount ?? 0,
 		discountPercentage: invoiceFindOne?.data?.discountPercentage ?? 0,
 		recurring: invoiceFindOne?.data?.recurring ?? CreateInvoiceWithProductsRecurring.Daily,
 		product: invoiceFindOne?.data?.product ?? [],

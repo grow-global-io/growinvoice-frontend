@@ -5,16 +5,21 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
 	MutationFunction,
+	QueryFunction,
+	QueryKey,
 	UseMutationOptions,
 	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult,
 } from "@tanstack/react-query";
 import type {
 	OpenaiControllerChat201,
 	OpenaiControllerCreate200Item,
 	OpenaiControllerCreateGraph200Item,
+	OpenaiControllerDashboardDataGet200,
 	RequestBodyOpenaiDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
@@ -211,4 +216,66 @@ export const useOpenaiControllerChat = <TError = ErrorType<unknown>, TContext = 
 	const mutationOptions = getOpenaiControllerChatMutationOptions(options);
 
 	return useMutation(mutationOptions);
+};
+export const openaiControllerDashboardDataGet = (id: string, signal?: AbortSignal) => {
+	return authInstance<OpenaiControllerDashboardDataGet200>({
+		url: `/api/openai/dashboardDataGet/${id}`,
+		method: "GET",
+		signal,
+	});
+};
+
+export const getOpenaiControllerDashboardDataGetQueryKey = (id: string) => {
+	return [`/api/openai/dashboardDataGet/${id}`] as const;
+};
+
+export const getOpenaiControllerDashboardDataGetQueryOptions = <
+	TData = Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getOpenaiControllerDashboardDataGetQueryKey(id);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>> = ({
+		signal,
+	}) => openaiControllerDashboardDataGet(id, signal);
+
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type OpenaiControllerDashboardDataGetQueryResult = NonNullable<
+	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>
+>;
+export type OpenaiControllerDashboardDataGetQueryError = ErrorType<unknown>;
+
+export const useOpenaiControllerDashboardDataGet = <
+	TData = Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getOpenaiControllerDashboardDataGetQueryOptions(id, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
 };

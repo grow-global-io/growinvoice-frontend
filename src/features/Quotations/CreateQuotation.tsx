@@ -116,7 +116,19 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 		quatation_number: yup.string().required("Quotaion number is required"),
 		reference_number: yup.string(),
 		date: yup.string().required("Quotation date is required"),
-		expiry_at: yup.string().required("Expiry date is required"),
+		expiry_at: yup
+			.string()
+			.required("Due date is required")
+			.test({
+				name: "expiry_at",
+				message: "Expiry date should be greater than quotation date",
+				test: (value) => {
+					if (formikRef.current?.values.date) {
+						return moment(value).isAfter(moment(formikRef.current?.values.date));
+					}
+					return true;
+				},
+			}),
 		notes: yup.string(),
 		private_notes: yup.string(),
 		sub_total: yup.number().required("Subtotal is required"),

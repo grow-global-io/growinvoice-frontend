@@ -75,7 +75,18 @@ const InvoiceTablePaidList = () => {
 		},
 		{
 			field: "paid_amount",
-			headerName: "Paid Amount",
+
+			headerName: "Total Paid Amount",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
+				);
+			},
+		},
+		{
+			field: "total",
+			headerName: "Total",
 			flex: 1,
 			renderCell: (params) => {
 				return (

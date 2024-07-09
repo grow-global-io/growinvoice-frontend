@@ -78,7 +78,18 @@ const InvoiceTableDueList = () => {
 		},
 		{
 			field: "due_amount",
-			headerName: "Due Amount",
+
+			headerName: "Total Due Amount",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
+				);
+			},
+		},
+		{
+			field: "total",
+			headerName: "Total",
 			flex: 1,
 			renderCell: (params) => {
 				return (
