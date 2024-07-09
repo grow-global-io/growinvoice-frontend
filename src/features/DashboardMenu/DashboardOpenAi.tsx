@@ -37,11 +37,13 @@ import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { useDialog } from "@shared/hooks/useDialog";
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import AppDialogFooter from "@shared/components/Dialog/AppDialogFooter";
-import { getDashboardsControllerFindAllQueryKey, useDashboardsControllerCreate } from "@api/services/dashboards";
+import {
+	getDashboardsControllerFindAllQueryKey,
+	useDashboardsControllerCreate,
+} from "@api/services/dashboards";
 import { useAuthStore } from "@store/auth";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -54,7 +56,7 @@ const MenuProps = {
 	},
 };
 
-function CustomToolbar() {
+export function CustomToolbar() {
 	return (
 		<GridToolbarContainer>
 			<GridToolbarExport />
@@ -64,7 +66,7 @@ function CustomToolbar() {
 
 const DashboardOpenAi = () => {
 	const navigate = useNavigate();
-	const queryClient = useQueryClient()
+	const queryClient = useQueryClient();
 	const { open, handleClickOpen, handleClose } = useDialog();
 	const { user } = useAuthStore();
 	const initialValues = {
@@ -72,14 +74,14 @@ const DashboardOpenAi = () => {
 		type: "Table",
 		title: "",
 		user_id: user?.id ?? "",
-		query: ""
+		query: "",
 	};
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	const [rows, setRows] = useState<OpenaiControllerCreate200Item[]>([]);
 	const [columns, setColumns] = useState<any[]>([]);
 	const [isError, setIsError] = useState(false);
-	const [prompText, setPromptText] = useState("")
-	const [queryText, setQueryText] = useState("")
+	const [prompText, setPromptText] = useState("");
+	const [queryText, setQueryText] = useState("");
 	const handleChange = (event: SelectChangeEvent<any[]>) => {
 		const {
 			target: { value },
@@ -108,24 +110,25 @@ const DashboardOpenAi = () => {
 	const openAiApi = useOpenaiControllerCreate();
 	const openAiApiGraph = useOpenaiControllerCreateGraph({
 		mutation: {
-			onError: (error) => {
+			onError: () => {
 				AlertService.instance?.errorMessage("Error occurred! please try again after 30 seconds");
-				console.error(error);
+
 				setIsError(true);
 			},
 		},
 	});
 
-	const [graphData, setGraphData] = useState<OpenaiControllerCreateGraph200Item | undefined>(undefined);
-
+	const [graphData, setGraphData] = useState<OpenaiControllerCreateGraph200Item | undefined>(
+		undefined,
+	);
 
 	const handleSubmit = async (values: typeof initialValues) => {
 		setRows([]);
 		setColumns([]);
 		setIsError(false);
 		setGraphData(undefined);
-		setPromptText("")
-		setQueryText("")
+		setPromptText("");
+		setQueryText("");
 		if (values?.type === "Table") {
 			try {
 				const a = await openAiApi.mutateAsync({
@@ -134,8 +137,8 @@ const DashboardOpenAi = () => {
 					},
 				});
 				const keysData = a as OpenaiControllerCreate200Item;
-				setPromptText(keysData?.prompt)
-				setQueryText(keysData?.query)
+				setPromptText(keysData?.prompt);
+				setQueryText(keysData?.query);
 				const keys = Object.keys(keysData?.result[0]);
 
 				const rowsData = keysData?.result?.map(
@@ -177,8 +180,8 @@ const DashboardOpenAi = () => {
 				setIsError(true);
 				setColumns([]);
 				console.error(error);
-				setPromptText("")
-				setQueryText("")
+				setPromptText("");
+				setQueryText("");
 			}
 		} else {
 			try {
@@ -188,15 +191,15 @@ const DashboardOpenAi = () => {
 					},
 				});
 				const keysData = response as OpenaiControllerCreateGraph200Item;
-				setPromptText(keysData?.prompt)
-				setQueryText(keysData?.query)
+				setPromptText(keysData?.prompt);
+				setQueryText(keysData?.query);
 				setGraphData(keysData?.graphData);
 			} catch (error) {
 				console.error(error);
 				setIsError(true);
 				setGraphData(undefined);
-				setPromptText("")
-				setQueryText("")
+				setPromptText("");
+				setQueryText("");
 			}
 		}
 	};
@@ -221,15 +224,13 @@ const DashboardOpenAi = () => {
 				...values,
 				prompt: prompText,
 				query: queryText,
-				type: values?.type as CreateAIDashboardDtoType,
+				type: graphData ? CreateAIDashboardDtoType?.Chart : CreateAIDashboardDtoType?.Table,
 			},
 		});
 		queryClient.refetchQueries({
 			queryKey: getDashboardsControllerFindAllQueryKey(),
 		});
 		handleClose();
-		navigate("/")
-
 	};
 
 	return (
@@ -307,18 +308,14 @@ const DashboardOpenAi = () => {
 
 			{rows?.length > 0 && openAiApi?.isSuccess && (
 				<>
-					<Grid item xs={11}>
+					<Grid item xs={12}>
 						<Card
 							sx={{
-								width: {
-									xs: window.innerWidth - 20,
-									sm: "100%",
-									md: "100%",
-								},
+								width: "100%",
 							}}
 						>
 							<CardContent>
-								<FormControl sx={{ m: 1, width: 300 }}>
+								<FormControl sx={{ m: 1, width: 250 }}>
 									<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
 									<Select
 										labelId="demo-multiple-checkbox-label"
@@ -357,8 +354,12 @@ const DashboardOpenAi = () => {
 						</Card>
 					</Grid>
 					<Grid item sm={12} textAlign={"center"} gap={1}>
-						<Button variant="contained" onClick={handleClickOpen}>Save</Button>
-						<Button variant="outlined" onClick={handleReset}>Reset</Button>
+						<Button variant="contained" onClick={handleClickOpen}>
+							Save
+						</Button>
+						<Button variant="outlined" onClick={handleReset}>
+							Reset
+						</Button>
 					</Grid>
 				</>
 			)}
@@ -368,21 +369,23 @@ const DashboardOpenAi = () => {
 					<LottieNoDataFound message="Please request your widget again." />
 				</Grid>
 			)}
-			{(formikRef?.current?.values?.type === Constants.dashboardType.Graph &&
-				graphData &&
-				openAiApi?.isSuccess) && (
-					<>
-						<Grid item sm={12}>
-							<BarChart graphData={graphData} />
-						</Grid>
-						<Grid item sm={12} textAlign={"center"} gap={1}>
-							<Button variant="contained" onClick={handleClickOpen}>Save</Button>
-							<Button variant="outlined" onClick={handleReset}>Reset</Button>
-						</Grid>
-					</>
-				)}
+			{formikRef?.current?.values?.type === Constants.dashboardType.Graph && graphData && (
+				<>
+					<Grid item sm={12}>
+						<BarChart graphData={graphData} />
+					</Grid>
+					<Grid item sm={12} textAlign={"center"} gap={1}>
+						<Button variant="contained" onClick={handleClickOpen}>
+							Save
+						</Button>
+						<Button variant="outlined" onClick={handleReset}>
+							Reset
+						</Button>
+					</Grid>
+				</>
+			)}
 
-			<Dialog open={open} onClose={handleClose}  maxWidth={"xl"}>
+			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
 				<Formik initialValues={initialValues} onSubmit={handleSubmitData}>
 					{(formik) => {
 						return (

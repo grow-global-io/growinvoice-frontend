@@ -6,4 +6,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export type OpenaiControllerDashboardDataGet201 = { [key: string]: any };
+export type OpenaiControllerDashboardDataGet200 = { [key: string]: any };

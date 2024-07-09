@@ -5,17 +5,21 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
 	MutationFunction,
+	QueryFunction,
+	QueryKey,
 	UseMutationOptions,
 	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult,
 } from "@tanstack/react-query";
 import type {
 	OpenaiControllerChat201,
 	OpenaiControllerCreate200Item,
 	OpenaiControllerCreateGraph200Item,
-	OpenaiControllerDashboardDataGet201,
+	OpenaiControllerDashboardDataGet200,
 	RequestBodyOpenaiDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
@@ -213,66 +217,65 @@ export const useOpenaiControllerChat = <TError = ErrorType<unknown>, TContext = 
 
 	return useMutation(mutationOptions);
 };
-export const openaiControllerDashboardDataGet = (id: string) => {
-	return authInstance<OpenaiControllerDashboardDataGet201>({
+export const openaiControllerDashboardDataGet = (id: string, signal?: AbortSignal) => {
+	return authInstance<OpenaiControllerDashboardDataGet200>({
 		url: `/api/openai/dashboardDataGet/${id}`,
-		method: "POST",
+		method: "GET",
+		signal,
 	});
 };
 
-export const getOpenaiControllerDashboardDataGetMutationOptions = <
-	TError = ErrorType<unknown>,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
-		TError,
-		{ id: string },
-		TContext
-	>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
-	TError,
-	{ id: string },
-	TContext
-> => {
-	const { mutation: mutationOptions } = options ?? {};
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
-		{ id: string }
-	> = (props) => {
-		const { id } = props ?? {};
-
-		return openaiControllerDashboardDataGet(id);
-	};
-
-	return { mutationFn, ...mutationOptions };
+export const getOpenaiControllerDashboardDataGetQueryKey = (id: string) => {
+	return [`/api/openai/dashboardDataGet/${id}`] as const;
 };
 
-export type OpenaiControllerDashboardDataGetMutationResult = NonNullable<
-	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>
->;
-
-export type OpenaiControllerDashboardDataGetMutationError = ErrorType<unknown>;
-
-export const useOpenaiControllerDashboardDataGet = <
+export const getOpenaiControllerDashboardDataGetQueryOptions = <
+	TData = Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
 	TError = ErrorType<unknown>,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getOpenaiControllerDashboardDataGetQueryKey(id);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>> = ({
+		signal,
+	}) => openaiControllerDashboardDataGet(id, signal);
+
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
 		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
 		TError,
-		{ id: string },
-		TContext
-	>;
-}): UseMutationResult<
-	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
-	TError,
-	{ id: string },
-	TContext
-> => {
-	const mutationOptions = getOpenaiControllerDashboardDataGetMutationOptions(options);
+		TData
+	> & { queryKey: QueryKey };
+};
 
-	return useMutation(mutationOptions);
+export type OpenaiControllerDashboardDataGetQueryResult = NonNullable<
+	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>
+>;
+export type OpenaiControllerDashboardDataGetQueryError = ErrorType<unknown>;
+
+export const useOpenaiControllerDashboardDataGet = <
+	TData = Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+	TError = ErrorType<unknown>,
+>(
+	id: string,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getOpenaiControllerDashboardDataGetQueryOptions(id, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
 };
