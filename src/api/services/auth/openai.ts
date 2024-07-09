@@ -18,9 +18,7 @@ import type {
 import type {
 	OpenaiControllerChat201,
 	OpenaiControllerCreate200Item,
-	OpenaiControllerCreate201,
 	OpenaiControllerCreateGraph200Item,
-	OpenaiControllerCreateGraph201,
 	OpenaiControllerSuggestionsParams,
 	RequestBodyOpenaiDto,
 } from "./models";
@@ -28,7 +26,7 @@ import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
 
 export const openaiControllerCreate = (requestBodyOpenaiDto: RequestBodyOpenaiDto) => {
-	return authInstance<OpenaiControllerCreate200Item[] | OpenaiControllerCreate201>({
+	return authInstance<OpenaiControllerCreate200Item[] | void>({
 		url: `/api/openai`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -93,7 +91,7 @@ export const useOpenaiControllerCreate = <
 	return useMutation(mutationOptions);
 };
 export const openaiControllerCreateGraph = (requestBodyOpenaiDto: RequestBodyOpenaiDto) => {
-	return authInstance<OpenaiControllerCreateGraph200Item[] | OpenaiControllerCreateGraph201>({
+	return authInstance<OpenaiControllerCreateGraph200Item[] | void>({
 		url: `/api/openai/graph`,
 		method: "POST",
 		headers: { "Content-Type": "application/json" },

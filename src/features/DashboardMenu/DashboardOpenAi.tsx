@@ -1,11 +1,12 @@
 import {
 	OpenaiControllerCreate200Item,
-	OpenaiControllerCreateGraph201,
+	OpenaiControllerCreateGraph200Item,
 } from "@api/services/models";
 import { useOpenaiControllerCreate, useOpenaiControllerCreateGraph } from "@api/services/openai";
 import {
-	Box,
 	Button,
+	Card,
+	CardContent,
 	Checkbox,
 	FormControl,
 	Grid,
@@ -56,9 +57,10 @@ const DashboardOpenAi = () => {
 	};
 	const formikRef = useRef<FormikProps<typeof initialValues>>(null);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [rows, setRows] = useState<any[]>([]);
+	const [rows, setRows] = useState<OpenaiControllerCreate200Item[]>([]);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [columns, setColumns] = useState<any[]>([]);
+	const [isError, setIsError] = useState(false);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleChange = (event: SelectChangeEvent<any[]>) => {
 		const {
@@ -90,15 +92,19 @@ const DashboardOpenAi = () => {
 			onError: (error) => {
 				AlertService.instance?.errorMessage("Error occured! please try again after 30secs");
 				console.error(error);
+				setIsError(true);
 			},
 		},
 	});
 
-	const [graphData, setGraphData] = useState<OpenaiControllerCreateGraph201>();
+	const [graphData, setGraphData] = useState<OpenaiControllerCreateGraph200Item | undefined>(
+		undefined,
+	);
 
 	const handleSubmit = async (values: typeof initialValues) => {
 		setRows([]);
 		setColumns([]);
+		setIsError(false);
 		setGraphData(undefined);
 		if (values?.type === "Table") {
 			try {
@@ -107,15 +113,17 @@ const DashboardOpenAi = () => {
 						prompt: values.prompt,
 					},
 				});
-				const keysData = a as OpenaiControllerCreate200Item[];
-				const keys = Object.keys(keysData[0]);
+				const keysData = a as OpenaiControllerCreate200Item;
+				const keys = Object.keys(keysData?.result[0]);
 
-				const rowsData = keysData?.map((item, index) => {
-					return {
-						id: item?.id ?? index + 1,
-						...item,
-					};
-				});
+				const rowsData = keysData?.result?.map(
+					(item: OpenaiControllerCreate200Item, index: number) => {
+						return {
+							id: item?.id ?? index + 1,
+							...item,
+						};
+					},
+				);
 
 				setRows(rowsData);
 
@@ -135,6 +143,7 @@ const DashboardOpenAi = () => {
 					return {
 						field: key,
 						headerName: snakeToReadableText(key),
+						minWidth: 150,
 						flex: 1,
 						show: true,
 					};
@@ -143,6 +152,7 @@ const DashboardOpenAi = () => {
 				setColumns(columns.filter((item) => item !== null));
 			} catch (error) {
 				setRows([]);
+				setIsError(true);
 				setColumns([]);
 				console.error(error);
 			}
@@ -153,16 +163,16 @@ const DashboardOpenAi = () => {
 						prompt: values.prompt,
 					},
 				});
-				const keysData = response as OpenaiControllerCreateGraph201;
-				setGraphData(keysData);
+				const keysData = response as OpenaiControllerCreateGraph200Item;
+				setGraphData(keysData?.graphData);
 			} catch (error) {
 				console.error(error);
+				setIsError(true);
 				setGraphData(undefined);
 			}
 		}
 	};
 
-	console.log("openAiApi", openAiApi);
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
@@ -225,7 +235,7 @@ const DashboardOpenAi = () => {
 				</Grid>
 			)}
 
-			{openAiApi?.isError && rows?.length === 0 && graphData === undefined && (
+			{openAiApi?.isError && isError && (
 				<Grid item xs={12}>
 					<NoDataFound message="Error occured! please try again after 30secs" />
 				</Grid>
@@ -238,51 +248,70 @@ const DashboardOpenAi = () => {
 					</Grid>
 				))}
 
-			{rows?.length > 0 && (
-				<Grid item xs={12}>
-					<FormControl sx={{ m: 1, width: 300 }}>
-						<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
-						<Select
-							labelId="demo-multiple-checkbox-label"
-							id="demo-multiple-checkbox"
-							multiple
-							value={columns?.filter((item) => item?.show)?.map((item) => item?.field)}
-							onChange={handleChange}
-							input={<OutlinedInput label="Column Filter" />}
-							renderValue={(selected) => selected.join(", ")}
-							MenuProps={MenuProps}
-						>
-							{columns.map((column) => (
-								<MenuItem key={column?.field} value={column?.field}>
-									<Checkbox
-										checked={
-											columns.some((item) => item?.field === column?.field && item?.show) as boolean
-										}
+			{rows?.length > 0 && openAiApi?.isSuccess && (
+				<Grid item xs={11}>
+					<Card
+						sx={{
+							width: {
+								xs: window.innerWidth - 20,
+								sm: "100%",
+								md: "100%",
+							},
+						}}
+					>
+						<CardContent>
+							<FormControl sx={{ m: 1, width: 300 }}>
+								<InputLabel id="demo-multiple-checkbox-label">Column Filter</InputLabel>
+								<Select
+									labelId="demo-multiple-checkbox-label"
+									id="demo-multiple-checkbox"
+									multiple
+									value={columns?.filter((item) => item?.show)?.map((item) => item?.field)}
+									onChange={handleChange}
+									input={<OutlinedInput label="Column Filter" />}
+									renderValue={(selected) => selected.join(", ")}
+									MenuProps={MenuProps}
+								>
+									{columns.map((column) => (
+										<MenuItem key={column?.field} value={column?.field}>
+											<Checkbox
+												checked={
+													columns.some(
+														(item) => item?.field === column?.field && item?.show,
+													) as boolean
+												}
+											/>
+											<ListItemText primary={column?.headerName} />
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+							<div style={{ width: "100%" }}>
+								<div style={{ height: 350, width: "100%" }}>
+									<DataGrid
+										rows={rows ?? []}
+										columns={columns?.filter((item) => item?.show) ?? []}
+										slots={{ toolbar: CustomToolbar }}
 									/>
-									<ListItemText primary={column?.headerName} />
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-					<DataGrid
-						rows={rows ?? []}
-						columns={columns?.filter((item) => item?.show) ?? []}
-						autoHeight
-						slots={{ toolbar: CustomToolbar }}
-					/>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
 				</Grid>
 			)}
 
-			{rows?.length === 0 && graphData === undefined && (
+			{rows?.length === 0 && openAiApi?.isSuccess && graphData === undefined && (
 				<Grid item xs={12}>
 					<LottieNoDataFound message="Please request your widget again." />
 				</Grid>
 			)}
-			{formikRef?.current?.values?.type === Constants.dashboardType.Graph && graphData && (
-				<Grid item sm={12}>
-					<BarChart graphData={graphData} />
-				</Grid>
-			)}
+			{formikRef?.current?.values?.type === Constants.dashboardType.Graph &&
+				graphData &&
+				openAiApi?.isSuccess && (
+					<Grid item sm={12}>
+						<BarChart graphData={graphData} />
+					</Grid>
+				)}
 		</Grid>
 	);
 };
