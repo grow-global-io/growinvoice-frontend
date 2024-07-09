@@ -30,6 +30,7 @@ import { stringToListDto } from "@shared/models/ListDto";
 import NoDataFound from "@shared/components/NoDataFound";
 import { AlertService } from "@shared/services/AlertService";
 import LottieNoDataFound from "@shared/components/LottieNoDataFound";
+import { TextFormField } from "@shared/components/FormFields/TextFormField";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -200,9 +201,7 @@ const DashboardOpenAi = () => {
 											name="prompt"
 											label="Tell us what you want to see?"
 											placeholder="Tell us what you want to see?"
-											component={AutocompleteField}
-											optionUrl="/api/openai/suggestions"
-											isGpt
+											component={TextFormField}
 										/>
 									</Grid>
 									<Grid

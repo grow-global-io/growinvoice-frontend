@@ -1,7 +1,7 @@
-import { OpenaiControllerCreateGraph201 } from "@api/services/models";
+import { OpenaiControllerCreateGraph200Item } from "@api/services/models";
 import ReactApexChart from "react-apexcharts";
 
-const BarChart = ({ graphData }: { graphData: OpenaiControllerCreateGraph201 }) => {
+const BarChart = ({ graphData }: { graphData: OpenaiControllerCreateGraph200Item }) => {
 	return (
 		<div id="chart">
 			<ReactApexChart
