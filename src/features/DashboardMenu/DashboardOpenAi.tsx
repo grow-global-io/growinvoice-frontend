@@ -42,7 +42,6 @@ import {
 	useDashboardsControllerCreate,
 } from "@api/services/dashboards";
 import { useAuthStore } from "@store/auth";
-import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ITEM_HEIGHT = 48;
@@ -65,7 +64,6 @@ export function CustomToolbar() {
 }
 
 const DashboardOpenAi = () => {
-	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { open, handleClickOpen, handleClose } = useDialog();
 	const { user } = useAuthStore();
