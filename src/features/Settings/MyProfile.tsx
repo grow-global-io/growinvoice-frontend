@@ -7,12 +7,17 @@ import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { Constants } from "@shared/constants";
 import SettingFormHeading from "./SettingFormHeading";
 import { useAuthStore } from "@store/auth";
-import { useCurrencyControllerFindAll } from "@api/services/currency";
+import {
+	getCurrencyControllerFindAllQueryKey,
+	useCurrencyControllerFindAll,
+} from "@api/services/currency";
 import { useUserControllerUpdateUser } from "@api/services/users";
 import { useRef } from "react";
 import Loader from "@shared/components/Loader";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MyProfile = () => {
+	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const currencyList = useCurrencyControllerFindAll();
 	const userUpdate = useUserControllerUpdateUser();
@@ -42,6 +47,9 @@ const MyProfile = () => {
 		await userUpdate.mutateAsync({
 			id: id,
 			data: values,
+		});
+		queryClient?.refetchQueries({
+			queryKey: getCurrencyControllerFindAllQueryKey(),
 		});
 		actions.resetForm();
 	};

@@ -114,6 +114,7 @@ export * from "./omitCreateQuotationProductsDto";
 export * from "./openaiControllerChat201";
 export * from "./openaiControllerCreate200Item";
 export * from "./openaiControllerCreateGraph200Item";
+export * from "./openaiControllerDashboardDataGet201";
 export * from "./paymentDetails";
 export * from "./paymentDetailsDto";
 export * from "./paymentDetailsDtoPaymentType";

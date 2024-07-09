@@ -13,6 +13,7 @@ export interface AIDashboardDto {
 	isExist: boolean;
 	prompt: string;
 	query: string;
+	title: string;
 	type: AIDashboardDtoType;
 	/** @nullable */
 	updatedAt: string | null;

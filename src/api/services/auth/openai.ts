@@ -15,6 +15,7 @@ import type {
 	OpenaiControllerChat201,
 	OpenaiControllerCreate200Item,
 	OpenaiControllerCreateGraph200Item,
+	OpenaiControllerDashboardDataGet201,
 	RequestBodyOpenaiDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
@@ -209,6 +210,69 @@ export const useOpenaiControllerChat = <TError = ErrorType<unknown>, TContext = 
 	TContext
 > => {
 	const mutationOptions = getOpenaiControllerChatMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const openaiControllerDashboardDataGet = (id: string) => {
+	return authInstance<OpenaiControllerDashboardDataGet201>({
+		url: `/api/openai/dashboardDataGet/${id}`,
+		method: "POST",
+	});
+};
+
+export const getOpenaiControllerDashboardDataGetMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+		TError,
+		{ id: string },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+	TError,
+	{ id: string },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+		{ id: string }
+	> = (props) => {
+		const { id } = props ?? {};
+
+		return openaiControllerDashboardDataGet(id);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type OpenaiControllerDashboardDataGetMutationResult = NonNullable<
+	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>
+>;
+
+export type OpenaiControllerDashboardDataGetMutationError = ErrorType<unknown>;
+
+export const useOpenaiControllerDashboardDataGet = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+		TError,
+		{ id: string },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof openaiControllerDashboardDataGet>>,
+	TError,
+	{ id: string },
+	TContext
+> => {
+	const mutationOptions = getOpenaiControllerDashboardDataGetMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };

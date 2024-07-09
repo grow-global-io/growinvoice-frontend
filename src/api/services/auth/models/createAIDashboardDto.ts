@@ -10,6 +10,7 @@ import type { CreateAIDashboardDtoType } from "./createAIDashboardDtoType";
 export interface CreateAIDashboardDto {
 	prompt: string;
 	query: string;
+	title: string;
 	type: CreateAIDashboardDtoType;
 	user_id: string;
 }

@@ -43,6 +43,7 @@ const QuotationSettings = () => {
 	const { user } = useAuthStore();
 	const { open, handleClickOpen, handleClose } = useDialog();
 	const quotationSettings = useQuotationsettingsControllerFindFirst();
+	console.log(quotationSettings, "quotation setting");
 	const quotationTemplates = useQuotationtemplateControllerFindAll();
 	const quotationSettingCreate = useQuotationsettingsControllerCreate();
 	const quotationSettingUpdate = useQuotationsettingsControllerUpdate();

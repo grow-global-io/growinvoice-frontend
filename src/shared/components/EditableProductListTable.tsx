@@ -113,13 +113,17 @@ export default function FullFeaturedCrudGrid({
 	};
 
 	const handleCancelClick = (id: GridRowId) => () => {
-		if (rows.filter((row) => row.id !== id)?.length === 0) {
-			setErrorText("At least one product is required");
-		}
+		// if (rows.filter((row) => row.id !== id)?.length === 0) {
+		// 	setErrorText("At least one product is required");
+
+		// }
+		setRows(rows.filter((row) => row.id !== id));
+		handleTotal(rows.filter((row) => row.id !== id));
 		setRowModesModel({
 			...rowModesModel,
 			[id]: { mode: GridRowModes.View, ignoreModifications: true },
 		});
+		setErrorText("");
 	};
 
 	const processRowUpdate = (newRow: GridRowModel) => {
