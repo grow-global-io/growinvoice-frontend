@@ -7,6 +7,7 @@ import { useUserControllerLoginUser } from "@api/services/users";
 import { useAuthStore } from "@store/auth";
 import { useNavigate } from "react-router-dom";
 import { Constants } from "@shared/constants";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
 	const navigation = useNavigate();
