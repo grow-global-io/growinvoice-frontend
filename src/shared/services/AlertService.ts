@@ -1,5 +1,4 @@
-import { AlertProps } from "@mui/material";
-import { useAlertStore } from "@store/alert";
+import { toast } from "react-toastify";
 
 export class AlertService {
 	private static _instance: AlertService;
@@ -13,15 +12,13 @@ export class AlertService {
 
 	private constructor() {}
 
-	private showAlert(message: string, severity: AlertProps["severity"]): void {
-		useAlertStore.getState().setAlert(true, message, severity);
-	}
-
 	public successMessage(message: string): void {
-		this.showAlert(message, "success");
+		toast.success(message);
 	}
 
 	public errorMessage(message: string): void {
-		this.showAlert(message, "error");
+		toast.error(message, {
+			autoClose: 15000,
+		});
 	}
 }

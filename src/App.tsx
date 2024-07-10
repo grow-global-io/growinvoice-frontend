@@ -1,19 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { protectedRoutes, unProtectedRoutes } from "./routes";
-import Typography from "@mui/material/Typography";
-import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
 import { useAuthStore } from "@store/auth";
-import { useAlertStore } from "@store/alert";
 import { useLoaderStore } from "@store/loader";
 import Loader from "@shared/components/Loader";
 import NotFoundPage from "@pages/NotFoundPage";
 import ConfirmDialog from "@shared/components/ConfirmDialog";
 import { useEffectOnce } from "@shared/hooks/useEffectOnce";
-import { AlertTitle } from "@mui/material";
 import Navbar from "@layout/navbar/Home/Navbar";
 import GetStartedDialog from "@features/Dashboard/GetStartedDialog";
 import { useCreateProductStore } from "@store/createProductStore";
@@ -25,6 +20,8 @@ import { useCreatePaymentStore } from "@store/createPaymentStore";
 import { PaymentDrawer } from "@features/Payments/CreatePayments";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
 import { VendorsDrawer } from "@features/Vendor/CreateVendors";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -104,21 +101,11 @@ function AppContainer() {
 }
 
 function App() {
-	const [open, setOpen] = useState(false);
 	const [backdropOpen, setBackdropOpen] = useState(false);
 	const [openProductForm, setOpenProductForm] = useState(false);
 	const [openCustomerForm, setOpenCustomerForm] = useState(false);
 	const [openPaymentForm, setOpenPaymentForm] = useState(false);
 	const [openVendorsForm, setOpenVendorsForm] = useState(false);
-
-	const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-		console.log("handleClose", event);
-		if (reason === "clickaway") {
-			return;
-		}
-
-		setOpen(false);
-	};
 
 	const handleCloseProductForm = () => {
 		setOpenProductForm(false);
@@ -136,7 +123,6 @@ function App() {
 		setOpenVendorsForm(false);
 	};
 
-	const alertRef = useRef(useAlertStore.getState());
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
 	const createCustomer = useRef(useCreateCustomerStore.getState());
@@ -144,10 +130,6 @@ function App() {
 	const createVendors = useRef(useCreateVendorsStore.getState());
 
 	useEffect(() => {
-		const unsubscribeAlert = useAlertStore.subscribe((state) => {
-			alertRef.current = state;
-			setOpen(state.open);
-		});
 		const unsubscribeLoading = useLoaderStore.subscribe((state) => {
 			loaderRef.current = state;
 			setBackdropOpen(state.open);
@@ -173,7 +155,6 @@ function App() {
 		});
 
 		return () => {
-			unsubscribeAlert();
 			unsubscribeLoading();
 			unsubscribeProductForm();
 			unsubscribeCustomerForm();
@@ -185,7 +166,7 @@ function App() {
 	return (
 		<>
 			<AppContainer />
-			<Snackbar
+			{/* <Snackbar
 				open={open}
 				autoHideDuration={3000}
 				anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -195,7 +176,18 @@ function App() {
 					<AlertTitle sx={{ textTransform: "capitalize" }}>{alertRef.current.severity}</AlertTitle>
 					<Typography>{alertRef.current.message}</Typography>
 				</Alert>
-			</Snackbar>
+			</Snackbar> */}
+
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				stacked
+			/>
 			<Backdrop
 				sx={{
 					color: "custom.white",

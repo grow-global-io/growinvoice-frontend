@@ -1,4 +1,6 @@
+import { environment } from "@enviroment";
 import { AlertProps } from "@mui/material";
+import { mountStoreDevtool } from "simple-zustand-devtools";
 import { createStore } from "zustand/vanilla";
 // import { mountStoreDevtool } from "simple-zustand-devtools";
 // import { environment } from "../environment";
@@ -17,6 +19,6 @@ export const useAlertStore = createStore<AlertStore>((set) => ({
 	setAlert: (open, message, severity) => set({ open, message, severity }),
 }));
 
-// if (environment.production === false) {
-// 	mountStoreDevtool("Alert", useAlertStore);
-// }
+if (environment.production === false) {
+	mountStoreDevtool("Alert", useAlertStore);
+}
