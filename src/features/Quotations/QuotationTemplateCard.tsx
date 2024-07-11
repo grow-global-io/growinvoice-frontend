@@ -1,26 +1,26 @@
 import Button from "@mui/material/Button";
-import { FileDownloadOutlined, ErrorOutline, Check } from "@mui/icons-material";
+import { FileDownloadOutlined } from "@mui/icons-material";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useAuthStore } from "@store/auth";
-import { useInvoiceControllerInvoicePublicFindOne } from "@api/services/invoice";
+import { useQuotationControllerQuotationPublicFindOne } from "@api/services/quotation";
 import Loader from "@shared/components/Loader";
 import { parseDateStringToFormat } from "@shared/formatter";
 
-const InvoiceTemplateCard = ({
-	invoiceId,
+const QuotationTemplateCard = ({
+	quotationId,
 	downloadfunc,
 }: {
-	invoiceId: string;
+	quotationId: string;
 	downloadfunc: () => void;
 }) => {
 	const { user } = useAuthStore();
-	const invoiceFindOne = useInvoiceControllerInvoicePublicFindOne(invoiceId ?? "", {
+	const getQuotationData = useQuotationControllerQuotationPublicFindOne(quotationId ?? "", {
 		query: {
-			enabled: invoiceId !== undefined,
+			enabled: quotationId !== undefined,
 		},
 	});
-	if (invoiceFindOne.isLoading) return <Loader />;
 
+	if (getQuotationData.isLoading) return <Loader />;
 	return (
 		<Card sx={{ display: { xs: "block", md: "none" } }}>
 			<CardContent>
@@ -28,47 +28,31 @@ const InvoiceTemplateCard = ({
 					Hi, {user?.name}!
 				</Typography>
 				<Typography variant="h5" textAlign={"center"} color={"secondary.dark"}>
-					Invoice from {user?.company?.[0]?.name}
+					Quotation from {user?.company?.[0]?.name}
 				</Typography>
-				<Box display={"flex"} justifyContent={"center"} alignItems={"center"} my={1}>
-					{invoiceFindOne?.data?.paid_status !== "Unpaid" ? (
-						<Check sx={{ fontSize: "15px", mr: 1, color: "custom.GreenBtnColor" }} />
-					) : (
-						<ErrorOutline sx={{ fontSize: "15px", mr: 1, color: "custom.apiBtnBgColor" }} />
-					)}
-					<Typography
-						color={
-							invoiceFindOne?.data?.paid_status !== "Unpaid"
-								? "custom.GreenBtnColor"
-								: "custom.apiBtnBgColor"
-						}
-					>
-						{invoiceFindOne?.data?.paid_status}
-					</Typography>
-				</Box>
 
-				<Typography variant="h6" textAlign={"center"} color={"custom.grayColor"}>
+				<Typography variant="h6" textAlign={"center"} color={"custom.grayColor"} mt={2}>
 					Total Amount
 				</Typography>
 				<Typography variant="h1" textAlign={"center"} color={"secondary.dark"}>
-					{invoiceFindOne?.data?.total}
+					{getQuotationData?.data?.total}
 				</Typography>
 				<Box my={2}>
 					<Box display={"flex"} justifyContent={"space-between"} my={0.5}>
 						<Typography variant="h6" fontWeight={500} color={"secondary.dark"}>
-							Invoice #
+							Quotation #
 						</Typography>
 						<Typography variant="h6" color={"secondary.dark"}>
 							INV-
-							{invoiceFindOne?.data?.invoice_number}
+							{getQuotationData?.data?.quatation_number}
 						</Typography>
 					</Box>
 					<Box display={"flex"} justifyContent={"space-between"} my={0.5}>
 						<Typography variant="h6" fontWeight={500} color={"secondary.dark"}>
-							Invoice Date
+							Quotation Date
 						</Typography>
 						<Typography variant="h6" color={"secondary.dark"}>
-							{parseDateStringToFormat(invoiceFindOne?.data?.date ?? "")}
+							{parseDateStringToFormat(getQuotationData?.data?.date ?? "")}
 						</Typography>
 					</Box>
 				</Box>
@@ -88,4 +72,4 @@ const InvoiceTemplateCard = ({
 	);
 };
 
-export default InvoiceTemplateCard;
+export default QuotationTemplateCard;

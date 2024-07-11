@@ -28,6 +28,7 @@ const ProductTableList = () => {
 			field: "name",
 			headerName: "Product",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color="secondary">
@@ -40,6 +41,7 @@ const ProductTableList = () => {
 			field: "unit",
 			headerName: "Unit",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography textTransform={"capitalize"}>{params?.row?.unit?.name}</Typography>;
 			},
@@ -48,6 +50,7 @@ const ProductTableList = () => {
 			field: "price",
 			headerName: "Price",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -65,6 +68,7 @@ const ProductTableList = () => {
 			field: "createdAt",
 			headerName: "Created At",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{timeAgo(params.value)}</Typography>;
 			},
@@ -73,6 +77,7 @@ const ProductTableList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
 				<Tooltip title="Edit Product" key={params.row?.id}>

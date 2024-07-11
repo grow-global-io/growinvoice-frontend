@@ -26,6 +26,7 @@ const InvoiceTableAllList = () => {
 			field: "invoice_number",
 			headerName: "Invoice Number",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color={"secondary"}>
@@ -38,6 +39,7 @@ const InvoiceTableAllList = () => {
 			field: "date",
 			headerName: "Invoice Date",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
 			},
@@ -46,6 +48,7 @@ const InvoiceTableAllList = () => {
 			field: "due_date",
 			headerName: "Due Date",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
 			},
@@ -54,6 +57,7 @@ const InvoiceTableAllList = () => {
 			field: "status",
 			headerName: "Status",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -68,6 +72,7 @@ const InvoiceTableAllList = () => {
 			field: "due_amount",
 			headerName: "Due Amount",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
@@ -78,6 +83,7 @@ const InvoiceTableAllList = () => {
 			field: "paid_amount",
 			headerName: "Paid Amount",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography>{currencyFormatter(params?.value, user?.currency?.short_code)}</Typography>
@@ -89,6 +95,7 @@ const InvoiceTableAllList = () => {
 			field: "paid_status",
 			headerName: "Paid Status",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -99,30 +106,12 @@ const InvoiceTableAllList = () => {
 				);
 			},
 		},
-		{
-			field: "due_amount",
-			headerName: "Total Due Amount",
-			flex: 1,
-			renderCell: (params) => {
-				return (
-					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
-				);
-			},
-		},
-		{
-			field: "paid_amount",
-			headerName: "Total Paid Amount",
-			flex: 1,
-			renderCell: (params) => {
-				return (
-					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
-				);
-			},
-		},
+
 		{
 			field: "total",
 			headerName: "Total",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
@@ -134,6 +123,7 @@ const InvoiceTableAllList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
 				<Tooltip title="View Invoice" key={params.row?.id}>

@@ -11,6 +11,7 @@ const VendorsTableList = () => {
 			field: "id",
 			headerName: "ID",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="body1" color="secondary">
@@ -23,6 +24,7 @@ const VendorsTableList = () => {
 			field: "displayName",
 			headerName: "Display Name",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="body1" color="secondary">
@@ -35,6 +37,7 @@ const VendorsTableList = () => {
 			field: "contactName",
 			headerName: "Contact Name",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -43,6 +46,7 @@ const VendorsTableList = () => {
 			field: "expenses",
 			headerName: "Expenses",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -51,6 +55,7 @@ const VendorsTableList = () => {
 			field: "createdAt",
 			headerName: "Created At",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -59,6 +64,7 @@ const VendorsTableList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
 				<CustomIconButton key={params.row?.id} src={VisibilityOutlinedIcon} />,

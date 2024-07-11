@@ -24,6 +24,8 @@ const QuotationTableList = () => {
 			field: "quatation_number",
 			headerName: "Quation Number",
 			flex: 1,
+			minWidth: 150,
+
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color={"secondary"}>
@@ -36,6 +38,7 @@ const QuotationTableList = () => {
 			field: "date",
 			headerName: "Quotaion Date",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
 			},
@@ -44,6 +47,7 @@ const QuotationTableList = () => {
 			field: "expiry_at",
 			headerName: "Expiry AT",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
 			},
@@ -52,6 +56,7 @@ const QuotationTableList = () => {
 			field: "status",
 			headerName: "Status",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -67,6 +72,7 @@ const QuotationTableList = () => {
 			field: "total",
 			headerName: "Total",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
@@ -77,6 +83,7 @@ const QuotationTableList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
 				<Tooltip title="View Quotation" key={params.row?.id}>

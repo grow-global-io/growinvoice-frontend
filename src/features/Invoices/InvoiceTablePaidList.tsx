@@ -21,6 +21,7 @@ const InvoiceTablePaidList = () => {
 			field: "invoice_number",
 			headerName: "Invoice Number",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color={"secondary"}>
@@ -33,6 +34,7 @@ const InvoiceTablePaidList = () => {
 			field: "date",
 			headerName: "Invoice Date",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params?.value)}</Typography>;
 			},
@@ -41,6 +43,7 @@ const InvoiceTablePaidList = () => {
 			field: "due_date",
 			headerName: "Due Date",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{parseDateStringToFormat(params?.value)}</Typography>;
 			},
@@ -49,6 +52,7 @@ const InvoiceTablePaidList = () => {
 			field: "status",
 			headerName: "Status",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -63,6 +67,7 @@ const InvoiceTablePaidList = () => {
 			field: "paid_status",
 			headerName: "Paid Status",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -78,6 +83,7 @@ const InvoiceTablePaidList = () => {
 
 			headerName: "Total Paid Amount",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography>{currencyFormatter(params.value, user?.currency?.short_code)}</Typography>
@@ -88,6 +94,7 @@ const InvoiceTablePaidList = () => {
 			field: "total",
 			headerName: "Total",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography>{currencyFormatter(params?.value, user?.currency?.short_code)}</Typography>
@@ -99,6 +106,7 @@ const InvoiceTablePaidList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => (
 				<CustomIconButton
 					src={VisibilityIcon}
