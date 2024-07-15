@@ -19,12 +19,82 @@ import type {
 	CreatePaymentsDto,
 	Payments,
 	PaymentsControllerCreate200,
+	PaymentsControllerStripePaymentParams,
+	PaymentsControllerSuccess200,
+	PaymentsControllerSuccessParams,
 	PaymentsControllerUpdate200,
 	SuccessResponseDto,
 	UpdatePaymentsDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
+
+export const paymentsControllerSuccess = (
+	params: PaymentsControllerSuccessParams,
+	signal?: AbortSignal,
+) => {
+	return authInstance<PaymentsControllerSuccess200>({
+		url: `/api/payments/success`,
+		method: "GET",
+		params,
+		signal,
+	});
+};
+
+export const getPaymentsControllerSuccessQueryKey = (params: PaymentsControllerSuccessParams) => {
+	return [`/api/payments/success`, ...(params ? [params] : [])] as const;
+};
+
+export const getPaymentsControllerSuccessQueryOptions = <
+	TData = Awaited<ReturnType<typeof paymentsControllerSuccess>>,
+	TError = ErrorType<unknown>,
+>(
+	params: PaymentsControllerSuccessParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerSuccess>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getPaymentsControllerSuccessQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentsControllerSuccess>>> = ({
+		signal,
+	}) => paymentsControllerSuccess(params, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof paymentsControllerSuccess>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type PaymentsControllerSuccessQueryResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerSuccess>>
+>;
+export type PaymentsControllerSuccessQueryError = ErrorType<unknown>;
+
+export const usePaymentsControllerSuccess = <
+	TData = Awaited<ReturnType<typeof paymentsControllerSuccess>>,
+	TError = ErrorType<unknown>,
+>(
+	params: PaymentsControllerSuccessParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerSuccess>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getPaymentsControllerSuccessQueryOptions(params, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
 
 export const paymentsControllerCreate = (createPaymentsDto: CreatePaymentsDto) => {
 	return authInstance<PaymentsControllerCreate200 | void>({
@@ -325,6 +395,66 @@ export const usePaymentsControllerRemove = <
 	TContext
 > => {
 	const mutationOptions = getPaymentsControllerRemoveMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const paymentsControllerStripePayment = (params: PaymentsControllerStripePaymentParams) => {
+	return authInstance<string>({ url: `/api/payments/stripePayment`, method: "POST", params });
+};
+
+export const getPaymentsControllerStripePaymentMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof paymentsControllerStripePayment>>,
+		TError,
+		{ params: PaymentsControllerStripePaymentParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof paymentsControllerStripePayment>>,
+	TError,
+	{ params: PaymentsControllerStripePaymentParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof paymentsControllerStripePayment>>,
+		{ params: PaymentsControllerStripePaymentParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return paymentsControllerStripePayment(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PaymentsControllerStripePaymentMutationResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerStripePayment>>
+>;
+
+export type PaymentsControllerStripePaymentMutationError = ErrorType<unknown>;
+
+export const usePaymentsControllerStripePayment = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof paymentsControllerStripePayment>>,
+		TError,
+		{ params: PaymentsControllerStripePaymentParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof paymentsControllerStripePayment>>,
+	TError,
+	{ params: PaymentsControllerStripePaymentParams },
+	TContext
+> => {
+	const mutationOptions = getPaymentsControllerStripePaymentMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };

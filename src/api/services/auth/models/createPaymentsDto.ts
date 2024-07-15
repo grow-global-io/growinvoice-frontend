@@ -5,12 +5,14 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { CreatePaymentsDtoPaymentType } from "./createPaymentsDtoPaymentType";
 
 export interface CreatePaymentsDto {
 	amount: number;
 	invoice_id: string;
 	/** @nullable */
 	notes?: string | null;
+	payment_type?: CreatePaymentsDtoPaymentType;
 	paymentDate?: string;
 	paymentDetails_id: string;
 	/** @nullable */

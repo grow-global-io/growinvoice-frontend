@@ -39,6 +39,14 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 			path: "/setting/productunit",
 		},
 		{
+			menuName: "Payment Details",
+			path: "/setting/paymentdetails",
+		},
+		{
+			menuName: "Gateway Details",
+			path: "/setting/gatewaydetails",
+		},
+		{
 			menuName: "HSN Code",
 			path: "/setting/hsncode",
 		},

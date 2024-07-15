@@ -30,6 +30,8 @@ import QuotationTemplatePage from "@pages/QuotationTemplatePage";
 import PaymentsListPage from "@pages/PaymentsListPage";
 import VendorsListPage from "@pages/VendorsListPage";
 import PlansPage from "@pages/PlansPage";
+import PaymentDetailsPage from "@pages/PaymentDetailsPage";
+import GateWayDetailsPage from "@pages/GateWayDetailsPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -189,5 +191,13 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/plan/planspage",
 		Component: PlansPage,
+	},
+	{
+		path: "/setting/paymentdetails",
+		Component: PaymentDetailsPage,
+	},
+	{
+		path: "/setting/gatewaydetails",
+		Component: GateWayDetailsPage,
 	},
 ];

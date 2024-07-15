@@ -6,9 +6,11 @@ import CloseIcon from "@mui/icons-material/Close";
 const PaymentDetailsDrawer = ({
 	open,
 	handleClose,
+	paymentId,
 }: {
 	open: boolean;
 	handleClose: () => void;
+	paymentId?: string;
 }) => {
 	return (
 		<Drawer anchor="right" open={open} onClose={handleClose}>
@@ -21,7 +23,7 @@ const PaymentDetailsDrawer = ({
 						gap: 1,
 					}}
 				>
-					<img src={Constants.customImages.CustomerImg} alt="Invoice Icon" /> Add Payment Details
+					<img src={Constants.customImages.CustomerImg} alt="Invoice Icon" /> Payment Details
 				</Typography>
 				<IconButton
 					sx={{
@@ -33,7 +35,7 @@ const PaymentDetailsDrawer = ({
 				</IconButton>
 			</Grid>
 			<Divider />
-			<PaymentDetailsForm handleClose={handleClose} />
+			<PaymentDetailsForm handleClose={handleClose} paymentId={paymentId} />
 		</Drawer>
 	);
 };

@@ -5,6 +5,7 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { PaymentsDtoPaymentType } from "./paymentsDtoPaymentType";
 
 export interface PaymentsDto {
 	amount: number;
@@ -14,6 +15,7 @@ export interface PaymentsDto {
 	isExist: boolean;
 	/** @nullable */
 	notes: string | null;
+	payment_type: PaymentsDtoPaymentType;
 	paymentDate: string;
 	paymentDetails_id: string;
 	/** @nullable */

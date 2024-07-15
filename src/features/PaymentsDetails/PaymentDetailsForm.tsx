@@ -9,6 +9,8 @@ import { Field, Form, Formik, FormikHelpers } from "formik";
 import {
 	getPaymentdetailsControllerFindAllQueryKey,
 	usePaymentdetailsControllerCreate,
+	usePaymentdetailsControllerFindOne,
+	usePaymentdetailsControllerUpdate,
 } from "@api/services/paymentdetails";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -16,6 +18,7 @@ import {
 	getInvoiceControllerFindDueInvoicesQueryKey,
 	getInvoiceControllerFindPaidInvoicesQueryKey,
 } from "@api/services/invoice";
+import Loader from "@shared/components/Loader";
 
 const validationSchema: yup.Schema<CreatePaymentDetailsDto> = yup.object().shape({
 	paymentType: yup
@@ -86,22 +89,34 @@ const validationSchema: yup.Schema<CreatePaymentDetailsDto> = yup.object().shape
 	user_id: yup.string().required("User is required"),
 });
 
-const PaymentDetailsForm = ({ handleClose }: { handleClose: () => void }) => {
+const PaymentDetailsForm = ({
+	handleClose,
+	paymentId,
+}: {
+	handleClose: () => void;
+	paymentId?: string;
+}) => {
+	const updatePayment = usePaymentdetailsControllerUpdate();
 	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const createPayment = usePaymentdetailsControllerCreate();
+	const editPayment = usePaymentdetailsControllerFindOne(paymentId ?? "", {
+		query: {
+			enabled: !!paymentId,
+		},
+	});
 	const initialValues: CreatePaymentDetailsDto = {
-		account_no: "",
-		bicNumber: "",
-		ibanNumber: "",
-		ifscCode: "",
-		mollieId: "",
-		paymentType: "UPI",
-		paypalId: "",
-		razorpayId: "",
-		stripeId: "",
-		swiftCode: "",
-		upiId: "",
+		account_no: editPayment.data?.account_no ?? "",
+		bicNumber: editPayment?.data?.bicNumber ?? "",
+		ibanNumber: editPayment?.data?.ibanNumber ?? "",
+		ifscCode: editPayment?.data?.ifscCode ?? "",
+		mollieId: editPayment?.data?.mollieId ?? "",
+		paymentType: editPayment?.data?.paymentType ?? "UPI",
+		paypalId: editPayment?.data?.paypalId ?? "",
+		razorpayId: editPayment?.data?.razorpayId ?? "",
+		stripeId: editPayment?.data?.stripeId ?? "",
+		swiftCode: editPayment?.data?.swiftCode ?? "",
+		upiId: editPayment?.data?.upiId ?? "",
 		user_id: user?.id ?? "",
 	};
 
@@ -110,9 +125,16 @@ const PaymentDetailsForm = ({ handleClose }: { handleClose: () => void }) => {
 		actions: FormikHelpers<CreatePaymentDetailsDto>,
 	) => {
 		actions.setSubmitting(true);
-		await createPayment.mutateAsync({
-			data: values,
-		});
+		if (!paymentId) {
+			await createPayment.mutateAsync({
+				data: values,
+			});
+		} else {
+			await updatePayment.mutateAsync({
+				id: paymentId,
+				data: values,
+			});
+		}
 		queryClient.invalidateQueries({
 			queryKey: getPaymentdetailsControllerFindAllQueryKey(),
 		});
@@ -130,6 +152,10 @@ const PaymentDetailsForm = ({ handleClose }: { handleClose: () => void }) => {
 		handleClose();
 		actions.setSubmitting(false);
 	};
+
+	if (paymentId && editPayment.isLoading) {
+		return <Loader />;
+	}
 
 	return (
 		<Box sx={{ width: { sm: "400px" } }} role="presentation" padding={2}>

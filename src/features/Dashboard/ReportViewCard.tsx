@@ -21,7 +21,7 @@ const ReportViewCard = ({
 	const rows = useMemo(() => {
 		if (dashboard.data && type === "Table") {
 			const keysData = dashboard.data as OpenaiControllerDashboardDataGet200;
-
+			if (keysData.length === 0) return [];
 			const rowsData = keysData?.map((item: OpenaiControllerDashboardDataGet200, index: number) => {
 				return {
 					id: item?.id ?? index + 1,
@@ -30,11 +30,12 @@ const ReportViewCard = ({
 			});
 			return rowsData;
 		}
-	}, [dashboard.data]);
+	}, [dashboard.data, type]);
 
 	const columns = useMemo(() => {
 		if (dashboard.data && type === "Table") {
 			const keysData = dashboard.data as OpenaiControllerDashboardDataGet200;
+			if (keysData.length === 0) return [];
 			const keys = Object.keys(keysData[0]);
 
 			const columns = keys
@@ -60,7 +61,7 @@ const ReportViewCard = ({
 				.filter((item) => item !== null) as GridColDef[];
 			return columns;
 		}
-	}, [dashboard.data]);
+	}, [dashboard.data, type]);
 
 	if (dashboard.isLoading || dashboard?.isRefetching) return <Loader />;
 	if (dashboard.isError) return <LottieNoDataFound />;

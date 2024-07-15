@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 import type { Invoice } from "./invoice";
+import type { PaymentsPaymentType } from "./paymentsPaymentType";
 import type { PaymentDetails } from "./paymentDetails";
 import type { User } from "./user";
 
@@ -18,6 +19,7 @@ export interface Payments {
 	isExist: boolean;
 	/** @nullable */
 	notes: string | null;
+	payment_type: PaymentsPaymentType;
 	paymentDate: string;
 	paymentDetails?: PaymentDetails;
 	paymentDetails_id: string;

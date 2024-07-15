@@ -71,7 +71,14 @@ const Overview = () => {
 						>
 							<CardContent>
 								<Box display={"flex"} justifyContent={"space-between"} mb={2}>
-									<Typography variant="h4">{dashboard?.title}</Typography>
+									<Typography
+										variant="h4"
+										sx={{
+											width: "50%",
+										}}
+									>
+										{dashboard?.title}
+									</Typography>
 									<Box>
 										<CustomIconButton
 											src={DeleteIcon}

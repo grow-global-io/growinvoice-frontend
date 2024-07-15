@@ -147,7 +147,11 @@ export const usePaymentdetailsControllerFindAll = <
 };
 
 export const paymentdetailsControllerFindOne = (id: string, signal?: AbortSignal) => {
-	return authInstance<void>({ url: `/api/paymentdetails/${id}`, method: "GET", signal });
+	return authInstance<PaymentDetailsDto>({
+		url: `/api/paymentdetails/${id}`,
+		method: "GET",
+		signal,
+	});
 };
 
 export const getPaymentdetailsControllerFindOneQueryKey = (id: string) => {
