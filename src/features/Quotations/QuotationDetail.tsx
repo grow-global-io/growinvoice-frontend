@@ -28,9 +28,9 @@ import {
 	useQuotationControllerTest,
 } from "@api/services/quotation";
 import { useConfirmDialogStore } from "@store/confirmDialog";
-import InvoiceTemplateCard from "@features/Invoices/InvoiceTemplateCard";
 import { useQuotationHook } from "./QuotationHooks/useQuotationHook";
 import { Constants } from "@shared/constants";
+import QuotationTemplateCard from "./QuotationTemplateCard";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -427,9 +427,8 @@ const QuotationDetail = ({
 					}}
 				></Box>
 			) : (
-				<InvoiceTemplateCard
-					id={quotationId}
-					templateName="Quotation"
+				<QuotationTemplateCard
+					quotationId={quotationId}
 					downloadfunc={() => {
 						if (isMobile) {
 							generatePdfFromHtml({

@@ -212,10 +212,15 @@ const DashboardOpenAi = () => {
 		setGraphData(undefined);
 		formikRef.current?.resetForm({
 			values: {
-				...formikRef.current?.values,
-				prompt: formikRef.current?.values.prompt, // Keep the prompt value unchanged
+				...initialValues, // Reset all values to initial values
 			},
 		});
+		// formikRef.current?.resetForm({
+		// 	values: {
+		// 		...formikRef.current?.values,
+		// 		prompt: formikRef.current?.values.prompt, // Keep the prompt value unchanged
+		// 	},
+		// });
 	};
 
 	const createDashboard = useDashboardsControllerCreate();
@@ -228,10 +233,12 @@ const DashboardOpenAi = () => {
 				type: graphData ? CreateAIDashboardDtoType?.Chart : CreateAIDashboardDtoType?.Table,
 			},
 		});
-		queryClient.refetchQueries({
+
+		await queryClient.refetchQueries({
 			queryKey: getDashboardsControllerFindAllQueryKey(),
 		});
 		handleClose();
+		handleReset();
 	};
 
 	return (
@@ -386,7 +393,7 @@ const DashboardOpenAi = () => {
 				</>
 			)}
 
-			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
+			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
 				<Formik initialValues={initialValues} onSubmit={handleSubmitData}>
 					{(formik) => {
 						return (

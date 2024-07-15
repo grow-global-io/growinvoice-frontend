@@ -14,6 +14,7 @@ const PaymentsTableList = () => {
 			field: "paymentDate",
 			headerName: "Payment Date",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="body1" color="secondary">
@@ -26,6 +27,7 @@ const PaymentsTableList = () => {
 			field: "amount",
 			headerName: "Payment Amount",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Chip
@@ -43,6 +45,7 @@ const PaymentsTableList = () => {
 			field: "paymentMethod",
 			headerName: "Payment Method",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography textTransform={"capitalize"}>
@@ -55,6 +58,7 @@ const PaymentsTableList = () => {
 			field: "invoiceNumber",
 			headerName: "Invoice Number",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography textTransform={"capitalize"}>

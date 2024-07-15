@@ -410,8 +410,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 				></Box>
 			) : (
 				<InvoiceTemplateCard
-					id={invoiceId}
-					templateName="Invoice"
+					invoiceId={invoiceId}
 					downloadfunc={() => {
 						if (isMobile) {
 							generatePdfFromHtml({

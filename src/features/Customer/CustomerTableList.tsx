@@ -37,6 +37,7 @@ const CustomerTableList = () => {
 			field: "name",
 			headerName: "Full Name",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Typography variant="h6" color="secondary" textTransform={"capitalize"}>
@@ -49,6 +50,7 @@ const CustomerTableList = () => {
 			field: "display_name",
 			headerName: "Display Name",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography textTransform={"capitalize"}>{params.value}</Typography>;
 			},
@@ -57,6 +59,7 @@ const CustomerTableList = () => {
 			field: "email",
 			headerName: "Contact Email",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -65,6 +68,7 @@ const CustomerTableList = () => {
 			field: "phone",
 			headerName: "Contact Number",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -73,6 +77,7 @@ const CustomerTableList = () => {
 			field: "invoice",
 			headerName: "Invoice",
 			flex: 1,
+			minWidth: 150,
 			renderCell: () => {
 				return <Typography>0</Typography>;
 			},
@@ -82,6 +87,7 @@ const CustomerTableList = () => {
 			field: "amountDue",
 			headerName: "Amount Due",
 			flex: 1,
+			minWidth: 150,
 			renderCell: () => {
 				return <Typography>0</Typography>;
 			},
@@ -90,6 +96,7 @@ const CustomerTableList = () => {
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
 				<Tooltip title="View Customer" key={params.row?.id}>
