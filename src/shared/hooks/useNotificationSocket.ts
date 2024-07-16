@@ -1,4 +1,3 @@
-import { environment } from "@enviroment";
 import { useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
@@ -6,7 +5,7 @@ const useSocket = (userId: string) => {
 	const [socket, setSocket] = useState<Socket | null>(null);
 
 	useEffect(() => {
-		const socketInstance = io(environment?.baseUrl); // Replace with your server URL
+		const socketInstance = io("https://growinvoice-backend-16f908d94aed.herokuapp.com"); // Replace with your server URL
 
 		socketInstance.on("connect", () => {
 			console.log("Connected to server");
