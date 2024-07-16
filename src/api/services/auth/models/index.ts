@@ -61,6 +61,7 @@ export * from "./gateWayDetailsDto";
 export * from "./gateWayDetailsDtoType";
 export * from "./gatewaydetailsControllerCreate200";
 export * from "./gatewaydetailsControllerCreate200AllOf";
+export * from "./gatewaydetailsControllerFindEnabledAllParams";
 export * from "./gatewaydetailsControllerUpdate200";
 export * from "./gatewaydetailsControllerUpdate200AllOf";
 export * from "./getCustomerWithAddressDto";

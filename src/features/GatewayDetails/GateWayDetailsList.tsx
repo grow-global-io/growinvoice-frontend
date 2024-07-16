@@ -1,13 +1,26 @@
-import { useGatewaydetailsControllerFindAll } from "@api/services/gatewaydetails";
+import {
+	getGatewaydetailsControllerFindAllQueryKey,
+	useGatewaydetailsControllerFindAll,
+	useGatewaydetailsControllerRemove,
+} from "@api/services/gatewaydetails";
 import { Box, Chip, Grid, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import Loader from "@shared/components/Loader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import { useQueryClient } from "@tanstack/react-query";
+import { GateWayDialog } from "./GateWayDetailsIndex";
+import { useDialog } from "@shared/hooks/useDialog";
+import { useState } from "react";
 
 const GateWayDetailsList = () => {
+	const queryClient = useQueryClient();
 	const gateWayList = useGatewaydetailsControllerFindAll();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const removePayment = useGatewaydetailsControllerRemove();
+	const [editId, setEditId] = useState<string | null>(null);
 
 	const columns: GridColDef[] = [
 		{
@@ -38,7 +51,13 @@ const GateWayDetailsList = () => {
 			getActions: (params) => [
 				<Tooltip title="Edit" key={params.row?.id}>
 					<Box>
-						<CustomIconButton src={EditIcon} onClick={() => {}} />
+						<CustomIconButton
+							src={EditIcon}
+							onClick={() => {
+								setEditId(params.row.id);
+								handleClickOpen();
+							}}
+						/>
 					</Box>
 				</Tooltip>,
 
@@ -50,20 +69,20 @@ const GateWayDetailsList = () => {
 							buttonType="delete"
 							iconColor="error"
 							onClick={async () => {
-								// handleOpen({
-								// 	title: "Delete Details",
-								// 	message: "Are you sure you want to delete this payment?",
-								// 	onConfirm: async () => {
-								// 		await removeDetails.mutateAsync({
-								// 			id: params.row.id,
-								// 		});
-								// 		paymentDetails.refetch();
-								// 	},
-								// 	onCancel: () => {
-								// 		cleanUp();
-								// 	},
-								// 	confirmButtonText: "Delete",
-								// });
+								handleOpen({
+									title: "Delete this Gateway Detail?",
+									message: "Are you sure you want to delete this Gateway Detail?",
+									onConfirm: async () => {
+										await removePayment.mutateAsync({ id: params.row.id });
+										queryClient.invalidateQueries({
+											queryKey: getGatewaydetailsControllerFindAllQueryKey(),
+										});
+									},
+									onCancel: () => {
+										cleanUp();
+									},
+									confirmButtonText: "Delete",
+								});
 							}}
 						/>
 						,
@@ -72,16 +91,20 @@ const GateWayDetailsList = () => {
 			],
 		},
 	];
+	const { handleClickOpen, handleClose, open } = useDialog();
 
 	if (gateWayList?.isLoading || gateWayList?.isRefetching) {
 		return <Loader />;
 	}
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<DataGrid rows={gateWayList?.data ?? []} columns={columns} />
+		<>
+			<Grid container spacing={2}>
+				<Grid item xs={12}>
+					<DataGrid rows={gateWayList?.data ?? []} columns={columns} />
+				</Grid>
 			</Grid>
-		</Grid>
+			<GateWayDialog handleClose={handleClose} open={open} editId={editId ?? undefined} />
+		</>
 	);
 };
 

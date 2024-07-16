@@ -14,6 +14,7 @@ import {
 	useInvoiceControllerMarkedAsPaid,
 	useInvoiceControllerRemove,
 } from "@api/services/invoice";
+import { usePaymentsControllerStripePayment } from "@api/services/payments";
 import { formatDateToIso } from "@shared/formatter";
 import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
@@ -27,6 +28,12 @@ export const useInvoiceHook = () => {
 	const sendInvoiceToMail = useInvoiceControllerInvoiceSentToMail();
 	const markedPaid = useInvoiceControllerMarkedAsPaid();
 	const markedMailedSent = useInvoiceControllerMarkedAsMailed();
+	const createstripPaymentUrl = usePaymentsControllerStripePayment();
+	const handleRedirectStripePayment = async (invoiceId: string, user_id: string) => {
+		const params = { invoice_id: invoiceId, user_id };
+		const response = await createstripPaymentUrl.mutateAsync({ params });
+		window.open(response);
+	};
 
 	const handleEdit = (invoiceId: string) => {
 		navigate(`/invoice/createinvoice/${invoiceId}`);
@@ -160,6 +167,7 @@ export const useInvoiceHook = () => {
 	};
 
 	return {
+		handleRedirectStripePayment,
 		handleEdit,
 		handleView,
 		handleDelete,

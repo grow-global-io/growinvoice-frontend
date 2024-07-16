@@ -19,6 +19,7 @@ import type {
 	CreateGateWayDetailsDto,
 	GateWayDetailsDto,
 	GatewaydetailsControllerCreate200,
+	GatewaydetailsControllerFindEnabledAllParams,
 	GatewaydetailsControllerUpdate200,
 	SuccessResponseDto,
 	UpdateGateWayDetailsDto,
@@ -146,37 +147,47 @@ export const useGatewaydetailsControllerFindAll = <
 	return query;
 };
 
-export const gatewaydetailsControllerFindEnabledAll = (signal?: AbortSignal) => {
+export const gatewaydetailsControllerFindEnabledAll = (
+	params: GatewaydetailsControllerFindEnabledAllParams,
+	signal?: AbortSignal,
+) => {
 	return authInstance<GateWayDetailsDto[]>({
 		url: `/api/gatewaydetails/enabled`,
 		method: "GET",
+		params,
 		signal,
 	});
 };
 
-export const getGatewaydetailsControllerFindEnabledAllQueryKey = () => {
-	return [`/api/gatewaydetails/enabled`] as const;
+export const getGatewaydetailsControllerFindEnabledAllQueryKey = (
+	params: GatewaydetailsControllerFindEnabledAllParams,
+) => {
+	return [`/api/gatewaydetails/enabled`, ...(params ? [params] : [])] as const;
 };
 
 export const getGatewaydetailsControllerFindEnabledAllQueryOptions = <
 	TData = Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
 	TError = ErrorType<unknown>,
->(options?: {
-	query?: Partial<
-		UseQueryOptions<
-			Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
-			TError,
-			TData
-		>
-	>;
-}) => {
+>(
+	params: GatewaydetailsControllerFindEnabledAllParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
+				TError,
+				TData
+			>
+		>;
+	},
+) => {
 	const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGatewaydetailsControllerFindEnabledAllQueryKey();
+	const queryKey =
+		queryOptions?.queryKey ?? getGatewaydetailsControllerFindEnabledAllQueryKey(params);
 
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>
-	> = ({ signal }) => gatewaydetailsControllerFindEnabledAll(signal);
+	> = ({ signal }) => gatewaydetailsControllerFindEnabledAll(params, signal);
 
 	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
 		Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
@@ -193,16 +204,19 @@ export type GatewaydetailsControllerFindEnabledAllQueryError = ErrorType<unknown
 export const useGatewaydetailsControllerFindEnabledAll = <
 	TData = Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
 	TError = ErrorType<unknown>,
->(options?: {
-	query?: Partial<
-		UseQueryOptions<
-			Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
-			TError,
-			TData
-		>
-	>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-	const queryOptions = getGatewaydetailsControllerFindEnabledAllQueryOptions(options);
+>(
+	params: GatewaydetailsControllerFindEnabledAllParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof gatewaydetailsControllerFindEnabledAll>>,
+				TError,
+				TData
+			>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getGatewaydetailsControllerFindEnabledAllQueryOptions(params, options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

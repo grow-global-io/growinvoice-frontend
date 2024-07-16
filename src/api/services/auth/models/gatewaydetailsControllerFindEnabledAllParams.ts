@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export type PaymentsControllerStripePaymentParams = {
+export type GatewaydetailsControllerFindEnabledAllParams = {
 	user_id: string;
-	invoice_id: string;
 };
