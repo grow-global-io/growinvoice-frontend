@@ -84,7 +84,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		},
 	});
 
-	const enabledpayment = useGatewaydetailsControllerFindEnabledAll();
+	const enabledpayment = useGatewaydetailsControllerFindEnabledAll({
+		user_id: getInvoiceData?.data?.user_id ?? "",
+	});
 	const StripeObject = enabledpayment?.data?.find((item) => item?.type === "Stripe");
 
 	useEffect(() => {
@@ -344,10 +346,10 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 						>
 							Download
 						</Button>
-						{StripeObject && (
+						{StripeObject && getInvoiceData?.data?.status !== "Paid" && (
 							<Button
 								onClick={() => {
-									handleRedirectStripePayment(invoiceId);
+									handleRedirectStripePayment(invoiceId, getInvoiceData?.data?.user_id ?? "");
 								}}
 								variant="outlined"
 							>

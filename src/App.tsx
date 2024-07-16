@@ -21,7 +21,6 @@ import { PaymentDrawer } from "@features/Payments/CreatePayments";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
 import { VendorsDrawer } from "@features/Vendor/CreateVendors";
 import { ToastContainer } from "react-toastify";
-import { useCreateGeteWayStore } from "@store/createGatewayStore";
 import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -134,7 +133,6 @@ function App() {
 	const createCustomer = useRef(useCreateCustomerStore.getState());
 	const createPayment = useRef(useCreatePaymentStore.getState());
 	const createVendors = useRef(useCreateVendorsStore.getState());
-	const createGateWay = useRef(useCreateGeteWayStore.getState());
 
 	useEffect(() => {
 		const unsubscribeLoading = useLoaderStore.subscribe((state) => {
@@ -160,10 +158,6 @@ function App() {
 			createVendors.current = state;
 			setOpenVendorsForm(state.open);
 		});
-		const unsubscribeGateWayForm = useCreateGeteWayStore.subscribe((state) => {
-			createGateWay.current = state;
-			setOpenGateWayForm(state.open);
-		});
 
 		return () => {
 			unsubscribeLoading();
@@ -171,25 +165,12 @@ function App() {
 			unsubscribeCustomerForm();
 			unsubscribePaymentForm();
 			unsubscribeVendorsForm();
-			unsubscribeGateWayForm();
 		};
 	}, []);
 
 	return (
 		<>
 			<AppContainer />
-			{/* <Snackbar
-				open={open}
-				autoHideDuration={3000}
-				anchorOrigin={{ vertical: "top", horizontal: "right" }}
-				onClose={handleClose}
-			>
-				<Alert severity={alertRef.current.severity} sx={{ width: "100%" }} onClose={handleClose}>
-					<AlertTitle sx={{ textTransform: "capitalize" }}>{alertRef.current.severity}</AlertTitle>
-					<Typography>{alertRef.current.message}</Typography>
-				</Alert>
-			</Snackbar> */}
-
 			<ToastContainer
 				position="top-right"
 				autoClose={5000}

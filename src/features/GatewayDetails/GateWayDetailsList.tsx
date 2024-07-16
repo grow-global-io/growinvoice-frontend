@@ -11,14 +11,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateGeteWayStore } from "@store/createGatewayStore";
+import { GateWayDialog } from "./GateWayDetailsIndex";
+import { useDialog } from "@shared/hooks/useDialog";
+import { useState } from "react";
 
 const GateWayDetailsList = () => {
 	const queryClient = useQueryClient();
 	const gateWayList = useGatewaydetailsControllerFindAll();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const removePayment = useGatewaydetailsControllerRemove();
-	const { updateGateWay } = useCreateGeteWayStore.getState();
+	const [editId, setEditId] = useState<string | null>(null);
 
 	const columns: GridColDef[] = [
 		{
@@ -52,7 +54,8 @@ const GateWayDetailsList = () => {
 						<CustomIconButton
 							src={EditIcon}
 							onClick={() => {
-								updateGateWay(params.row);
+								setEditId(params.row.id);
+								handleClickOpen();
 							}}
 						/>
 					</Box>
@@ -67,8 +70,8 @@ const GateWayDetailsList = () => {
 							iconColor="error"
 							onClick={async () => {
 								handleOpen({
-									title: "Delete GateWay Detail",
-									message: "Are you sure you want to delete this GateWay Detail?",
+									title: "Delete this Gateway Detail?",
+									message: "Are you sure you want to delete this Gateway Detail?",
 									onConfirm: async () => {
 										await removePayment.mutateAsync({ id: params.row.id });
 										queryClient.invalidateQueries({
@@ -88,16 +91,20 @@ const GateWayDetailsList = () => {
 			],
 		},
 	];
+	const { handleClickOpen, handleClose, open } = useDialog();
 
 	if (gateWayList?.isLoading || gateWayList?.isRefetching) {
 		return <Loader />;
 	}
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<DataGrid rows={gateWayList?.data ?? []} columns={columns} />
+		<>
+			<Grid container spacing={2}>
+				<Grid item xs={12}>
+					<DataGrid rows={gateWayList?.data ?? []} columns={columns} />
+				</Grid>
 			</Grid>
-		</Grid>
+			<GateWayDialog handleClose={handleClose} open={open} editId={editId ?? undefined} />
+		</>
 	);
 };
 

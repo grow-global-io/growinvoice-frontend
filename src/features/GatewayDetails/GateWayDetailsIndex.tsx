@@ -2,22 +2,23 @@ import { Button, Dialog, Grid, Typography } from "@mui/material";
 import GateWayDetailsList from "./GateWayDetailsList";
 import AddIcon from "@mui/icons-material/Add";
 import GatewayDetailsForm from "./GatewayDetailsForm";
-import { useCreateGeteWayStore } from "@store/createGatewayStore";
+import { useDialog } from "@shared/hooks/useDialog";
 
 export const GateWayDialog = ({
 	open,
 	handleClose,
+	editId,
 }: {
 	open: boolean;
 	handleClose: () => void;
+	editId?: string;
 }) => (
 	<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-		<GatewayDetailsForm />
+		<GatewayDetailsForm handleClose={handleClose} gatewayId={editId} />
 	</Dialog>
 );
 const GateWayDetailsIndex = () => {
-	const { setOpenGateWayForm } = useCreateGeteWayStore.getState();
-
+	const { handleClickOpen, handleClose, open } = useDialog();
 	return (
 		<>
 			<Grid container spacing={2}>
@@ -31,7 +32,7 @@ const GateWayDetailsIndex = () => {
 						variant="contained"
 						startIcon={<AddIcon />}
 						onClick={() => {
-							setOpenGateWayForm(true);
+							handleClickOpen();
 						}}
 					>
 						Add Gateway Details
@@ -41,6 +42,7 @@ const GateWayDetailsIndex = () => {
 					<GateWayDetailsList />
 				</Grid>
 			</Grid>
+			<GateWayDialog open={open} handleClose={handleClose} />
 		</>
 	);
 };

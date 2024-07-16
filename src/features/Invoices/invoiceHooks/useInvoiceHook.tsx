@@ -29,8 +29,8 @@ export const useInvoiceHook = () => {
 	const markedPaid = useInvoiceControllerMarkedAsPaid();
 	const markedMailedSent = useInvoiceControllerMarkedAsMailed();
 	const createstripPaymentUrl = usePaymentsControllerStripePayment();
-	const handleRedirectStripePayment = async (invoiceId: string) => {
-		const params = { invoice_id: invoiceId };
+	const handleRedirectStripePayment = async (invoiceId: string, user_id: string) => {
+		const params = { invoice_id: invoiceId, user_id };
 		const response = await createstripPaymentUrl.mutateAsync({ params });
 		window.open(response);
 	};

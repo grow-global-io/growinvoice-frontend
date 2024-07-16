@@ -12,24 +12,38 @@ import {
 	getGatewaydetailsControllerFindAllQueryKey,
 	getGatewaydetailsControllerFindOneQueryKey,
 	useGatewaydetailsControllerCreate,
+	useGatewaydetailsControllerFindOne,
 	useGatewaydetailsControllerUpdate,
+	useGatewaydetailsControllerFindAll,
 } from "@api/services/gatewaydetails";
 import { stringToListDto } from "@shared/models/ListDto";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateGeteWayStore } from "@store/createGatewayStore";
-import { useGatewaydetailsControllerFindAll } from "../../api/services/auth/gatewaydetails";
+import Loader from "@shared/components/Loader";
 
-const GatewayDetailsForm = () => {
+const GatewayDetailsForm = ({
+	gatewayId,
+	handleClose,
+}: {
+	gatewayId?: string;
+	handleClose: () => void;
+}) => {
 	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
-	const { setOpenGateWayForm, editValues } = useCreateGeteWayStore.getState();
 	const gateWayList = useGatewaydetailsControllerFindAll();
 	const filterTypeOptions = () => {
+		if (gatewayId) {
+			return Object.values(CreateGateWayDetailsDtoType).map(stringToListDto);
+		}
 		const typesInList = gateWayList.data?.map((item) => item.type) || [];
 		return Object.values(CreateGateWayDetailsDtoType)
 			.filter((type) => !typesInList.includes(type))
 			.map(stringToListDto);
 	};
+	const { data: editValues, isLoading } = useGatewaydetailsControllerFindOne(gatewayId ?? "", {
+		query: {
+			enabled: !!gatewayId,
+		},
+	});
 
 	const initialValues: CreateGateWayDetailsDto = {
 		type: editValues?.type ?? "Stripe",
@@ -44,8 +58,21 @@ const GatewayDetailsForm = () => {
 			.string()
 			.required("Type is required")
 			.oneOf(Object.values(CreateGateWayDetailsDtoType), "Invalid Type"),
-		key: yup.string(),
-		secret: yup.string(),
+		key: yup
+			.string()
+			.test("key", "key should be valid", (value) => {
+				if (!value?.includes("*")) {
+					return true;
+				}
+				return false;
+			})
+			.required("key is required"),
+		secret: yup.string().test("secret", "secret should be valid", (value) => {
+			if (!value?.includes("*")) {
+				return true;
+			}
+			return false;
+		}),
 		user_id: yup.string().required("user id is required"),
 		enabled: yup.boolean(),
 	});
@@ -70,11 +97,15 @@ const GatewayDetailsForm = () => {
 			});
 		}
 		action.resetForm();
-		setOpenGateWayForm(false);
 		queryClient.invalidateQueries({
 			queryKey: getGatewaydetailsControllerFindAllQueryKey(),
 		});
+		handleClose();
 	};
+
+	if (isLoading) {
+		return <Loader />;
+	}
 
 	return (
 		<Box>
@@ -85,7 +116,7 @@ const GatewayDetailsForm = () => {
 							<AppDialogHeader
 								title="Add Gateway Details"
 								handleClose={() => {
-									setOpenGateWayForm(false);
+									handleClose();
 								}}
 							/>
 							<DialogContent>
@@ -95,24 +126,26 @@ const GatewayDetailsForm = () => {
 									component={AutocompleteField}
 									options={filterTypeOptions()}
 									isRequired={true}
+									disabled={!!gatewayId}
 								/>
-								<Field name="key" label="Key" component={TextFormField} placeholder="Enter Title" />
+								<Field
+									name="key"
+									label="Key"
+									component={TextFormField}
+									placeholder="Enter Key"
+									isRequired
+								/>
 								<Field
 									name="secret"
 									label="Secret Id"
 									component={TextFormField}
-									placeholder="Enter Title"
+									placeholder="Enter Secret Id"
 								/>
-								<Field
-									name="enabled"
-									label="Enabled it"
-									component={CheckBoxFormField}
-									placeholder="Enter Title"
-								/>
+								<Field name="enabled" label="Enabled" component={CheckBoxFormField} />
 							</DialogContent>
 							<AppDialogFooter
 								onClickCancel={() => {
-									setOpenGateWayForm(false);
+									handleClose();
 								}}
 								saveButtonText="Submit"
 								saveButtonDisabled={!formik.isValid || formik.isSubmitting}

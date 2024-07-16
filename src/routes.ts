@@ -32,6 +32,7 @@ import VendorsListPage from "@pages/VendorsListPage";
 import PlansPage from "@pages/PlansPage";
 import PaymentDetailsPage from "@pages/PaymentDetailsPage";
 import GateWayDetailsPage from "@pages/GateWayDetailsPage";
+import PaymentSuccessPage from "@pages/PaymentSuccessPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -56,6 +57,10 @@ export const unProtectedRoutes: Route[] = [
 	{
 		path: "/quotation/quotationtemplate/:id",
 		Component: QuotationTemplatePage,
+	},
+	{
+		path: "/payment/success",
+		Component: PaymentSuccessPage,
 	},
 ];
 
@@ -199,5 +204,9 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/setting/gatewaydetails",
 		Component: GateWayDetailsPage,
+	},
+	{
+		path: "/payment/success",
+		Component: PaymentSuccessPage,
 	},
 ];
