@@ -20,9 +20,10 @@ import { useCreatePaymentStore } from "@store/createPaymentStore";
 import { PaymentDrawer } from "@features/Payments/CreatePayments";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
 import { VendorsDrawer } from "@features/Vendor/CreateVendors";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
+import useSocket from "@shared/hooks/useNotificationSocket";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -40,6 +41,28 @@ function AppContainer() {
 				setIsLoading(false);
 			});
 	});
+	const userId = user?.id ?? "";
+	const socket = useSocket(userId);
+
+	useEffect(() => {
+		if (socket) {
+			socket.on("newMessage", (notification) => {
+				toast(() => {
+					return (
+						<div>
+							<h3>{notification?.title}</h3>
+							<p>{notification?.body}</p>
+						</div>
+					);
+				});
+			});
+
+			// Clean up the listener on component unmount
+			return () => {
+				socket.off("newMessage");
+			};
+		}
+	}, [socket]);
 
 	if (isLoading) {
 		return <Loader />;
