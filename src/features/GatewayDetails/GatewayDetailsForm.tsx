@@ -44,10 +44,10 @@ const GatewayDetailsForm = () => {
 			.string()
 			.required("Type is required")
 			.oneOf(Object.values(CreateGateWayDetailsDtoType), "Invalid Type"),
-		key: yup.string().required("Name is required"),
-		secret: yup.string().required("Unit is required"),
-		user_id: yup.string().required("User id is required"),
-		enabled: yup.boolean().required("User id is required"),
+		key: yup.string(),
+		secret: yup.string(),
+		user_id: yup.string().required("user id is required"),
+		enabled: yup.boolean(),
 	});
 
 	const createGatwayDetail = useGatewaydetailsControllerCreate();
