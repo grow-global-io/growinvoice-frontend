@@ -53,7 +53,6 @@ const ProductForm = () => {
 	const hsnCodes = useHsncodeControllerFindAll();
 	const taxCodes = useTaxcodeControllerFindAll();
 	const currencyList = useCurrencyControllerFindAll();
-
 	const updateProduct = useProductControllerUpdate();
 
 	const handleSubmit = async (

@@ -33,6 +33,7 @@ import { Constants } from "@shared/constants";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import { useInvoiceHook } from "./invoiceHooks/useInvoiceHook";
 import { useCreatePaymentStore } from "@store/createPaymentStore";
+import { useGatewaydetailsControllerFindEnabledAll } from "@api/services/gatewaydetails";
 
 const styles = {
 	width: { xs: "100%", sm: "auto" },
@@ -58,8 +59,15 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 	const { generatePdfFromRef, generatePdfFromHtml } = usePdfExport();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const isMobile = useMediaQuery("(max-width:800px)");
-	const { handleDelete, handleShare, handlePaid, handleMailedSent, handleSendMail, handleEdit } =
-		useInvoiceHook();
+	const {
+		handleDelete,
+		handleShare,
+		handlePaid,
+		handleMailedSent,
+		handleSendMail,
+		handleEdit,
+		handleRedirectStripePayment,
+	} = useInvoiceHook();
 	const { setOpenPaymentFormWithInvoiceId } = useCreatePaymentStore.getState();
 
 	const getHtmlText = useInvoiceControllerTest(invoiceId ?? "", {
@@ -75,6 +83,9 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 			enabled: invoiceId !== undefined,
 		},
 	});
+
+	const enabledpayment = useGatewaydetailsControllerFindEnabledAll();
+	const StripeObject = enabledpayment?.data?.find((item) => item?.type === "Stripe");
 
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
@@ -279,6 +290,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					<Typography variant="h3" color={"secondary.dark"}>
 						#{Constants?.invoiceDefaultPrefix}-{getInvoiceData?.data?.invoice_number}
 					</Typography>
+
 					<Box
 						sx={{
 							display: "flex",
@@ -314,23 +326,35 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 					</Box>
 				)}
 				{(IsPublic || getInvoiceData?.data?.paid_status === "Paid") && (
-					<Button
-						variant="contained"
-						startIcon={<DownloadIcon />}
-						onClick={() => {
-							if (isMobile) {
-								generatePdfFromHtml({
-									html: getHtmlText?.data ?? "",
+					<Box>
+						<Button
+							variant="contained"
+							startIcon={<DownloadIcon />}
+							onClick={() => {
+								if (isMobile) {
+									generatePdfFromHtml({
+										html: getHtmlText?.data ?? "",
+									});
+									return;
+								}
+								generatePdfFromRef({
+									iframeRef,
 								});
-								return;
-							}
-							generatePdfFromRef({
-								iframeRef,
-							});
-						}}
-					>
-						Download
-					</Button>
+							}}
+						>
+							Download
+						</Button>
+						{StripeObject && (
+							<Button
+								onClick={() => {
+									handleRedirectStripePayment(invoiceId);
+								}}
+								variant="outlined"
+							>
+								Payment With Stripe
+							</Button>
+						)}
+					</Box>
 				)}
 			</Box>
 			{!IsPublic && getInvoiceData?.data?.paid_status === "Unpaid" && (

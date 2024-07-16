@@ -79,8 +79,6 @@ const DashboardOpenAi = () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [columns, setColumns] = useState<any[]>([]);
 	const [isError, setIsError] = useState(false);
-	const [prompText, setPromptText] = useState("");
-	const [queryText, setQueryText] = useState("");
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleChange = (event: SelectChangeEvent<any[]>) => {
@@ -128,8 +126,6 @@ const DashboardOpenAi = () => {
 		setColumns([]);
 		setIsError(false);
 		setGraphData(undefined);
-		setPromptText("");
-		setQueryText("");
 		if (values?.type === "Table") {
 			try {
 				const a = await openAiApi.mutateAsync({
@@ -138,8 +134,8 @@ const DashboardOpenAi = () => {
 					},
 				});
 				const keysData = a as OpenaiControllerCreate200Item;
-				setPromptText(keysData?.prompt);
-				setQueryText(keysData?.query);
+				formikRef.current?.setFieldValue("prompt", keysData?.prompt);
+				formikRef.current?.setFieldValue("query", keysData?.query);
 				const keys = Object.keys(keysData?.result[0]);
 
 				const rowsData = keysData?.result?.map(
@@ -181,8 +177,6 @@ const DashboardOpenAi = () => {
 				setIsError(true);
 				setColumns([]);
 				console.error(error);
-				setPromptText("");
-				setQueryText("");
 			}
 		} else {
 			try {
@@ -192,15 +186,13 @@ const DashboardOpenAi = () => {
 					},
 				});
 				const keysData = response as OpenaiControllerCreateGraph200Item;
-				setPromptText(keysData?.prompt);
-				setQueryText(keysData?.query);
+				formikRef.current?.setFieldValue("prompt", keysData?.prompt);
+				formikRef.current?.setFieldValue("query", keysData?.query);
 				setGraphData(keysData?.graphData);
 			} catch (error) {
 				console.error(error);
 				setIsError(true);
 				setGraphData(undefined);
-				setPromptText("");
-				setQueryText("");
 			}
 		}
 	};
@@ -228,8 +220,8 @@ const DashboardOpenAi = () => {
 		await createDashboard.mutateAsync({
 			data: {
 				...values,
-				prompt: prompText,
-				query: queryText,
+				prompt: formikRef.current?.values.prompt ?? "",
+				query: formikRef.current?.values.query ?? "",
 				type: graphData ? CreateAIDashboardDtoType?.Chart : CreateAIDashboardDtoType?.Table,
 			},
 		});

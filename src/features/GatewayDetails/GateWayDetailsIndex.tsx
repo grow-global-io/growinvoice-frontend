@@ -1,24 +1,47 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Dialog, Grid, Typography } from "@mui/material";
 import GateWayDetailsList from "./GateWayDetailsList";
 import AddIcon from "@mui/icons-material/Add";
+import GatewayDetailsForm from "./GatewayDetailsForm";
+import { useCreateGeteWayStore } from "@store/createGatewayStore";
 
+export const GateWayDialog = ({
+	open,
+	handleClose,
+}: {
+	open: boolean;
+	handleClose: () => void;
+}) => (
+	<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+		<GatewayDetailsForm />
+	</Dialog>
+);
 const GateWayDetailsIndex = () => {
+	const { setOpenGateWayForm } = useCreateGeteWayStore.getState();
+
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={6} display="flex" alignItems={"center"}>
-				<Typography variant="h4" mb={3}>
-					Gateway Details
-				</Typography>
+		<>
+			<Grid container spacing={2}>
+				<Grid item xs={6} display="flex" alignItems={"center"}>
+					<Typography variant="h4" mb={3}>
+						Gateway Details
+					</Typography>
+				</Grid>
+				<Grid item xs={6} display="flex" justifyContent="flex-end" alignItems={"center"}>
+					<Button
+						variant="contained"
+						startIcon={<AddIcon />}
+						onClick={() => {
+							setOpenGateWayForm(true);
+						}}
+					>
+						Add Gateway Details
+					</Button>
+				</Grid>
+				<Grid item xs={12}>
+					<GateWayDetailsList />
+				</Grid>
 			</Grid>
-			<Grid item xs={6} display="flex" justifyContent="flex-end" alignItems={"center"}>
-				<Button variant="contained" startIcon={<AddIcon />} onClick={() => {}}>
-					Add Gateway Details
-				</Button>
-			</Grid>
-			<Grid item xs={12}>
-				<GateWayDetailsList />
-			</Grid>
-		</Grid>
+		</>
 	);
 };
 

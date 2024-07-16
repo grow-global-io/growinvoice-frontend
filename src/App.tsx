@@ -21,6 +21,8 @@ import { PaymentDrawer } from "@features/Payments/CreatePayments";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
 import { VendorsDrawer } from "@features/Vendor/CreateVendors";
 import { ToastContainer } from "react-toastify";
+import { useCreateGeteWayStore } from "@store/createGatewayStore";
+import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
 
 function AppContainer() {
@@ -106,6 +108,7 @@ function App() {
 	const [openCustomerForm, setOpenCustomerForm] = useState(false);
 	const [openPaymentForm, setOpenPaymentForm] = useState(false);
 	const [openVendorsForm, setOpenVendorsForm] = useState(false);
+	const [openGateWayForm, setOpenGateWayForm] = useState(false);
 
 	const handleCloseProductForm = () => {
 		setOpenProductForm(false);
@@ -122,12 +125,16 @@ function App() {
 	const handleCloseVendorsForm = () => {
 		setOpenVendorsForm(false);
 	};
+	const handleCloseGateWayForm = () => {
+		setOpenGateWayForm(false);
+	};
 
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
 	const createCustomer = useRef(useCreateCustomerStore.getState());
 	const createPayment = useRef(useCreatePaymentStore.getState());
 	const createVendors = useRef(useCreateVendorsStore.getState());
+	const createGateWay = useRef(useCreateGeteWayStore.getState());
 
 	useEffect(() => {
 		const unsubscribeLoading = useLoaderStore.subscribe((state) => {
@@ -153,6 +160,10 @@ function App() {
 			createVendors.current = state;
 			setOpenVendorsForm(state.open);
 		});
+		const unsubscribeGateWayForm = useCreateGeteWayStore.subscribe((state) => {
+			createGateWay.current = state;
+			setOpenGateWayForm(state.open);
+		});
 
 		return () => {
 			unsubscribeLoading();
@@ -160,6 +171,7 @@ function App() {
 			unsubscribeCustomerForm();
 			unsubscribePaymentForm();
 			unsubscribeVendorsForm();
+			unsubscribeGateWayForm();
 		};
 	}, []);
 
@@ -202,6 +214,7 @@ function App() {
 			<CustomerDrawer open={openCustomerForm} handleClose={handleCloseCustomerForm} />
 			<PaymentDrawer open={openPaymentForm} handleClose={handleClosePaymentForm} />
 			<VendorsDrawer open={openVendorsForm} handleClose={handleCloseVendorsForm} />
+			<GateWayDialog open={openGateWayForm} handleClose={handleCloseGateWayForm} />
 		</>
 	);
 }

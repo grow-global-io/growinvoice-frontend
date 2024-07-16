@@ -1,13 +1,24 @@
-import { useGatewaydetailsControllerFindAll } from "@api/services/gatewaydetails";
+import {
+	getGatewaydetailsControllerFindAllQueryKey,
+	useGatewaydetailsControllerFindAll,
+	useGatewaydetailsControllerRemove,
+} from "@api/services/gatewaydetails";
 import { Box, Chip, Grid, Tooltip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
 import Loader from "@shared/components/Loader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useConfirmDialogStore } from "@store/confirmDialog";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCreateGeteWayStore } from "@store/createGatewayStore";
 
 const GateWayDetailsList = () => {
+	const queryClient = useQueryClient();
 	const gateWayList = useGatewaydetailsControllerFindAll();
+	const { handleOpen, cleanUp } = useConfirmDialogStore();
+	const removePayment = useGatewaydetailsControllerRemove();
+	const { updateGateWay } = useCreateGeteWayStore.getState();
 
 	const columns: GridColDef[] = [
 		{
@@ -38,7 +49,12 @@ const GateWayDetailsList = () => {
 			getActions: (params) => [
 				<Tooltip title="Edit" key={params.row?.id}>
 					<Box>
-						<CustomIconButton src={EditIcon} onClick={() => {}} />
+						<CustomIconButton
+							src={EditIcon}
+							onClick={() => {
+								updateGateWay(params.row);
+							}}
+						/>
 					</Box>
 				</Tooltip>,
 
@@ -50,20 +66,20 @@ const GateWayDetailsList = () => {
 							buttonType="delete"
 							iconColor="error"
 							onClick={async () => {
-								// handleOpen({
-								// 	title: "Delete Details",
-								// 	message: "Are you sure you want to delete this payment?",
-								// 	onConfirm: async () => {
-								// 		await removeDetails.mutateAsync({
-								// 			id: params.row.id,
-								// 		});
-								// 		paymentDetails.refetch();
-								// 	},
-								// 	onCancel: () => {
-								// 		cleanUp();
-								// 	},
-								// 	confirmButtonText: "Delete",
-								// });
+								handleOpen({
+									title: "Delete GateWay Detail",
+									message: "Are you sure you want to delete this GateWay Detail?",
+									onConfirm: async () => {
+										await removePayment.mutateAsync({ id: params.row.id });
+										queryClient.invalidateQueries({
+											queryKey: getGatewaydetailsControllerFindAllQueryKey(),
+										});
+									},
+									onCancel: () => {
+										cleanUp();
+									},
+									confirmButtonText: "Delete",
+								});
 							}}
 						/>
 						,
