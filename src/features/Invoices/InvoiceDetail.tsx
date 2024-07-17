@@ -67,6 +67,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		handleSendMail,
 		handleEdit,
 		handleRedirectStripePayment,
+		handleRazorPayPayment,
 	} = useInvoiceHook();
 	const { setOpenPaymentFormWithInvoiceId } = useCreatePaymentStore.getState();
 
@@ -88,6 +89,7 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 		user_id: getInvoiceData?.data?.user_id ?? "",
 	});
 	const StripeObject = enabledpayment?.data?.find((item) => item?.type === "Stripe");
+	const razorpayObject = enabledpayment?.data?.find((item) => item?.type === "Razorpay");
 
 	useEffect(() => {
 		if (iframeRef.current && !getHtmlText.isLoading && getHtmlText.isSuccess) {
@@ -354,6 +356,21 @@ const InvoiceDetail = ({ invoiceId, IsPublic }: { invoiceId: string; IsPublic?: 
 								variant="outlined"
 							>
 								Payment With Stripe
+							</Button>
+						)}
+						{razorpayObject && getInvoiceData?.data?.status !== "Paid" && (
+							<Button
+								onClick={() => {
+									// handleRedirectStripePayment(invoiceId, getInvoiceData?.data?.user_id ?? "");
+									handleRazorPayPayment({
+										invoiceId,
+										userId: getInvoiceData?.data?.user_id ?? "",
+										razorpaykey: razorpayObject?.key ?? "",
+									});
+								}}
+								variant="outlined"
+							>
+								Payment With Razorpay
 							</Button>
 						)}
 					</Box>

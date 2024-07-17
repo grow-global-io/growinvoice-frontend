@@ -5,27 +5,29 @@ const useSocket = (userId: string) => {
 	const [socket, setSocket] = useState<Socket | null>(null);
 
 	useEffect(() => {
-		const socketInstance = io("https://growinvoice-94ee0dd2031b.herokuapp.com", {
-			secure: true,
-			reconnection: true,
-			reconnectionAttempts: 5,
-			reconnectionDelay: 1000,
-		}); // Replace with your server URL
+		if (userId) {
+			const socketInstance = io("https://growinvoice-94ee0dd2031b.herokuapp.com", {
+				secure: true,
+				reconnection: true,
+				reconnectionAttempts: 5,
+				reconnectionDelay: 1000,
+			}); // Replace with your server URL
 
-		socketInstance.on("connect", () => {
-			console.log("Connected to server");
-			socketInstance.emit("authenticate", userId);
-		});
+			socketInstance.on("connect", () => {
+				console.log("Connected to server");
+				socketInstance.emit("authenticate", userId);
+			});
 
-		socketInstance.on("disconnect", () => {
-			console.log("Disconnected from server");
-		});
+			socketInstance.on("disconnect", () => {
+				console.log("Disconnected from server");
+			});
 
-		setSocket(socketInstance);
+			setSocket(socketInstance);
 
-		return () => {
-			socketInstance.disconnect();
-		};
+			return () => {
+				socketInstance.disconnect();
+			};
+		}
 	}, [userId]);
 
 	return socket;
