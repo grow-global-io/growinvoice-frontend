@@ -45,7 +45,7 @@ function AppContainer() {
 	const socket = useSocket(userId);
 
 	useEffect(() => {
-		if (socket) {
+		if (socket && user?.id) {
 			socket.on("newMessage", (notification) => {
 				toast(() => {
 					return (
@@ -62,7 +62,7 @@ function AppContainer() {
 				socket.off("newMessage");
 			};
 		}
-	}, [socket]);
+	}, [socket, user?.id]);
 
 	if (isLoading) {
 		return <Loader />;

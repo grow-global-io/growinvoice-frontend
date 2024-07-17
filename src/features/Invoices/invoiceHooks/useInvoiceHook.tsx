@@ -14,13 +14,21 @@ import {
 	useInvoiceControllerMarkedAsPaid,
 	useInvoiceControllerRemove,
 } from "@api/services/invoice";
-import { usePaymentsControllerStripePayment } from "@api/services/payments";
+import {
+	paymentsControllerRazorpayPayment,
+	paymentsControllerSuccessRazorpay,
+	usePaymentsControllerStripePayment,
+} from "@api/services/payments";
 import { formatDateToIso } from "@shared/formatter";
+import { LoaderService } from "@shared/services/LoaderService";
 import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
+import { useCallback } from "react";
+import useRazorpay, { RazorpayOptions } from "react-razorpay";
 import { useNavigate } from "react-router-dom";
 
 export const useInvoiceHook = () => {
+	const [Razorpay] = useRazorpay();
 	const navigate = useNavigate();
 	const removeInvoice = useInvoiceControllerRemove();
 	const currentDate = moment().format("YYYY-MM-DD");
@@ -34,6 +42,54 @@ export const useInvoiceHook = () => {
 		const response = await createstripPaymentUrl.mutateAsync({ params });
 		window.open(response);
 	};
+
+	const handleRazorPayPayment = useCallback(
+		async ({
+			invoiceId,
+			userId,
+			razorpaykey,
+		}: {
+			invoiceId: string;
+			userId: string;
+			razorpaykey: string;
+		}) => {
+			const getOrderDetails = await paymentsControllerRazorpayPayment({
+				invoice_id: invoiceId,
+				user_id: userId,
+			});
+			const options: RazorpayOptions = {
+				key: razorpaykey,
+				amount: getOrderDetails?.amount.toLocaleString(),
+				currency: getOrderDetails?.currency,
+				name: "Invoice Payment",
+				description: "Invoice Payment for the invoice number " + getOrderDetails?.receipt,
+				order_id: getOrderDetails?.id,
+				handler: async (res) => {
+					LoaderService.instance.showLoader();
+					const paymentId = res.razorpay_payment_id;
+					const paymentSubmit = await paymentsControllerSuccessRazorpay({
+						invoice_id: invoiceId,
+						user_id: userId,
+						razorpay_payment_id: paymentId,
+					});
+					LoaderService.instance.hideLoader();
+					if (paymentSubmit) {
+						navigate("/payment/success");
+					}
+				},
+				notes: {
+					address: "Growinvoice",
+				},
+				theme: {
+					color: "#3399cc",
+				},
+			};
+
+			const rzpay = new Razorpay(options);
+			rzpay.open();
+		},
+		[Razorpay],
+	);
 
 	const handleEdit = (invoiceId: string) => {
 		navigate(`/invoice/createinvoice/${invoiceId}`);
@@ -175,5 +231,6 @@ export const useInvoiceHook = () => {
 		handleShare,
 		handlePaid,
 		handleMailedSent,
+		handleRazorPayPayment,
 	};
 };

@@ -5,5 +5,8 @@
  * Enhance your business with Growinvoice API
  * OpenAPI spec version: 1.0
  */
+import type { NotificationDto } from "./notificationDto";
 
-export type PaymentsControllerSuccess200 = { [key: string]: any };
+export type NotificationsControllerFindAll200AllOf = {
+	results?: NotificationDto[];
+};

@@ -31,7 +31,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PaymentIcon from "@mui/icons-material/Payment";
 import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
-
+import NotificationMain from "@features/Notification/NotificationMain";
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
 	const { pathname } = useLocation();
@@ -337,6 +337,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						<MenuIcon />
 					</IconButton>
 					<Box display={"flex"} alignItems={"center"} gap={1}>
+						<NotificationMain />
 						<Box
 							mx={{ xs: 0, sm: 2 }}
 							sx={{ cursor: "pointer" }}

@@ -19,10 +19,12 @@ import type {
 	CreatePaymentsDto,
 	Payments,
 	PaymentsControllerCreate200,
+	PaymentsControllerRazorpayPaymentParams,
 	PaymentsControllerStripePaymentParams,
-	PaymentsControllerSuccess200,
 	PaymentsControllerSuccessParams,
+	PaymentsControllerSuccessRazorpayParams,
 	PaymentsControllerUpdate200,
+	RazorpayPaymentDto,
 	SuccessResponseDto,
 	UpdatePaymentsDto,
 } from "./models";
@@ -33,12 +35,7 @@ export const paymentsControllerSuccess = (
 	params: PaymentsControllerSuccessParams,
 	signal?: AbortSignal,
 ) => {
-	return authInstance<PaymentsControllerSuccess200>({
-		url: `/api/payments/success`,
-		method: "GET",
-		params,
-		signal,
-	});
+	return authInstance<void>({ url: `/api/payments/success`, method: "GET", params, signal });
 };
 
 export const getPaymentsControllerSuccessQueryKey = (params: PaymentsControllerSuccessParams) => {
@@ -88,6 +85,75 @@ export const usePaymentsControllerSuccess = <
 	},
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 	const queryOptions = getPaymentsControllerSuccessQueryOptions(params, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const paymentsControllerSuccessRazorpay = (
+	params: PaymentsControllerSuccessRazorpayParams,
+	signal?: AbortSignal,
+) => {
+	return authInstance<boolean>({
+		url: `/api/payments/successRazorpay`,
+		method: "GET",
+		params,
+		signal,
+	});
+};
+
+export const getPaymentsControllerSuccessRazorpayQueryKey = (
+	params: PaymentsControllerSuccessRazorpayParams,
+) => {
+	return [`/api/payments/successRazorpay`, ...(params ? [params] : [])] as const;
+};
+
+export const getPaymentsControllerSuccessRazorpayQueryOptions = <
+	TData = Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>,
+	TError = ErrorType<unknown>,
+>(
+	params: PaymentsControllerSuccessRazorpayParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getPaymentsControllerSuccessRazorpayQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>> = ({
+		signal,
+	}) => paymentsControllerSuccessRazorpay(params, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type PaymentsControllerSuccessRazorpayQueryResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>
+>;
+export type PaymentsControllerSuccessRazorpayQueryError = ErrorType<unknown>;
+
+export const usePaymentsControllerSuccessRazorpay = <
+	TData = Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>,
+	TError = ErrorType<unknown>,
+>(
+	params: PaymentsControllerSuccessRazorpayParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerSuccessRazorpay>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getPaymentsControllerSuccessRazorpayQueryOptions(params, options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -455,6 +521,72 @@ export const usePaymentsControllerStripePayment = <
 	TContext
 > => {
 	const mutationOptions = getPaymentsControllerStripePaymentMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const paymentsControllerRazorpayPayment = (
+	params: PaymentsControllerRazorpayPaymentParams,
+) => {
+	return authInstance<RazorpayPaymentDto>({
+		url: `/api/payments/razorpayPayment`,
+		method: "POST",
+		params,
+	});
+};
+
+export const getPaymentsControllerRazorpayPaymentMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof paymentsControllerRazorpayPayment>>,
+		TError,
+		{ params: PaymentsControllerRazorpayPaymentParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof paymentsControllerRazorpayPayment>>,
+	TError,
+	{ params: PaymentsControllerRazorpayPaymentParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof paymentsControllerRazorpayPayment>>,
+		{ params: PaymentsControllerRazorpayPaymentParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return paymentsControllerRazorpayPayment(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PaymentsControllerRazorpayPaymentMutationResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerRazorpayPayment>>
+>;
+
+export type PaymentsControllerRazorpayPaymentMutationError = ErrorType<unknown>;
+
+export const usePaymentsControllerRazorpayPayment = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof paymentsControllerRazorpayPayment>>,
+		TError,
+		{ params: PaymentsControllerRazorpayPaymentParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof paymentsControllerRazorpayPayment>>,
+	TError,
+	{ params: PaymentsControllerRazorpayPaymentParams },
+	TContext
+> => {
+	const mutationOptions = getPaymentsControllerRazorpayPaymentMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };
