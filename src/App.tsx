@@ -24,6 +24,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
 import useSocket from "@shared/hooks/useNotificationSocket";
+import { useCreateNotificationStore } from "@store/createNotificationStore";
+import NotificationDrawer from "@features/Notification/NotificationDrawer";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -131,6 +133,7 @@ function App() {
 	const [openPaymentForm, setOpenPaymentForm] = useState(false);
 	const [openVendorsForm, setOpenVendorsForm] = useState(false);
 	const [openGateWayForm, setOpenGateWayForm] = useState(false);
+	const [openNotificationForm, setOpenNotificationForm] = useState(false);
 
 	const handleCloseProductForm = () => {
 		setOpenProductForm(false);
@@ -150,12 +153,16 @@ function App() {
 	const handleCloseGateWayForm = () => {
 		setOpenGateWayForm(false);
 	};
+	const handleCloseNotificationForm = () => {
+		setOpenNotificationForm(false);
+	};
 
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
 	const createCustomer = useRef(useCreateCustomerStore.getState());
 	const createPayment = useRef(useCreatePaymentStore.getState());
 	const createVendors = useRef(useCreateVendorsStore.getState());
+	const createNotification = useRef(useCreateNotificationStore.getState());
 
 	useEffect(() => {
 		const unsubscribeLoading = useLoaderStore.subscribe((state) => {
@@ -181,6 +188,10 @@ function App() {
 			createVendors.current = state;
 			setOpenVendorsForm(state.open);
 		});
+		const unsubscribeNotificationForm = useCreateNotificationStore.subscribe((state) => {
+			createNotification.current = state;
+			setOpenNotificationForm(state.open);
+		});
 
 		return () => {
 			unsubscribeLoading();
@@ -188,6 +199,7 @@ function App() {
 			unsubscribeCustomerForm();
 			unsubscribePaymentForm();
 			unsubscribeVendorsForm();
+			unsubscribeNotificationForm();
 		};
 	}, []);
 
@@ -219,6 +231,7 @@ function App() {
 			<PaymentDrawer open={openPaymentForm} handleClose={handleClosePaymentForm} />
 			<VendorsDrawer open={openVendorsForm} handleClose={handleCloseVendorsForm} />
 			<GateWayDialog open={openGateWayForm} handleClose={handleCloseGateWayForm} />
+			<NotificationDrawer open={openNotificationForm} handleClose={handleCloseNotificationForm} />
 		</>
 	);
 }

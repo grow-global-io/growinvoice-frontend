@@ -20,7 +20,6 @@ import type {
 	Payments,
 	PaymentsControllerCreate200,
 	PaymentsControllerStripePaymentParams,
-	PaymentsControllerSuccess200,
 	PaymentsControllerSuccessParams,
 	PaymentsControllerUpdate200,
 	SuccessResponseDto,
@@ -33,12 +32,7 @@ export const paymentsControllerSuccess = (
 	params: PaymentsControllerSuccessParams,
 	signal?: AbortSignal,
 ) => {
-	return authInstance<PaymentsControllerSuccess200>({
-		url: `/api/payments/success`,
-		method: "GET",
-		params,
-		signal,
-	});
+	return authInstance<void>({ url: `/api/payments/success`, method: "GET", params, signal });
 };
 
 export const getPaymentsControllerSuccessQueryKey = (params: PaymentsControllerSuccessParams) => {
