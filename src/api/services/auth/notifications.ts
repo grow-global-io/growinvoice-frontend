@@ -20,6 +20,7 @@ import type {
 	NotificationsControllerCreate200,
 	NotificationsControllerFindAll200,
 	NotificationsControllerFindAllParams,
+	SuccessResponseDto,
 } from "./models";
 import { authInstance } from "../../instances/authInstance";
 import type { ErrorType } from "../../instances/authInstance";
@@ -156,4 +157,66 @@ export const useNotificationsControllerFindAll = <
 	query.queryKey = queryOptions.queryKey;
 
 	return query;
+};
+
+export const notificationsControllerMarkAsRead = () => {
+	return authInstance<SuccessResponseDto | void>({
+		url: `/api/notifications/mark-as-read`,
+		method: "POST",
+	});
+};
+
+export const getNotificationsControllerMarkAsReadMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof notificationsControllerMarkAsRead>>,
+		TError,
+		void,
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof notificationsControllerMarkAsRead>>,
+	TError,
+	void,
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof notificationsControllerMarkAsRead>>,
+		void
+	> = () => {
+		return notificationsControllerMarkAsRead();
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type NotificationsControllerMarkAsReadMutationResult = NonNullable<
+	Awaited<ReturnType<typeof notificationsControllerMarkAsRead>>
+>;
+
+export type NotificationsControllerMarkAsReadMutationError = ErrorType<unknown>;
+
+export const useNotificationsControllerMarkAsRead = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof notificationsControllerMarkAsRead>>,
+		TError,
+		void,
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof notificationsControllerMarkAsRead>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationOptions = getNotificationsControllerMarkAsReadMutationOptions(options);
+
+	return useMutation(mutationOptions);
 };

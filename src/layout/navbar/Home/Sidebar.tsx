@@ -28,14 +28,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Constants } from "@shared/constants";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PaymentIcon from "@mui/icons-material/Payment";
 import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
-import { useCreateNotificationStore } from "@store/createNotificationStore";
+import NotificationMain from "@features/Notification/NotificationMain";
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
-	const { setOpenNotificationForm } = useCreateNotificationStore.getState();
 	const { pathname } = useLocation();
 	const navigate = useNavigate();
 	const { logout } = useAuthStore();
@@ -339,15 +337,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 						<MenuIcon />
 					</IconButton>
 					<Box display={"flex"} alignItems={"center"} gap={1}>
-						<Box
-							mx={{ xs: 0, sm: 2 }}
-							sx={{ cursor: "pointer" }}
-							onClick={() => {
-								setOpenNotificationForm(true);
-							}}
-						>
-							<NotificationsOutlinedIcon />
-						</Box>
+						<NotificationMain />
 						<Box
 							mx={{ xs: 0, sm: 2 }}
 							sx={{ cursor: "pointer" }}
