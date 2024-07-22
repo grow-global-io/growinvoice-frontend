@@ -74,8 +74,11 @@ const ReportViewCard = ({
 						<DataGrid
 							rows={rows ?? []}
 							columns={columns ?? []}
-							slots={{ toolbar: CustomToolbar }}
-							slotProps={{ toolbar: { rows } }}
+							slots={{
+								toolbar: () => {
+									return <CustomToolbar rows={rows} />;
+								},
+							}}
 						/>
 					</div>
 				</div>
