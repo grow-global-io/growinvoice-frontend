@@ -65,6 +65,7 @@ const ReportViewCard = ({
 
 	if (dashboard.isLoading || dashboard?.isRefetching) return <Loader />;
 	if (dashboard.isError) return <LottieNoDataFound />;
+
 	return (
 		<Box>
 			{type === "Table" && (
@@ -74,6 +75,7 @@ const ReportViewCard = ({
 							rows={rows ?? []}
 							columns={columns ?? []}
 							slots={{ toolbar: CustomToolbar }}
+							slotProps={{ toolbar: { rows } }}
 						/>
 					</div>
 				</div>
