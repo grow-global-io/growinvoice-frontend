@@ -7,6 +7,7 @@
  */
 import type { CompanyDto } from "./companyDto";
 import type { UserWithCompanyDtoCurrency } from "./userWithCompanyDtoCurrency";
+import type { UserPlansDto } from "./userPlansDto";
 
 export interface UserWithCompanyDto {
 	company?: CompanyDto[];
@@ -29,4 +30,5 @@ export interface UserWithCompanyDto {
 	resetTokenExpiry: string | null;
 	/** @nullable */
 	updatedAt: string | null;
+	UserPlans?: UserPlansDto[];
 }
