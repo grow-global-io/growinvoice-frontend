@@ -15,16 +15,17 @@ import {
 	Grid,
 	InputLabel,
 	ListItemText,
+	Menu,
 	MenuItem,
 	OutlinedInput,
 	Select,
 	SelectChangeEvent,
 } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
 import Loader from "@shared/components/Loader";
 import { snakeToReadableText } from "@shared/formatter";
 import { Field, Form, Formik, FormikProps } from "formik";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import * as Yup from "yup";
 import BarChart from "./DashboardChart";
 import { Constants } from "@shared/constants";
@@ -43,6 +44,11 @@ import {
 } from "@api/services/dashboards";
 import { useAuthStore } from "@store/auth";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+	useJson2excelControllerCreate,
+	useJson2excelControllerCreateCsv,
+} from "@api/services/json2excel";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -55,11 +61,54 @@ const MenuProps = {
 	},
 };
 
-export function CustomToolbar() {
+export function CustomToolbar({ rows }: { rows: OpenaiControllerCreate200Item }) {
+	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+	const open = Boolean(anchorEl);
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+	const creatExcelFile = useJson2excelControllerCreate();
+	const handleCreatExcelFile = async () => {
+		const response = await creatExcelFile.mutateAsync({ data: rows ?? [] });
+		window.open(response?.link);
+		handleClose();
+	};
+	const creatCsvFile = useJson2excelControllerCreateCsv();
+	const handleCreatCsvFile = async () => {
+		const response = await creatCsvFile.mutateAsync({ data: rows ?? [] });
+		window.open(response?.link);
+		handleClose();
+	};
+	const menuLists = [
+		{
+			name: "Download as CSV",
+			func: handleCreatCsvFile,
+		},
+		{
+			name: "Download as Excel",
+			func: handleCreatExcelFile,
+		},
+	];
+
 	return (
-		<GridToolbarContainer>
-			<GridToolbarExport />
-		</GridToolbarContainer>
+		<>
+			<GridToolbarContainer>
+				<Button onClick={handleClick}>
+					<FileDownloadOutlinedIcon />
+					Export
+				</Button>
+			</GridToolbarContainer>
+			<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+				{menuLists.map((item, index) => (
+					<MenuItem onClick={item.func} sx={{ pr: 6 }} key={index}>
+						{item.name}
+					</MenuItem>
+				))}
+			</Menu>
+		</>
 	);
 }
 
@@ -111,7 +160,6 @@ const DashboardOpenAi = () => {
 		mutation: {
 			onError: () => {
 				AlertService.instance?.errorMessage("Error occurred! please try again after 30 seconds");
-
 				setIsError(true);
 			},
 		},
@@ -137,7 +185,6 @@ const DashboardOpenAi = () => {
 				formikRef.current?.setFieldValue("prompt", keysData?.prompt);
 				formikRef.current?.setFieldValue("query", keysData?.query);
 				const keys = Object.keys(keysData?.result[0]);
-
 				const rowsData = keysData?.result?.map(
 					(item: OpenaiControllerCreate200Item, index: number) => {
 						return {
@@ -346,7 +393,8 @@ const DashboardOpenAi = () => {
 										<DataGrid
 											rows={rows ?? []}
 											columns={columns?.filter((item) => item?.show) ?? []}
-											slots={{ toolbar: CustomToolbar }}
+											slots={{ toolbar: () => <CustomToolbar rows={rows} /> }}
+											slotProps={{ toolbar: { rows } }}
 										/>
 									</div>
 								</div>

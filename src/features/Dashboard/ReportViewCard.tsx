@@ -65,6 +65,7 @@ const ReportViewCard = ({
 
 	if (dashboard.isLoading || dashboard?.isRefetching) return <Loader />;
 	if (dashboard.isError) return <LottieNoDataFound />;
+
 	return (
 		<Box>
 			{type === "Table" && (
@@ -73,7 +74,11 @@ const ReportViewCard = ({
 						<DataGrid
 							rows={rows ?? []}
 							columns={columns ?? []}
-							slots={{ toolbar: CustomToolbar }}
+							slots={{
+								toolbar: () => {
+									return <CustomToolbar rows={rows} />;
+								},
+							}}
 						/>
 					</div>
 				</div>
