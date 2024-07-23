@@ -12,6 +12,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useAuthStore } from "@store/auth";
 import { usePaymentsControllerStripePaymentForPlans } from "@api/services/payments";
 import { PlanWithFeaturesDto } from "@api/services/models";
+import { formatCurrency } from "@shared/formatter";
 
 const style = {
 	color: "secondary.dark",
@@ -49,34 +50,35 @@ const MembershipCard = ({ item }: { item: PlanWithFeaturesDto }) => {
 			}}
 		>
 			<Grid container sx={style}>
-				<Typography variant="h6" textAlign={"start"} p={3}>
-					{item?.name}
-				</Typography>
+				<Grid item xs={12} textAlign={"center"}>
+					<Typography variant="h4" p={3}>
+						{item?.name}
+					</Typography>
+				</Grid>
 				<Grid item xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-					<Typography variant="h3">{item?.price}</Typography> /
+					<Typography variant="h3">{formatCurrency(item?.price)}</Typography> /
 					<Typography variant="body2">{formatPlansPriceUnit(item?.days)}</Typography>
 				</Grid>
-				<Grid item xs={12} textAlign={"center"} mb={2}>
-					<Typography variant="h5">{"duration"}</Typography>
+				<Grid item xs={12}>
+					<List>
+						{item?.PlanFeatures?.map((plan, index) => (
+							<ListItem key={index}>
+								<ListItemIcon sx={{ minWidth: "30px" }}>
+									<CheckIcon sx={{ color: "custom.greenCheck" }} />
+								</ListItemIcon>
+								<ListItemText
+									primary={
+										<Typography variant="h5" color={"secondary.dark"} fontWeight={500} ml={0}>
+											{plan?.count} {plan?.feature}
+										</Typography>
+									}
+								/>
+							</ListItem>
+						))}
+					</List>
 				</Grid>
-				<List>
-					{item?.PlanFeatures?.map((plan, index) => (
-						<ListItem key={index}>
-							<ListItemIcon sx={{ minWidth: "30px" }}>
-								<CheckIcon sx={{ color: "custom.greenCheck" }} />
-							</ListItemIcon>
-							<ListItemText
-								primary={
-									<Typography variant="h5" color={"secondary.dark"} fontWeight={500} ml={0}>
-										{plan?.count} {plan?.feature}
-									</Typography>
-								}
-							/>
-						</ListItem>
-					))}
-				</List>
-				<Grid item xs={12} sm={12} textAlign={"center"} mt={2} pb={2}>
-					<Button variant="outlined" onClick={handleUpgradePlan}>
+				<Grid item xs={12} px={5} py={2}>
+					<Button variant="outlined" fullWidth onClick={handleUpgradePlan}>
 						Upgrade
 					</Button>
 				</Grid>

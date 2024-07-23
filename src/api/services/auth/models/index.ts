@@ -168,6 +168,7 @@ export * from "./plansControllerCreate200";
 export * from "./plansControllerCreate200AllOf";
 export * from "./plansControllerUpdate200";
 export * from "./plansControllerUpdate200AllOf";
+export * from "./plansDto";
 export * from "./product";
 export * from "./productControllerCreate201";
 export * from "./productControllerCreate201AllOf";

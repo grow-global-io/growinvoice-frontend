@@ -9,6 +9,7 @@
 export interface CreateUserPlansDto {
 	end_date: string;
 	plan_id: string;
+	session_id?: string;
 	start_date: string;
 	status?: boolean;
 	user_id: string;

@@ -6,16 +6,15 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface UserPlansDto {
+export interface PlansDto {
 	createdAt: string;
-	end_date: string;
+	days: number;
+	description: string;
 	id: string;
+	is_active: boolean;
 	isExist: boolean;
-	plan_id: string;
-	session_id: string;
-	start_date: string;
-	status: boolean;
+	name: string;
+	price: number;
 	/** @nullable */
 	updatedAt: string | null;
-	user_id: string;
 }
