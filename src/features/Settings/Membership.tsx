@@ -1,8 +1,13 @@
+import { usePlansControllerFindAll } from "@api/services/plans";
 import { Box, Grid, Typography } from "@mui/material";
+import Loader from "@shared/components/Loader";
 import MembershipCard from "@shared/components/MembershipCard";
-import MembershipData from "../../data/memberShipData.json";
 
 const Membership = () => {
+	const findAllPlans = usePlansControllerFindAll();
+	if (findAllPlans?.isLoading || findAllPlans?.isFetching) {
+		return <Loader />;
+	}
 	return (
 		<>
 			<Box>
@@ -15,15 +20,9 @@ const Membership = () => {
 							upgrade your plan to generate more invoices and access other features
 						</Typography>
 					</Grid>
-					{MembershipData.map((item, index) => (
+					{findAllPlans?.data?.map((item, index) => (
 						<Grid item xs={12} sm={5.5} key={index} my={2}>
-							<MembershipCard
-								packValue={item.packValue}
-								packValuePer={item.packValueper}
-								list={item.lists}
-								duration={item.duration}
-								key={index}
-							/>
+							<MembershipCard item={item} />
 						</Grid>
 					))}
 				</Grid>
