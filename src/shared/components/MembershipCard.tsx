@@ -9,9 +9,9 @@ import {
 	Typography,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { PlanWithFeaturesDto } from "@api/services/models";
-import { usePaymentsControllerStripePaymentForPlans } from "@api/services/payments";
 import { useAuthStore } from "@store/auth";
+import { usePaymentsControllerStripePaymentForPlans } from "@api/services/payments";
+import { PlanWithFeaturesDto } from "@api/services/models";
 
 const style = {
 	color: "secondary.dark",
