@@ -9,28 +9,36 @@ import {
 	Typography,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import { PlanWithFeaturesDto } from "@api/services/models";
+import { usePaymentsControllerStripePaymentForPlans } from "@api/services/payments";
+import { useAuthStore } from "@store/auth";
 
 const style = {
 	color: "secondary.dark",
-
 	borderRadius: 1.5,
 };
 
-interface MembershipCardProps {
-	packValue: string;
-	duration: string;
-	list: Array<string>;
-	packValuePer: string;
-	key: number;
+function formatPlansPriceUnit(days: number) {
+	if (days % 30 === 0) {
+		if (days === 30) return "Monthly";
+		else return `${days / 30} months`;
+	}
+	if (days % 365 === 0) {
+		if (days === 365) return "Yearly";
+		else return `${days / 365} years`;
+	}
+	return `${days} days`;
 }
 
-const MembershipCard: React.FC<MembershipCardProps> = ({
-	packValue,
-	duration,
-	list,
-	packValuePer,
-	key,
-}) => {
+const MembershipCard = ({ item }: { item: PlanWithFeaturesDto }) => {
+	const { user } = useAuthStore();
+	const createPlan = usePaymentsControllerStripePaymentForPlans();
+	const handleUpgradePlan = async () => {
+		const params = { user_id: user?.id ?? "", plan_id: item?.id ?? "" };
+		const response = await createPlan.mutateAsync({ params });
+		window.open(response);
+	};
+
 	return (
 		<Card
 			sx={{
@@ -40,19 +48,19 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
 				borderColor: "custom.settingSidebarBorder",
 			}}
 		>
-			<Grid container sx={style} key={key}>
+			<Grid container sx={style}>
 				<Typography variant="h6" textAlign={"start"} p={3}>
-					Demo
+					{item?.name}
 				</Typography>
 				<Grid item xs={12} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-					<Typography variant="h3">{packValue}</Typography> /
-					<Typography variant="body2">{packValuePer}</Typography>
+					<Typography variant="h3">{item?.price}</Typography> /
+					<Typography variant="body2">{formatPlansPriceUnit(item?.days)}</Typography>
 				</Grid>
 				<Grid item xs={12} textAlign={"center"} mb={2}>
-					<Typography variant="h5">{duration}</Typography>
+					<Typography variant="h5">{"duration"}</Typography>
 				</Grid>
 				<List>
-					{list.map((item, index) => (
+					{item?.PlanFeatures?.map((plan, index) => (
 						<ListItem key={index}>
 							<ListItemIcon sx={{ minWidth: "30px" }}>
 								<CheckIcon sx={{ color: "custom.greenCheck" }} />
@@ -60,7 +68,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
 							<ListItemText
 								primary={
 									<Typography variant="h5" color={"secondary.dark"} fontWeight={500} ml={0}>
-										{item}
+										{plan?.count} {plan?.feature}
 									</Typography>
 								}
 							/>
@@ -68,7 +76,9 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
 					))}
 				</List>
 				<Grid item xs={12} sm={12} textAlign={"center"} mt={2} pb={2}>
-					<Button variant="outlined">Upgrade</Button>
+					<Button variant="outlined" onClick={handleUpgradePlan}>
+						Upgrade
+					</Button>
 				</Grid>
 			</Grid>
 		</Card>

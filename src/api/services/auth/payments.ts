@@ -20,8 +20,10 @@ import type {
 	Payments,
 	PaymentsControllerCreate200,
 	PaymentsControllerRazorpayPaymentParams,
+	PaymentsControllerStripePaymentForPlansParams,
 	PaymentsControllerStripePaymentParams,
 	PaymentsControllerSuccessParams,
+	PaymentsControllerSuccessPlansParams,
 	PaymentsControllerSuccessRazorpayParams,
 	PaymentsControllerUpdate200,
 	RazorpayPaymentDto,
@@ -85,6 +87,70 @@ export const usePaymentsControllerSuccess = <
 	},
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 	const queryOptions = getPaymentsControllerSuccessQueryOptions(params, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const paymentsControllerSuccessPlans = (
+	params: PaymentsControllerSuccessPlansParams,
+	signal?: AbortSignal,
+) => {
+	return authInstance<void>({ url: `/api/payments/successPlans`, method: "GET", params, signal });
+};
+
+export const getPaymentsControllerSuccessPlansQueryKey = (
+	params: PaymentsControllerSuccessPlansParams,
+) => {
+	return [`/api/payments/successPlans`, ...(params ? [params] : [])] as const;
+};
+
+export const getPaymentsControllerSuccessPlansQueryOptions = <
+	TData = Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>,
+	TError = ErrorType<unknown>,
+>(
+	params: PaymentsControllerSuccessPlansParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>, TError, TData>
+		>;
+	},
+) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getPaymentsControllerSuccessPlansQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>> = ({
+		signal,
+	}) => paymentsControllerSuccessPlans(params, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type PaymentsControllerSuccessPlansQueryResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>
+>;
+export type PaymentsControllerSuccessPlansQueryError = ErrorType<unknown>;
+
+export const usePaymentsControllerSuccessPlans = <
+	TData = Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>,
+	TError = ErrorType<unknown>,
+>(
+	params: PaymentsControllerSuccessPlansParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerSuccessPlans>>, TError, TData>
+		>;
+	},
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getPaymentsControllerSuccessPlansQueryOptions(params, options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -521,6 +587,72 @@ export const usePaymentsControllerStripePayment = <
 	TContext
 > => {
 	const mutationOptions = getPaymentsControllerStripePaymentMutationOptions(options);
+
+	return useMutation(mutationOptions);
+};
+export const paymentsControllerStripePaymentForPlans = (
+	params: PaymentsControllerStripePaymentForPlansParams,
+) => {
+	return authInstance<string>({
+		url: `/api/payments/stripePaymentForPlans`,
+		method: "POST",
+		params,
+	});
+};
+
+export const getPaymentsControllerStripePaymentForPlansMutationOptions = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof paymentsControllerStripePaymentForPlans>>,
+		TError,
+		{ params: PaymentsControllerStripePaymentForPlansParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof paymentsControllerStripePaymentForPlans>>,
+	TError,
+	{ params: PaymentsControllerStripePaymentForPlansParams },
+	TContext
+> => {
+	const { mutation: mutationOptions } = options ?? {};
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof paymentsControllerStripePaymentForPlans>>,
+		{ params: PaymentsControllerStripePaymentForPlansParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return paymentsControllerStripePaymentForPlans(params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PaymentsControllerStripePaymentForPlansMutationResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerStripePaymentForPlans>>
+>;
+
+export type PaymentsControllerStripePaymentForPlansMutationError = ErrorType<unknown>;
+
+export const usePaymentsControllerStripePaymentForPlans = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof paymentsControllerStripePaymentForPlans>>,
+		TError,
+		{ params: PaymentsControllerStripePaymentForPlansParams },
+		TContext
+	>;
+}): UseMutationResult<
+	Awaited<ReturnType<typeof paymentsControllerStripePaymentForPlans>>,
+	TError,
+	{ params: PaymentsControllerStripePaymentForPlansParams },
+	TContext
+> => {
+	const mutationOptions = getPaymentsControllerStripePaymentForPlansMutationOptions(options);
 
 	return useMutation(mutationOptions);
 };

@@ -24,6 +24,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
 import useSocket from "@shared/hooks/useNotificationSocket";
+import PlansPage from "@pages/PlansPage";
 
 function AppContainer() {
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
@@ -80,6 +81,24 @@ function AppContainer() {
 	}
 
 	const includeParentofSidebar = location.pathname.includes("setting");
+	if (user?.UserPlans?.length === 0) {
+		return (
+			<>
+				<GetStartedDialog
+					open={
+						user?.company?.length === 0 ||
+						user?.company?.[0]?.country_id === "" ||
+						user?.company?.[0]?.address === null ||
+						user?.company?.[0]?.address === ""
+					}
+				/>
+				<Routes>
+					<Route path={"/plan/planspage"} element={<PlansPage />} />
+					<Route path={"*"} element={<Navigate to="/plan/planspage" replace />} />
+				</Routes>
+			</>
+		);
+	}
 
 	return (
 		<Navbar>
