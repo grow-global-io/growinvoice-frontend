@@ -29,10 +29,10 @@ import QuotationSettingsPage from "@pages/QuotationSettingsPage";
 import QuotationTemplatePage from "@pages/QuotationTemplatePage";
 import PaymentsListPage from "@pages/PaymentsListPage";
 import VendorsListPage from "@pages/VendorsListPage";
-import PlansPage from "@pages/PlansPage";
 import PaymentDetailsPage from "@pages/PaymentDetailsPage";
 import GateWayDetailsPage from "@pages/GateWayDetailsPage";
 import PaymentSuccessPage from "@pages/PaymentSuccessPage";
+import PlansPage from "@pages/PlansPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
