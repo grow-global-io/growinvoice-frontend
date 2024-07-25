@@ -80,6 +80,7 @@ export * from "./gatewaydetailsControllerUpdate200";
 export * from "./gatewaydetailsControllerUpdate200AllOf";
 export * from "./getCustomerWithAddressDto";
 export * from "./getCustomerWithAddressDtoOption";
+export * from "./getVendorsWithAddressDto";
 export * from "./hSNCode";
 export * from "./hSNCodeDto";
 export * from "./hsncodeControllerCreate201";

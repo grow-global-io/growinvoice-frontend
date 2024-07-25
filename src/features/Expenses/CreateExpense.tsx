@@ -74,6 +74,7 @@ const CreateExpense = ({ id }: { id?: string }) => {
 				id: id ?? "",
 				data: {
 					...values,
+					amount: parseFloat(values.amount.toString()),
 					expenseDate: formatDateToIso(values.expenseDate),
 				},
 			});
@@ -84,6 +85,7 @@ const CreateExpense = ({ id }: { id?: string }) => {
 			await createExpenses.mutateAsync({
 				data: {
 					...values,
+					amount: parseFloat(values.amount.toString()),
 					expenseDate: formatDateToIso(values.expenseDate),
 				},
 			});
@@ -96,7 +98,7 @@ const CreateExpense = ({ id }: { id?: string }) => {
 		actions.setSubmitting(false);
 		navigate("/expenses/expenseslist");
 	};
-	if (ExpensesFindOne?.isLoading) {
+	if (ExpensesFindOne?.isLoading || ExpensesFindOne?.isFetching || ExpensesFindOne.isRefetching) {
 		return <Loader />;
 	}
 	return (

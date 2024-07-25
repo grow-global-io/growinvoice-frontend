@@ -17,6 +17,7 @@ import type {
 } from "@tanstack/react-query";
 import type {
 	CreateVendorsWithAddressDto,
+	GetVendorsWithAddressDto,
 	SuccessResponseDto,
 	UpdateVendorsWithAddressDto,
 	VendorsControllerCreate200,
@@ -147,7 +148,11 @@ export const useVendorsControllerFindAll = <
 };
 
 export const vendorsControllerFindOne = (id: string, signal?: AbortSignal) => {
-	return authInstance<VendorsDto>({ url: `/api/vendors/${id}`, method: "GET", signal });
+	return authInstance<GetVendorsWithAddressDto>({
+		url: `/api/vendors/${id}`,
+		method: "GET",
+		signal,
+	});
 };
 
 export const getVendorsControllerFindOneQueryKey = (id: string) => {

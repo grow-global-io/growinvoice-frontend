@@ -65,7 +65,7 @@ const VendorsTableList = () => {
 						<CustomIconButton
 							src={EditIcon}
 							onClick={() => {
-								updateVendors(params.row);
+								updateVendors(params.row?.id);
 							}}
 						/>
 					</Box>

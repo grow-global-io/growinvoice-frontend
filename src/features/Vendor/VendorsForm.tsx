@@ -18,28 +18,34 @@ import {
 	getVendorsControllerFindAllQueryKey,
 	getVendorsControllerFindOneQueryKey,
 	useVendorsControllerCreate,
+	useVendorsControllerFindOne,
 	useVendorsControllerUpdate,
 } from "@api/services/vendors";
 import Loader from "@shared/components/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 const VendorsForm = () => {
 	const { user } = useAuthStore();
-	const { setOpenVendorsForm, editValues } = useCreateVendorsStore.getState();
+	const { setOpenVendorsForm, editVendorId } = useCreateVendorsStore.getState();
+	const editValues = useVendorsControllerFindOne(editVendorId ?? "", {
+		query: {
+			enabled: editVendorId !== null,
+		},
+	});
 	const queryClient = useQueryClient();
 	const countryFindAll = useCurrencyControllerFindCountries();
 	const initialValues: CreateVendorsWithAddressDto = {
-		name: editValues?.name ?? "",
-		display_name: editValues?.display_name ?? "",
-		email: editValues?.email ?? "",
-		phone: editValues?.phone ?? "",
-		website: editValues?.website ?? "",
+		name: editValues?.data?.name ?? "",
+		display_name: editValues?.data?.display_name ?? "",
+		email: editValues?.data?.email ?? "",
+		phone: editValues?.data?.phone ?? "",
+		website: editValues?.data?.website ?? "",
 		user_id: user?.id ?? "",
 		billingAddress: {
-			address: editValues?.billingAddress?.address ?? "",
-			city: editValues?.billingAddress?.city ?? "",
-			country_id: editValues?.billingAddress?.country_id ?? "",
-			state_id: editValues?.billingAddress?.state_id ?? "",
-			zip: editValues?.billingAddress?.zip ?? "",
+			address: editValues?.data?.billingAddress?.address ?? "",
+			city: editValues?.data?.billingAddress?.city ?? "",
+			country_id: editValues?.data?.billingAddress?.country_id ?? "",
+			state_id: editValues?.data?.billingAddress?.state_id ?? "",
+			zip: editValues?.data?.billingAddress?.zip ?? "",
 		},
 	};
 	const schema: yup.Schema<CreateVendorsWithAddressDto> = yup.object({
@@ -70,13 +76,13 @@ const VendorsForm = () => {
 		actions: FormikHelpers<CreateVendorsWithAddressDto>,
 	) => {
 		actions.setSubmitting(true);
-		if (editValues !== null) {
+		if (editVendorId !== null) {
 			await updateVendors.mutateAsync({
-				id: editValues?.id ?? "",
+				id: editVendorId ?? "",
 				data: values,
 			});
 			queryClient.invalidateQueries({
-				queryKey: getVendorsControllerFindOneQueryKey(editValues?.id ?? ""),
+				queryKey: getVendorsControllerFindOneQueryKey(editVendorId ?? ""),
 			});
 		} else {
 			await createVendors.mutateAsync({
@@ -86,12 +92,21 @@ const VendorsForm = () => {
 		queryClient.invalidateQueries({
 			queryKey: getVendorsControllerFindAllQueryKey(),
 		});
+		if (editVendorId) {
+			await queryClient?.refetchQueries({
+				queryKey: getVendorsControllerFindOneQueryKey(editVendorId ?? ""),
+			});
+		}
 		actions.resetForm();
 		setOpenVendorsForm(false);
 		actions.setSubmitting(false);
 	};
 
-	if (countryFindAll.isLoading) return <Loader />;
+	if (
+		countryFindAll.isLoading ||
+		(editVendorId && (editValues?.isLoading || editValues?.isRefetching))
+	)
+		return <Loader />;
 
 	return (
 		<>
