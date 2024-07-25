@@ -2,18 +2,18 @@ import { createStore } from "zustand/vanilla";
 
 interface PaymentStore {
 	open: boolean;
+	editVendorId: string | null;
 	setOpenVendorsForm: (open: boolean) => void;
-	invoiceId: string | null;
-	setOpenVendorsFormWithInvoiceId: (open: boolean, invoiceId: string) => void;
+	updateVendors: (vendor_id: string) => void;
 }
 
 export const useCreateVendorsStore = createStore<PaymentStore>((set) => ({
 	open: false,
-	invoiceId: null,
+	editVendorId: null,
 	setOpenVendorsForm: (open) => {
-		set({ open });
+		set({ open, editVendorId: null });
 	},
-	setOpenVendorsFormWithInvoiceId: (open, invoiceId) => {
-		set({ open, invoiceId });
+	updateVendors: (vendors) => {
+		set({ editVendorId: vendors, open: true });
 	},
 }));
