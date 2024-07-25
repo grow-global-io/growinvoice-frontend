@@ -1,19 +1,20 @@
+import { CreateVendorsWithAddressDto } from "@api/services/models";
 import { createStore } from "zustand/vanilla";
 
 interface PaymentStore {
 	open: boolean;
+	editValues: CreateVendorsWithAddressDto | null;
 	setOpenVendorsForm: (open: boolean) => void;
-	invoiceId: string | null;
-	setOpenVendorsFormWithInvoiceId: (open: boolean, invoiceId: string) => void;
+	updateVendors: (vendors: CreateVendorsWithAddressDto) => void;
 }
 
 export const useCreateVendorsStore = createStore<PaymentStore>((set) => ({
 	open: false,
-	invoiceId: null,
+	editValues: null,
 	setOpenVendorsForm: (open) => {
-		set({ open });
+		set({ open, editValues: null });
 	},
-	setOpenVendorsFormWithInvoiceId: (open, invoiceId) => {
-		set({ open, invoiceId });
+	updateVendors: (vendors) => {
+		set({ editValues: vendors, open: true });
 	},
 }));

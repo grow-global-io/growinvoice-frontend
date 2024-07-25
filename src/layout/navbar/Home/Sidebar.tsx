@@ -32,6 +32,7 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import NotificationMain from "@features/Notification/NotificationMain";
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
 	const { pathname } = useLocation();
@@ -118,6 +119,15 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			menuItems: [
 				{ path: "/quotation/quotationlist", label: "Quotation" },
 				{ path: "/quotation/createquotation", label: "Create Quotation" },
+			],
+		},
+		{
+			path: "/expenses",
+			icon: <InsertDriveFileOutlinedIcon />,
+			menuName: "Expenses",
+			menuItems: [
+				{ path: "/expenses/expenseslist", label: "Expenses" },
+				{ path: "/expenses/createexpenses", label: "Create Expense" },
 			],
 		},
 		{
