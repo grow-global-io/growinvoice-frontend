@@ -13,6 +13,7 @@ import { useAuthStore } from "@store/auth";
 import { usePaymentsControllerStripePaymentForPlans } from "@api/services/payments";
 import { PlanWithFeaturesDto } from "@api/services/models";
 import { formatCurrency } from "@shared/formatter";
+import { useMemo } from "react";
 
 const style = {
 	color: "secondary.dark",
@@ -39,6 +40,10 @@ const MembershipCard = ({ item }: { item: PlanWithFeaturesDto }) => {
 		const response = await createPlan.mutateAsync({ params });
 		window.open(response);
 	};
+
+	const checkIsSubscribe = useMemo(() => {
+		return user?.UserPlans?.some((userPlan) => userPlan.plan_id === item?.id);
+	}, [user?.UserPlans]);
 
 	return (
 		<Card
@@ -78,8 +83,13 @@ const MembershipCard = ({ item }: { item: PlanWithFeaturesDto }) => {
 					</List>
 				</Grid>
 				<Grid item xs={12} px={5} py={2}>
-					<Button variant="outlined" fullWidth onClick={handleUpgradePlan}>
-						Upgrade
+					<Button
+						variant="outlined"
+						fullWidth
+						onClick={handleUpgradePlan}
+						disabled={checkIsSubscribe}
+					>
+						{checkIsSubscribe ? "Subscribed Already" : "Upgrade"}
 					</Button>
 				</Grid>
 			</Grid>

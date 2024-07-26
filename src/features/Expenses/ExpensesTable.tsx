@@ -1,43 +1,33 @@
 import { Box, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { CustomIconButton } from "@shared/components/CustomIconButton";
-import {
-	getVendorsControllerFindAllQueryKey,
-	useVendorsControllerFindAll,
-	useVendorsControllerRemove,
-} from "@api/services/vendors";
-import { timeAgo } from "@shared/formatter";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useConfirmDialogStore } from "@store/confirmDialog";
 import { useQueryClient } from "@tanstack/react-query";
 import Loader from "@shared/components/Loader";
-import { useCreateVendorsStore } from "@store/createVendorsStore";
+import {
+	getExpensesControllerFindAllQueryKey,
+	useExpensesControllerFindAll,
+	useExpensesControllerRemove,
+} from "@api/services/expenses";
+import { useNavigate } from "react-router-dom";
+import { parseDateStringToFormat } from "@shared/formatter";
 
-const VendorsTableList = () => {
+const ExpensesTable = () => {
+	const navigate = useNavigate();
 	const queryClient = useQueryClient();
-	const allvendors = useVendorsControllerFindAll();
+	const allExpenses = useExpensesControllerFindAll();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
-	const { updateVendors } = useCreateVendorsStore.getState();
-	const removeVendors = useVendorsControllerRemove();
+	const removeExpense = useExpensesControllerRemove();
+	const handleEdit = (invoiceId: string) => {
+		navigate(`/expenses/createexpenses/${invoiceId}`);
+	};
 
 	const columns: GridColDef[] = [
 		{
-			field: "display_name",
-			headerName: "Display Name",
-			flex: 1,
-			minWidth: 150,
-			renderCell: (params) => {
-				return (
-					<Typography variant="body1" color="secondary">
-						{params.value}
-					</Typography>
-				);
-			},
-		},
-		{
-			field: "name",
-			headerName: "Contact Name",
+			field: "category",
+			headerName: "Category",
 			flex: 1,
 			minWidth: 150,
 			renderCell: (params) => {
@@ -45,12 +35,30 @@ const VendorsTableList = () => {
 			},
 		},
 		{
-			field: "createdAt",
-			headerName: "Created At",
+			field: "expenseDate",
+			headerName: "Date",
 			flex: 1,
 			minWidth: 150,
 			renderCell: (params) => {
-				return <Typography>{timeAgo(params.value)}</Typography>;
+				return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
+			},
+		},
+		{
+			field: "notes",
+			headerName: "Notes",
+			flex: 1,
+			minWidth: 150,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "amount",
+			headerName: "Amount",
+			flex: 1,
+			minWidth: 150,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
 			},
 		},
 		{
@@ -60,17 +68,17 @@ const VendorsTableList = () => {
 			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
-				<Tooltip title="Edit Vendor" key={params.row?.id}>
+				<Tooltip title="Edit expenses" key={params.row?.id}>
 					<Box>
 						<CustomIconButton
 							src={EditIcon}
 							onClick={() => {
-								updateVendors(params.row?.id);
+								handleEdit(params.row.id);
 							}}
 						/>
 					</Box>
 				</Tooltip>,
-				<Tooltip title="Delete Vendor" key={params.row?.id}>
+				<Tooltip title="Delete expenses" key={params.row?.id}>
 					<Box>
 						<CustomIconButton
 							key={params.row?.id}
@@ -79,12 +87,12 @@ const VendorsTableList = () => {
 							iconColor="error"
 							onClick={async () => {
 								handleOpen({
-									title: "Delete Vendor",
-									message: "Are you sure you want to delete this vedor?",
+									title: "Delete Expenses",
+									message: "Are you sure you want to delete this expenses?",
 									onConfirm: async () => {
-										await removeVendors.mutateAsync({ id: params.row.id });
+										await removeExpense.mutateAsync({ id: params.row.id });
 										queryClient.invalidateQueries({
-											queryKey: getVendorsControllerFindAllQueryKey(),
+											queryKey: getExpensesControllerFindAllQueryKey(),
 										});
 									},
 									onCancel: () => {
@@ -101,15 +109,15 @@ const VendorsTableList = () => {
 		},
 	];
 
-	if (allvendors.isLoading) {
+	if (allExpenses.isLoading) {
 		return <Loader />;
 	}
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={allvendors?.data} columns={columns} />
+			<DataGrid autoHeight rows={allExpenses?.data} columns={columns} />
 		</Box>
 	);
 };
 
-export default VendorsTableList;
+export default ExpensesTable;

@@ -33,6 +33,8 @@ import PaymentDetailsPage from "@pages/PaymentDetailsPage";
 import GateWayDetailsPage from "@pages/GateWayDetailsPage";
 import PaymentSuccessPage from "@pages/PaymentSuccessPage";
 import PlansPage from "@pages/PlansPage";
+import CreateExpensesPage from "@pages/CreateExpensesPage";
+import ExpensesListPage from "@pages/ExpensesListPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -208,5 +210,17 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/payment/success",
 		Component: PaymentSuccessPage,
+	},
+	{
+		path: "/expenses/createexpenses",
+		Component: CreateExpensesPage,
+	},
+	{
+		path: "/expenses/createexpenses/:id",
+		Component: CreateExpensesPage,
+	},
+	{
+		path: "/expenses/expenseslist",
+		Component: ExpensesListPage,
 	},
 ];
