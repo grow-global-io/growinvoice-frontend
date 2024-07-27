@@ -19,7 +19,7 @@ const ExpensesSummary = () => {
 	const data = [
 		{
 			value: customerCount?.data ?? "",
-			name: "Customers",
+			name: "Customer",
 			img: Constants.customImages.GroupUser,
 		},
 		{
