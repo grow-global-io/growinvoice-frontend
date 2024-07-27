@@ -26,10 +26,10 @@ const ExpensesSummary = () => {
 	const data = [
 		{
 			value: customerCount?.data ?? "",
-            name: "Customers",
+			name: "Customers",
 			img: <PeopleIcon sx={style} />,
 			BgColor: "custom.DashboardBlue",
-        },
+		},
 		{
 			value: invoiceCount?.data ?? "",
 			name: "Invoices",
