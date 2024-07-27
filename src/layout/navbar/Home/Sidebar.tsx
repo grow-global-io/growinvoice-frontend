@@ -33,6 +33,7 @@ import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlin
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import NotificationMain from "@features/Notification/NotificationMain";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
+import { FaFileInvoice } from "react-icons/fa6";
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
 	const { pathname } = useLocation();
@@ -114,7 +115,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 		},
 		{
 			path: "/quotation",
-			icon: <ReceiptIcon />,
+			icon: <FaFileInvoice fontSize={"20px"} />,
 			menuName: "Quotation",
 			menuItems: [
 				{ path: "/quotation/quotationlist", label: "Quotation" },

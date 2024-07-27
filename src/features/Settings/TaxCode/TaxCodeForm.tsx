@@ -1,18 +1,14 @@
 import { Box, Grid, Typography, IconButton, Divider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDialog } from "@shared/hooks/useDialog";
 import CreateTaxes from "@features/ProductTaxes/CreateTaxes";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-const TaxTypeForm = ({ handleClose }: { handleClose: () => void }) => {
-	const {
-		// handleClickOpen: handleTaxesOpen,
-		handleClose: handleTaxesClose,
-		// open: openTaxesForm,
-	} = useDialog();
+import { useCreateTaxCodeStore } from "@store/createTaxCodeStore";
 
+const TaxCodeForm = () => {
+	const { setOpenTaxCodeForm } = useCreateTaxCodeStore.getState();
 	return (
-		<Box sx={{ width: { sm: "400px" } }} role="presentation" p={2}>
-			<Grid container justifyContent={"space-between"}>
+		<Box sx={{ width: { sm: "400px" } }} role="presentation">
+			<Grid container justifyContent={"space-between"} p={2}>
 				<Typography
 					variant="h4"
 					sx={{
@@ -28,17 +24,23 @@ const TaxTypeForm = ({ handleClose }: { handleClose: () => void }) => {
 					sx={{
 						color: "secondary.dark",
 					}}
-					onClick={() => handleClose()}
+					onClick={() => {
+						setOpenTaxCodeForm(false);
+					}}
 				>
 					<CloseIcon />
 				</IconButton>
 			</Grid>
 			<Divider />
-			<Box sx={{ mb: 2, mt: 2 }}>
-				<CreateTaxes handleClose={handleTaxesClose} />
+			<Box sx={{ mb: 2, mt: 2 }} p={2}>
+				<CreateTaxes
+					handleClose={() => {
+						setOpenTaxCodeForm(false);
+					}}
+				/>
 			</Box>
 		</Box>
 	);
 };
 
-export default TaxTypeForm;
+export default TaxCodeForm;

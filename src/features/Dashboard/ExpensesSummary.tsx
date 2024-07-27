@@ -5,10 +5,17 @@ import {
 } from "@api/services/invoice";
 import { Grid } from "@mui/material";
 import Loader from "@shared/components/Loader";
-import OverviewCard from "@shared/components/OverviewCard";
-import { Constants } from "@shared/constants";
 import { currencyFormatter } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
+import DashbaordCard from "@shared/components/DashbaordCard";
+import PeopleIcon from "@mui/icons-material/People";
+import DescriptionIcon from "@mui/icons-material/Description";
+import { FaFileInvoiceDollar } from "react-icons/fa";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+const style = {
+	color: "custom.lightBlue",
+	fontSize: "30px",
+};
 
 const ExpensesSummary = () => {
 	const { user } = useAuthStore();
@@ -20,22 +27,26 @@ const ExpensesSummary = () => {
 		{
 			value: customerCount?.data ?? "",
 			name: "Customers",
-			img: Constants.customImages.GroupUser,
+			img: <PeopleIcon sx={style} />,
+			BgColor: "custom.DashboardBlue",
 		},
 		{
 			value: invoiceCount?.data ?? "",
 			name: "Invoices",
-			img: Constants.customImages.InvoiceFile,
+			img: <DescriptionIcon sx={style} />,
+			BgColor: "custom.DashbaordYellow",
 		},
 		{
 			value: 0,
 			name: "Estimates",
-			img: Constants.customImages.Estimate,
+			img: <FaFileInvoiceDollar color="#fff" fontSize={"30px"} />,
+			BgColor: "custom.DashboadRed",
 		},
 		{
 			value: currencyFormatter(invoiceDueAmount?.data ?? 0, user?.currency?.short_code),
 			name: "Due Amount",
-			img: Constants.customImages.Amount,
+			img: <AccountBalanceWalletIcon sx={style} />,
+			BgColor: "custom.DashboardGreen",
 		},
 	];
 
@@ -46,7 +57,12 @@ const ExpensesSummary = () => {
 		<Grid container spacing={2}>
 			{data.map((item, index) => (
 				<Grid item xs={12} md={3} key={index}>
-					<OverviewCard name={item.name} img={item.img} value={item.value} />
+					<DashbaordCard
+						name={item.name}
+						icon={item.img}
+						value={item.value}
+						bgColor={item.BgColor}
+					/>
 				</Grid>
 			))}
 		</Grid>

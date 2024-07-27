@@ -18,8 +18,6 @@ import PreferencesPage from "@pages/PreferencesPage";
 import CompanyPage from "@pages/CompanyPage";
 import InvoicesPage from "@pages/InvoicesPage";
 import ProductUnitPage from "@pages/ProductUnitPage";
-import HsnCodePage from "@pages/HsnCodePage";
-import TaxTypePage from "@pages/TaxTypePage";
 import ApiCredentialsPage from "@pages/ApiCredentialsPage";
 import InvoiceDetailPage from "@pages/InvoiceDetailPage";
 import QuotationDetailPage from "@pages/QuotationDetailPage";
@@ -35,6 +33,8 @@ import PaymentSuccessPage from "@pages/PaymentSuccessPage";
 import PlansPage from "@pages/PlansPage";
 import CreateExpensesPage from "@pages/CreateExpensesPage";
 import ExpensesListPage from "@pages/ExpensesListPage";
+import HsnCodeListPage from "@pages/HsnCodeListPage";
+import TaxCodeListPage from "@pages/TaxCodeListPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -145,11 +145,11 @@ export const protectedRoutes: Route[] = [
 	},
 	{
 		path: "/setting/hsncode",
-		Component: HsnCodePage,
+		Component: HsnCodeListPage,
 	},
 	{
 		path: "/setting/taxtype",
-		Component: TaxTypePage,
+		Component: TaxCodeListPage,
 	},
 	{
 		path: "/setting/apicredentials",
@@ -158,14 +158,6 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/setting/productunit",
 		Component: ProductUnitPage,
-	},
-	{
-		path: "/setting/hsncode",
-		Component: HsnCodePage,
-	},
-	{
-		path: "/setting/taxtype",
-		Component: TaxTypePage,
 	},
 	{
 		path: "/setting/apicredentials",

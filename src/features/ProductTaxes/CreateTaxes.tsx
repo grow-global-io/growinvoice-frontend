@@ -1,7 +1,10 @@
 import { CreateTaxDto } from "@api/services/models";
 import {
 	getTaxcodeControllerFindAllQueryKey,
+	getTaxcodeControllerFindOneQueryKey,
 	useTaxcodeControllerCreate,
+	useTaxcodeControllerFindOne,
+	useTaxcodeControllerUpdate,
 } from "@api/services/tax-code";
 import { Box, Button } from "@mui/material";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
@@ -9,6 +12,8 @@ import { useAuthStore } from "@store/auth";
 import { Formik, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCreateTaxCodeStore } from "@store/createTaxCodeStore";
+import Loader from "@shared/components/Loader";
 
 const style = {
 	bgcolor: "custom.lightBlue",
@@ -21,6 +26,13 @@ const CreateTaxes = ({ handleClose }: { handleClose?: () => void }) => {
 	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const createTax = useTaxcodeControllerCreate();
+	const updateTax = useTaxcodeControllerUpdate();
+	const { editTaxId } = useCreateTaxCodeStore.getState();
+	const editValues = useTaxcodeControllerFindOne(editTaxId ?? "", {
+		query: {
+			enabled: editTaxId !== null,
+		},
+	});
 
 	const validationSchema: Yup.Schema<CreateTaxDto> = Yup.object().shape({
 		description: Yup.string().nullable(),
@@ -32,24 +44,37 @@ const CreateTaxes = ({ handleClose }: { handleClose?: () => void }) => {
 	});
 
 	const initialValues: CreateTaxDto = {
-		percentage: 0,
-		description: "",
+		percentage: editValues?.data?.percentage ?? 0,
+		description: editValues?.data?.description ?? "",
 		user_id: user?.id ?? "",
 	};
 
 	const handleSubmit = async (values: CreateTaxDto, action: FormikHelpers<CreateTaxDto>) => {
 		action.setSubmitting(true);
-		await createTax.mutateAsync({
-			data: values,
-		});
+		if (editTaxId) {
+			await updateTax.mutateAsync({
+				id: editTaxId ?? "",
+				data: values,
+			});
+			queryClient.invalidateQueries({
+				queryKey: getTaxcodeControllerFindOneQueryKey(editTaxId ?? ""),
+			});
+		} else {
+			await createTax.mutateAsync({
+				data: values,
+			});
+		}
 		action.resetForm();
 		if (handleClose) handleClose();
-		queryClient.invalidateQueries({
+
+		queryClient.refetchQueries({
 			queryKey: getTaxcodeControllerFindAllQueryKey(),
 		});
 		action.setSubmitting(false);
 	};
-
+	if (editValues?.isLoading || editValues?.isFetching) {
+		return <Loader />;
+	}
 	return (
 		<Box sx={style}>
 			<Formik
@@ -76,7 +101,7 @@ const CreateTaxes = ({ handleClose }: { handleClose?: () => void }) => {
 										handleSubmit();
 									}}
 								>
-									Create Tax
+									{editTaxId ? "Update" : "Create"} Tax
 								</Button>
 								{handleClose && (
 									<Button variant="outlined" onClick={handleClose}>

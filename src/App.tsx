@@ -20,6 +20,10 @@ import { useCreatePaymentStore } from "@store/createPaymentStore";
 import { PaymentDrawer } from "@features/Payments/CreatePayments";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
 import { VendorsDrawer } from "@features/Vendor/CreateVendors";
+import { useCreateTaxCodeStore } from "@store/createTaxCodeStore";
+import { TaxCodeDrawer } from "@features/Settings/TaxCode/CreateTaxCode";
+import { useCreateHsnCodeStore } from "@store/createHsnCodeStore";
+import { HsnCodeDrawer } from "@features/Settings/HsnCode/CreateHsnCode";
 import { toast, ToastContainer } from "react-toastify";
 import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
@@ -142,6 +146,8 @@ function App() {
 	const [openPaymentForm, setOpenPaymentForm] = useState(false);
 	const [openVendorsForm, setOpenVendorsForm] = useState(false);
 	const [openGateWayForm, setOpenGateWayForm] = useState(false);
+	const [openHsnCodeForm, setOpenHsnCodeForm] = useState(false);
+	const [openTaxCodeForm, setOpenTaxCodeForm] = useState(false);
 
 	const handleCloseProductForm = () => {
 		setOpenProductForm(false);
@@ -161,12 +167,20 @@ function App() {
 	const handleCloseGateWayForm = () => {
 		setOpenGateWayForm(false);
 	};
+	const handleCloseHsnCodeForm = () => {
+		setOpenHsnCodeForm(false);
+	};
+	const handleCloseTaxCodeForm = () => {
+		setOpenTaxCodeForm(false);
+	};
 
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
 	const createCustomer = useRef(useCreateCustomerStore.getState());
 	const createPayment = useRef(useCreatePaymentStore.getState());
 	const createVendors = useRef(useCreateVendorsStore.getState());
+	const createHsnCode = useRef(useCreateHsnCodeStore.getState());
+	const createTaxCode = useRef(useCreateTaxCodeStore.getState());
 
 	useEffect(() => {
 		const unsubscribeLoading = useLoaderStore.subscribe((state) => {
@@ -192,6 +206,14 @@ function App() {
 			createVendors.current = state;
 			setOpenVendorsForm(state.open);
 		});
+		const unsubscribeHsnCodeForm = useCreateHsnCodeStore.subscribe((state) => {
+			createHsnCode.current = state;
+			setOpenHsnCodeForm(state.open);
+		});
+		const unsubscribeTaxCodeForm = useCreateTaxCodeStore.subscribe((state) => {
+			createTaxCode.current = state;
+			setOpenTaxCodeForm(state.open);
+		});
 
 		return () => {
 			unsubscribeLoading();
@@ -199,6 +221,8 @@ function App() {
 			unsubscribeCustomerForm();
 			unsubscribePaymentForm();
 			unsubscribeVendorsForm();
+			unsubscribeHsnCodeForm();
+			unsubscribeTaxCodeForm();
 		};
 	}, []);
 
@@ -230,6 +254,8 @@ function App() {
 			<PaymentDrawer open={openPaymentForm} handleClose={handleClosePaymentForm} />
 			<VendorsDrawer open={openVendorsForm} handleClose={handleCloseVendorsForm} />
 			<GateWayDialog open={openGateWayForm} handleClose={handleCloseGateWayForm} />
+			<HsnCodeDrawer open={openHsnCodeForm} handleClose={handleCloseHsnCodeForm} />
+			<TaxCodeDrawer open={openTaxCodeForm} handleClose={handleCloseTaxCodeForm} />
 		</>
 	);
 }

@@ -45,7 +45,7 @@ const Plans = () => {
 				</AppBar>
 			)}
 
-			<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"} mb={"10px"}>
+			<Typography variant="h3" textTransform={"capitalize"} mb={"10px"}>
 				Plans
 			</Typography>
 			<Grid container spacing={2} display={"flex"} justifyContent={"center"} mt={5}>

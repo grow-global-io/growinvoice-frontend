@@ -257,6 +257,7 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 					alignItems: "center",
 					gap: 2,
 				}}
+				textTransform={"capitalize"}
 			>
 				<img src={Constants.customImages.invoiceIcon} alt="Invoice Icon" /> New Invoices
 			</Typography>

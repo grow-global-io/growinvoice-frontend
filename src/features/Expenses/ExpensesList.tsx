@@ -4,7 +4,7 @@ import ExpensesTable from "./ExpensesTable";
 const ExpensesList = () => {
 	return (
 		<Box>
-			<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"} mb={"10px"}>
+			<Typography variant="h3" textTransform={"capitalize"} mb={"10px"}>
 				Expenses
 			</Typography>
 			<ExpensesTable />

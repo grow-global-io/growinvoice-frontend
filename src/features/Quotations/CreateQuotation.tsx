@@ -204,6 +204,7 @@ const CreateQuotation = ({ id }: { id?: string }) => {
 					alignItems: "center",
 					gap: 2,
 				}}
+				textTransform={"capitalize"}
 			>
 				<img src={Constants.customImages.QuotationIcon} alt="Invoice Icon" /> New Quotation
 			</Typography>
