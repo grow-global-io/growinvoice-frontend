@@ -24,7 +24,6 @@ const ExpensesSummary = () => {
 			name: "Customers",
 			img: <FaPeopleGroup color="#fff" fontSize={"50px"} />,
 			BgColor: "custom.DashboardBlue",
-
 		},
 		{
 			value: invoiceCount?.data ?? "",
