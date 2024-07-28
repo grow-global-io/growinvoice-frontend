@@ -45,15 +45,15 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 	const settingsWithFunc = [
 		{
 			name: "Profile",
-			func: () => console.log("Profile"),
-		},
-		{
-			name: "Account",
-			func: () => console.log("Account"),
+			func: () => {
+				navigate("/setting/myprofile");
+			},
 		},
 		{
 			name: "Dashboard",
-			func: () => console.log("Dashboard"),
+			func: () => {
+				navigate("/dashboard");
+			},
 		},
 		{
 			name: "Logout",
