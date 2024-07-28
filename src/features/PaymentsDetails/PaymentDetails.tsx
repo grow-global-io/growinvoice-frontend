@@ -148,7 +148,7 @@ const PaymentDetails = () => {
 					</Button>
 				</Grid>
 				<Grid item xs={12}>
-					<DataGrid rows={paymentDetails.data} columns={columns} />{" "}
+					<DataGrid autoHeight rows={paymentDetails.data} columns={columns} />{" "}
 				</Grid>
 			</Grid>
 			<PaymentDetailsDrawer open={open} handleClose={handleClose} paymentId={paymentId ?? ""} />

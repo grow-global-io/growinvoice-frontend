@@ -100,7 +100,7 @@ const GateWayDetailsList = () => {
 		<>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<DataGrid rows={gateWayList?.data ?? []} columns={columns} />
+					<DataGrid autoHeight rows={gateWayList?.data ?? []} columns={columns} />
 				</Grid>
 			</Grid>
 			<GateWayDialog handleClose={handleClose} open={open} editId={editId ?? undefined} />

@@ -105,7 +105,6 @@ const CreateExpense = ({ id }: { id?: string }) => {
 		<>
 			<Typography
 				variant="h3"
-				fontWeight={"500"}
 				textTransform={"capitalize"}
 				sx={{
 					display: "flex",

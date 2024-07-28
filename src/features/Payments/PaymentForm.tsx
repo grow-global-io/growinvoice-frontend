@@ -9,7 +9,7 @@ import { CreatePaymentsDto } from "@api/services/models";
 import { useAuthStore } from "@store/auth";
 import * as Yup from "yup";
 import { useCreatePaymentStore } from "@store/createPaymentStore";
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import { Constants } from "@shared/constants";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import CloseIcon from "@mui/icons-material/Close";
@@ -89,8 +89,8 @@ const PaymentForm = () => {
 
 	return (
 		<>
-			<Box sx={{ width: { sm: "400px" } }} padding={2}>
-				<Grid container justifyContent={"space-between"}>
+			<Box sx={{ width: { sm: "400px" } }}>
+				<Grid container justifyContent={"space-between"} padding={2}>
 					<Typography
 						variant="h4"
 						sx={{
@@ -116,7 +116,8 @@ const PaymentForm = () => {
 					<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
 						{({ setFieldValue }) => (
 							<Form>
-								<Grid container>
+								<Divider />
+								<Grid container padding={2}>
 									<Grid item xs={12}>
 										<Field
 											name="reference_number"
