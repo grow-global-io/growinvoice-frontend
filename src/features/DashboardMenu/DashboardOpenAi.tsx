@@ -391,6 +391,7 @@ const DashboardOpenAi = () => {
 								<div style={{ width: "100%" }}>
 									<div style={{ height: 350, width: "100%" }}>
 										<DataGrid
+											autoHeight
 											rows={rows ?? []}
 											columns={columns?.filter((item) => item?.show) ?? []}
 											slots={{ toolbar: () => <CustomToolbar rows={rows} /> }}

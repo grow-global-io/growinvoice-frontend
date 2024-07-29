@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const MainHomeCard = ({
 	heading,
@@ -11,6 +12,7 @@ const MainHomeCard = ({
 	buttonText: string;
 	float: string;
 }) => {
+	const navigate = useNavigate();
 	return (
 		<Box
 			sx={{
@@ -52,7 +54,13 @@ const MainHomeCard = ({
 				>
 					{text}
 				</Typography>
-				<Button variant="contained" sx={{ marginTop: "20px", width: { xs: "auto", sm: "30%" } }}>
+				<Button
+					variant="contained"
+					sx={{ marginTop: "20px", width: { xs: "auto", sm: "30%" } }}
+					onClick={() => {
+						navigate("/register");
+					}}
+				>
 					{buttonText}
 				</Button>
 			</Box>

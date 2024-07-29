@@ -6,7 +6,7 @@ function QuotationList() {
 		<>
 			<Grid container>
 				<Grid item xs={12} display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
-					<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"} mb={"10px"}>
+					<Typography variant="h3" textTransform={"capitalize"} mb={"10px"}>
 						Quotation
 					</Typography>
 				</Grid>

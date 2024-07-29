@@ -1,5 +1,5 @@
 import { useCreateVendorsStore } from "@store/createVendorsStore";
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -111,7 +111,7 @@ const VendorsForm = () => {
 	return (
 		<>
 			<Box sx={{ width: { lg: "700px" } }} role="presentation">
-				<Grid container justifyContent={"space-between"} padding={2}>
+				<Grid container justifyContent={"space-between"} p={2}>
 					<Typography
 						variant="h4"
 						fontWeight={"500"}
@@ -139,6 +139,7 @@ const VendorsForm = () => {
 					<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
 						{() => (
 							<Form>
+								<Divider />
 								<Grid container spacing={2} bgcolor={"custom.lightgray"} padding={2}>
 									<Grid item xs={12} md={6}>
 										<Field name="name" label="Contact Name" component={TextFormField} />

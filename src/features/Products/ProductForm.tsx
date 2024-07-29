@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, IconButton, Button } from "@mui/material";
+import { Box, Grid, Typography, IconButton, Button, Divider } from "@mui/material";
 import { AutocompleteField } from "@shared/components/FormFields/AutoComplete";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
 import { Constants } from "@shared/constants";
@@ -115,8 +115,8 @@ const ProductForm = () => {
 	} = useDialog();
 
 	return (
-		<Box sx={{ width: { sm: "400px" } }} padding={2}>
-			<Grid container justifyContent={"space-between"}>
+		<Box sx={{ width: { sm: "400px" } }}>
+			<Grid container justifyContent={"space-between"} padding={2}>
 				<Typography
 					variant="h4"
 					sx={{
@@ -142,7 +142,8 @@ const ProductForm = () => {
 				<Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
 					{({ setFieldValue }) => (
 						<Form>
-							<Grid container>
+							<Divider />
+							<Grid container my={1} padding={2}>
 								<Grid item xs={12}>
 									<Field
 										name="type"

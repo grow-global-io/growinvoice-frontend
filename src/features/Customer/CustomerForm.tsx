@@ -141,8 +141,8 @@ const CustomerForm = () => {
 	if (countryFindAll.isLoading || currencyList.isLoading) return <Loader />;
 
 	return (
-		<Box sx={{ width: { lg: "700px" } }} role="presentation" padding={2}>
-			<Grid container justifyContent={"space-between"}>
+		<Box sx={{ width: { lg: "700px" } }} role="presentation">
+			<Grid container justifyContent={"space-between"} padding={2}>
 				<Typography
 					variant="h4"
 					sx={{
@@ -169,37 +169,37 @@ const CustomerForm = () => {
 						return (
 							<Form>
 								<Divider />
+								<Box padding={2}>
+									<Grid container spacing={2} bgcolor={"custom.lightgray"}>
+										<Grid item xs={12} sm={8}>
+											<Field
+												name="option"
+												label="Customer Type"
+												component={AutocompleteField}
+												options={Object.values(CreateCustomerWithAddressDtoOption).map(
+													stringToListDto,
+												)}
+												isRequired={true}
+											/>
+										</Grid>
 
-								<Grid container spacing={2} bgcolor={"custom.lightgray"} my={1}>
-									<Grid item xs={12} sm={8}>
-										<Field
-											name="option"
-											label="Customer Type"
-											component={AutocompleteField}
-											options={Object.values(CreateCustomerWithAddressDtoOption).map(
-												stringToListDto,
-											)}
-											isRequired={true}
-										/>
-									</Grid>
-
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="name"
-											label="Customer Name"
-											component={TextFormField}
-											isRequired={true}
-										/>
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="display_name"
-											label="Display Name"
-											component={TextFormField}
-											isRequired={true}
-										/>
-									</Grid>
-									{/* <Grid item xs={12} sm={8}>
+										<Grid item xs={12} sm={6}>
+											<Field
+												name="name"
+												label="Customer Name"
+												component={TextFormField}
+												isRequired={true}
+											/>
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field
+												name="display_name"
+												label="Display Name"
+												component={TextFormField}
+												isRequired={true}
+											/>
+										</Grid>
+										{/* <Grid item xs={12} sm={8}>
 									<Field
 										name="gstNumber"
 										label="GST Number"
@@ -207,31 +207,106 @@ const CustomerForm = () => {
 										type="number"
 									/>
 								</Grid> */}
-									<Grid item xs={12} sm={6}>
-										<Field name="email" label="Email" component={TextFormField} isRequired={true} />
+										<Grid item xs={12} sm={6}>
+											<Field
+												name="email"
+												label="Email"
+												component={TextFormField}
+												isRequired={true}
+											/>
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field name="phone" label="Phone" component={PhoneInputFormField} />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field name="website" label="Website" component={TextFormField} />
+										</Grid>
+										<Grid item xs={12} sm={6}>
+											<Field
+												name="currencies_id"
+												label="Currency"
+												loading={currencyList.isLoading || currencyList.isFetching}
+												component={AutocompleteField}
+												options={currencyList?.data?.map((currency) => ({
+													value: currency.id,
+													label: `${currency.short_code} - ${currency.name}`,
+												}))}
+												isRequired={true}
+											/>
+										</Grid>
 									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field name="phone" label="Phone" component={PhoneInputFormField} />
+									<Grid container spacing={2} my={1}>
+										<Grid item xs={12} sm={12}>
+											<Typography
+												variant="h4"
+												color={"secondary.dark"}
+												sx={{
+													display: "flex",
+													alignItems: "center",
+													gap: 1,
+												}}
+											>
+												<img src={Constants.customImages.BillingAddressIcon} alt="Invoice Icon" />{" "}
+												Billing Address
+											</Typography>
+										</Grid>
+										<Grid item xs={12}>
+											<Grid container spacing={1}>
+												<Grid item xs={12} sm={6}>
+													<Field
+														name="billingDetails.country_id"
+														component={AutocompleteField}
+														label="Country"
+														options={countryFindAll?.data?.map((item) => ({
+															label: item.name,
+															value: item.id,
+														}))}
+														loading={countryFindAll.isLoading}
+														isRequired={true}
+													/>
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													{/* <Field
+												name="billingDetails.state_id"
+												component={AutocompleteField}
+												label="State"
+											/> */}
+													<StateFormField
+														countryFieldName="billingDetails.country_id"
+														stateFieldName="billingDetails.state_id"
+														stateLabel="State"
+														isRequired={true}
+													/>
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													<Field
+														name="billingDetails.city"
+														component={TextFormField}
+														label="City"
+														isRequired={true}
+													/>
+													<Field
+														name="billingDetails.zip"
+														component={TextFormField}
+														label="Zip Code"
+														isRequired={true}
+													/>
+												</Grid>
+												<Grid item xs={12} sm={6}>
+													<Field
+														name="billingDetails.address"
+														component={TextFormField}
+														label="Address"
+														multiline
+														rows={6}
+														isRequired={true}
+													/>
+												</Grid>
+											</Grid>
+										</Grid>
 									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field name="website" label="Website" component={TextFormField} />
-									</Grid>
-									<Grid item xs={12} sm={6}>
-										<Field
-											name="currencies_id"
-											label="Currency"
-											loading={currencyList.isLoading || currencyList.isFetching}
-											component={AutocompleteField}
-											options={currencyList?.data?.map((currency) => ({
-												value: currency.id,
-												label: `${currency.short_code} - ${currency.name}`,
-											}))}
-											isRequired={true}
-										/>
-									</Grid>
-								</Grid>
-								<Grid container spacing={2} my={1}>
-									<Grid item xs={12} sm={12}>
+									<Divider />
+									<Grid container my={1}>
 										<Typography
 											variant="h4"
 											color={"secondary.dark"}
@@ -242,14 +317,46 @@ const CustomerForm = () => {
 											}}
 										>
 											<img src={Constants.customImages.BillingAddressIcon} alt="Invoice Icon" />{" "}
-											Billing Address
+											Shipping Address
 										</Typography>
+										<Grid item xs={12} sm={6} textAlign={{ xs: "start", sm: "center" }}>
+											<FormControl>
+												<FormControlLabel
+													disabled={
+														(errors.billingDetails !== undefined &&
+															errors.billingDetails !== null &&
+															Object.keys(errors.billingDetails).length > 0) ||
+														values?.billingDetails?.address === "" ||
+														values.billingDetails?.city === "" ||
+														values.billingDetails?.country_id === "" ||
+														values.billingDetails?.state_id === "" ||
+														values.billingDetails?.zip === ""
+													}
+													control={<Checkbox />}
+													onClick={(e: React.MouseEvent<HTMLLabelElement, MouseEvent>) => {
+														const target = e.target as HTMLInputElement;
+														if (target.checked) {
+															setFieldValue("shippingDetails", values.billingDetails);
+															return;
+														}
+														setFieldValue("shippingDetails", {
+															address: "",
+															city: "",
+															country_id: "",
+															state_id: "",
+															zip: "",
+														});
+													}}
+													label="Same as billing address"
+												/>
+											</FormControl>
+										</Grid>
 									</Grid>
 									<Grid item xs={12}>
 										<Grid container spacing={1}>
 											<Grid item xs={12} sm={6}>
 												<Field
-													name="billingDetails.country_id"
+													name="shippingDetails.country_id"
 													component={AutocompleteField}
 													label="Country"
 													options={countryFindAll?.data?.map((item) => ({
@@ -262,26 +369,26 @@ const CustomerForm = () => {
 											</Grid>
 											<Grid item xs={12} sm={6}>
 												{/* <Field
-												name="billingDetails.state_id"
-												component={AutocompleteField}
-												label="State"
-											/> */}
+											name="shippingDetails.state_id"
+											component={AutocompleteField}
+											label="State"
+										/> */}
 												<StateFormField
-													countryFieldName="billingDetails.country_id"
-													stateFieldName="billingDetails.state_id"
+													countryFieldName="shippingDetails.country_id"
+													stateFieldName="shippingDetails.state_id"
 													stateLabel="State"
 													isRequired={true}
 												/>
 											</Grid>
 											<Grid item xs={12} sm={6}>
 												<Field
-													name="billingDetails.city"
+													name="shippingDetails.city"
 													component={TextFormField}
 													label="City"
 													isRequired={true}
 												/>
 												<Field
-													name="billingDetails.zip"
+													name="shippingDetails.zip"
 													component={TextFormField}
 													label="Zip Code"
 													isRequired={true}
@@ -289,7 +396,7 @@ const CustomerForm = () => {
 											</Grid>
 											<Grid item xs={12} sm={6}>
 												<Field
-													name="billingDetails.address"
+													name="shippingDetails.address"
 													component={TextFormField}
 													label="Address"
 													multiline
@@ -299,113 +406,12 @@ const CustomerForm = () => {
 											</Grid>
 										</Grid>
 									</Grid>
-								</Grid>
-								<Divider />
-								<Grid container my={1}>
-									<Typography
-										variant="h4"
-										color={"secondary.dark"}
-										sx={{
-											display: "flex",
-											alignItems: "center",
-											gap: 1,
-										}}
-									>
-										<img src={Constants.customImages.BillingAddressIcon} alt="Invoice Icon" />{" "}
-										Shipping Address
-									</Typography>
-									<Grid item xs={12} sm={6} textAlign={{ xs: "start", sm: "center" }}>
-										<FormControl>
-											<FormControlLabel
-												disabled={
-													(errors.billingDetails !== undefined &&
-														errors.billingDetails !== null &&
-														Object.keys(errors.billingDetails).length > 0) ||
-													values?.billingDetails?.address === "" ||
-													values.billingDetails?.city === "" ||
-													values.billingDetails?.country_id === "" ||
-													values.billingDetails?.state_id === "" ||
-													values.billingDetails?.zip === ""
-												}
-												control={<Checkbox />}
-												onClick={(e: React.MouseEvent<HTMLLabelElement, MouseEvent>) => {
-													const target = e.target as HTMLInputElement;
-													if (target.checked) {
-														setFieldValue("shippingDetails", values.billingDetails);
-														return;
-													}
-													setFieldValue("shippingDetails", {
-														address: "",
-														city: "",
-														country_id: "",
-														state_id: "",
-														zip: "",
-													});
-												}}
-												label="Same as billing address"
-											/>
-										</FormControl>
+									<Grid item xs={12} textAlign={"center"}>
+										<Button variant="contained" type="submit">
+											Save
+										</Button>
 									</Grid>
-								</Grid>
-								<Grid item xs={12}>
-									<Grid container spacing={1}>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="shippingDetails.country_id"
-												component={AutocompleteField}
-												label="Country"
-												options={countryFindAll?.data?.map((item) => ({
-													label: item.name,
-													value: item.id,
-												}))}
-												loading={countryFindAll.isLoading}
-												isRequired={true}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											{/* <Field
-											name="shippingDetails.state_id"
-											component={AutocompleteField}
-											label="State"
-										/> */}
-											<StateFormField
-												countryFieldName="shippingDetails.country_id"
-												stateFieldName="shippingDetails.state_id"
-												stateLabel="State"
-												isRequired={true}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="shippingDetails.city"
-												component={TextFormField}
-												label="City"
-												isRequired={true}
-											/>
-											<Field
-												name="shippingDetails.zip"
-												component={TextFormField}
-												label="Zip Code"
-												isRequired={true}
-											/>
-										</Grid>
-										<Grid item xs={12} sm={6}>
-											<Field
-												name="shippingDetails.address"
-												component={TextFormField}
-												label="Address"
-												multiline
-												rows={6}
-												isRequired={true}
-											/>
-										</Grid>
-									</Grid>
-								</Grid>
-								<Grid item xs={12} textAlign={"center"}>
-									<Button variant="contained" type="submit">
-										Save
-									</Button>
-								</Grid>
+								</Box>
 							</Form>
 						);
 					}}

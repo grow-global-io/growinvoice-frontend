@@ -5,10 +5,12 @@ import {
 } from "@api/services/invoice";
 import { Grid } from "@mui/material";
 import Loader from "@shared/components/Loader";
-import OverviewCard from "@shared/components/OverviewCard";
-import { Constants } from "@shared/constants";
 import { currencyFormatter } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
+import DashbaordCard from "@shared/components/DashbaordCard";
+import { FaFileInvoiceDollar, FaFileInvoice } from "react-icons/fa";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { MdAccountBalanceWallet } from "react-icons/md";
 
 const ExpensesSummary = () => {
 	const { user } = useAuthStore();
@@ -20,22 +22,26 @@ const ExpensesSummary = () => {
 		{
 			value: customerCount?.data ?? "",
 			name: "Customers",
-			img: Constants.customImages.GroupUser,
+			img: <FaPeopleGroup color="#fff" fontSize={"50px"} />,
+			BgColor: "custom.DashboardBlue",
 		},
 		{
 			value: invoiceCount?.data ?? "",
 			name: "Invoices",
-			img: Constants.customImages.InvoiceFile,
+			img: <FaFileInvoice color="#fff" fontSize={"40px"} />,
+			BgColor: "custom.DashbaordYellow",
 		},
 		{
 			value: 0,
 			name: "Estimates",
-			img: Constants.customImages.Estimate,
+			img: <FaFileInvoiceDollar color="#fff" fontSize={"40px"} />,
+			BgColor: "custom.DashboadRed",
 		},
 		{
 			value: currencyFormatter(invoiceDueAmount?.data ?? 0, user?.currency?.short_code),
 			name: "Due Amount",
-			img: Constants.customImages.Amount,
+			img: <MdAccountBalanceWallet color="#fff" fontSize={"50px"} />,
+			BgColor: "custom.DashboardGreen",
 		},
 	];
 
@@ -46,7 +52,12 @@ const ExpensesSummary = () => {
 		<Grid container spacing={2}>
 			{data.map((item, index) => (
 				<Grid item xs={12} md={3} key={index}>
-					<OverviewCard name={item.name} img={item.img} value={item.value} />
+					<DashbaordCard
+						name={item.name}
+						icon={item.img}
+						value={item.value}
+						bgColor={item.BgColor}
+					/>
 				</Grid>
 			))}
 		</Grid>
