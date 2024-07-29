@@ -333,7 +333,7 @@ export default function FullFeaturedCrudGrid({
 			),
 			renderCell: (params) => {
 				const tax = taxCodes?.data?.find((tax) => tax.id === params.value);
-				return <Typography>{tax?.percentage} %</Typography>;
+				return <Typography>{tax?.percentage ? `${tax?.percentage} %` : "--"}</Typography>;
 			},
 		},
 		{
