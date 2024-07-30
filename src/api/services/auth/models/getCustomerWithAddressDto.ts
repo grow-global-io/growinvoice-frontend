@@ -9,6 +9,7 @@ import type { CountInvoiceDto } from "./countInvoiceDto";
 import type { BillingAddressDto } from "./billingAddressDto";
 import type { GetCustomerWithAddressDtoOption } from "./getCustomerWithAddressDtoOption";
 import type { ShippingAddressDto } from "./shippingAddressDto";
+import type { CountTotalDueDto } from "./countTotalDueDto";
 
 export interface GetCustomerWithAddressDto {
 	_count?: CountInvoiceDto;
@@ -26,6 +27,7 @@ export interface GetCustomerWithAddressDto {
 	phone: string | null;
 	shippingAddress?: ShippingAddressDto;
 	shippingAddress_id: string;
+	totalDue?: CountTotalDueDto;
 	/** @nullable */
 	updatedAt: string | null;
 	user_id: string;
