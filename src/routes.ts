@@ -35,6 +35,11 @@ import ExpensesListPage from "@pages/ExpensesListPage";
 import HsnCodeListPage from "@pages/HsnCodeListPage";
 import TaxCodeListPage from "@pages/TaxCodeListPage";
 import ProductUnitListPage from "@pages/ProductUnitListPage";
+import ProductSalesPage from "@pages/ProductSalesPage";
+import CustomerSalesPage from "@pages/CustomerSalesPage";
+import ProfitLossPage from "@pages/ProfitLossPage";
+import ExpensesPage from "@pages/ExpensesPage";
+import VendorsPage from "@pages/VendorsPage";
 export const unProtectedRoutes: Route[] = [
 	{
 		path: "/",
@@ -206,5 +211,25 @@ export const protectedRoutes: Route[] = [
 	{
 		path: "/expenses/expenseslist",
 		Component: ExpensesListPage,
+	},
+	{
+		path: "/reports/productsales",
+		Component: ProductSalesPage,
+	},
+	{
+		path: "/reports/customersales",
+		Component: CustomerSalesPage,
+	},
+	{
+		path: "/reports/profitloss",
+		Component: ProfitLossPage,
+	},
+	{
+		path: "/reports/Expenses",
+		Component: ExpensesPage,
+	},
+	{
+		path: "/reports/vendors",
+		Component: VendorsPage,
 	},
 ];

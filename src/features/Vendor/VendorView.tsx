@@ -3,19 +3,14 @@ import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from "@
 import AppDialogHeader from "@shared/components/Dialog/AppDialogHeader";
 import Loader from "@shared/components/Loader";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
-const VendorView = ({
-	open,
-	handleClose,
-	vendorId,
-}: {
-	open: boolean;
-	handleClose: () => void;
-	vendorId: string;
-}) => {
+import { useCreateVendorsViewStore } from "@store/createVendorViewStore";
+const VendorViewDialog = ({ open, handleClose }: { open: boolean; handleClose: () => void }) => {
 	const { updateVendors } = useCreateVendorsStore.getState();
-	const { data, isLoading } = useVendorsControllerFindOne(vendorId, {
+	const { VendorId } = useCreateVendorsViewStore.getState();
+
+	const { data, isLoading } = useVendorsControllerFindOne(VendorId ?? "", {
 		query: {
-			enabled: !!vendorId && vendorId !== "",
+			enabled: !!VendorId && VendorId !== "",
 		},
 	});
 	return (
@@ -78,4 +73,4 @@ const VendorView = ({
 	);
 };
 
-export default VendorView;
+export default VendorViewDialog;

@@ -34,6 +34,7 @@ import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import NotificationMain from "@features/Notification/NotificationMain";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import { FaFileInvoice } from "react-icons/fa6";
+import SignalCellularAltOutlinedIcon from "@mui/icons-material/SignalCellularAltOutlined";
 const drawerWidth = 240;
 function Sidebar({ children }: { children: React.ReactNode }) {
 	const { pathname } = useLocation();
@@ -148,6 +149,18 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 			icon: <SellOutlinedIcon />,
 			menuName: "Vendors",
 			menuItems: [],
+		},
+		{
+			path: "/reports",
+			icon: <SignalCellularAltOutlinedIcon />,
+			menuName: "Reports",
+			menuItems: [
+				{ path: "/reports/productsales", label: "Product Sales" },
+				{ path: "/reports/customersales", label: "Customer Sales" },
+				{ path: "/reports/profitloss", label: "Profit Loss" },
+				{ path: "/reports/Expenses", label: "Expenses" },
+				{ path: "/reports/vendors", label: "Vendors" },
+			],
 		},
 	];
 

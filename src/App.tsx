@@ -26,6 +26,8 @@ import { useCreateHsnCodeStore } from "@store/createHsnCodeStore";
 import { HsnCodeDrawer } from "@features/Settings/HsnCode/CreateHsnCode";
 import { useCreateProductUnitStore } from "@store/createProductUnitStore";
 import { ProductUnitDrawer } from "@features/Settings/ProductUnit/CreateProductUnit";
+import { useCreateVendorsViewStore } from "@store/createVendorViewStore";
+import VendorViewDialog from "@features/Vendor/VendorView";
 import { toast, ToastContainer } from "react-toastify";
 import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
@@ -151,6 +153,7 @@ function App() {
 	const [openHsnCodeForm, setOpenHsnCodeForm] = useState(false);
 	const [openTaxCodeForm, setOpenTaxCodeForm] = useState(false);
 	const [openProductUnitForm, setOpenProductUnitForm] = useState(false);
+	const [openVendorViewForm, setOpenVendorViewForm] = useState(false);
 
 	const handleCloseProductForm = () => {
 		setOpenProductForm(false);
@@ -179,6 +182,9 @@ function App() {
 	const handleCloseProductUnitForm = () => {
 		setOpenProductUnitForm(false);
 	};
+	const handleCloseVendorViewForm = () => {
+		setOpenVendorViewForm(false);
+	};
 
 	const loaderRef = useRef(useLoaderStore.getState());
 	const createProduct = useRef(useCreateProductStore.getState());
@@ -188,6 +194,7 @@ function App() {
 	const createHsnCode = useRef(useCreateHsnCodeStore.getState());
 	const createTaxCode = useRef(useCreateTaxCodeStore.getState());
 	const createProductUnit = useRef(useCreateProductUnitStore.getState());
+	const createVendorView = useRef(useCreateVendorsViewStore.getState());
 
 	useEffect(() => {
 		const unsubscribeLoading = useLoaderStore.subscribe((state) => {
@@ -226,6 +233,10 @@ function App() {
 			createProductUnit.current = state;
 			setOpenProductUnitForm(state.open);
 		});
+		const unsubscribeVendorViewForm = useCreateVendorsViewStore.subscribe((state) => {
+			createVendorView.current = state;
+			setOpenVendorViewForm(state.open);
+		});
 
 		return () => {
 			unsubscribeLoading();
@@ -236,6 +247,7 @@ function App() {
 			unsubscribeHsnCodeForm();
 			unsubscribeTaxCodeForm();
 			unsubscribeProductUnitForm();
+			unsubscribeVendorViewForm();
 		};
 	}, []);
 
@@ -270,6 +282,7 @@ function App() {
 			<HsnCodeDrawer open={openHsnCodeForm} handleClose={handleCloseHsnCodeForm} />
 			<TaxCodeDrawer open={openTaxCodeForm} handleClose={handleCloseTaxCodeForm} />
 			<ProductUnitDrawer open={openProductUnitForm} handleClose={handleCloseProductUnitForm} />
+			<VendorViewDialog open={openVendorViewForm} handleClose={handleCloseVendorViewForm} />
 		</>
 	);
 }

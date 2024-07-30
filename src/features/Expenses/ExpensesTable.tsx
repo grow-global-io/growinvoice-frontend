@@ -13,6 +13,7 @@ import {
 } from "@api/services/expenses";
 import { useNavigate } from "react-router-dom";
 import { parseDateStringToFormat } from "@shared/formatter";
+import { useCreateVendorsViewStore } from "@store/createVendorViewStore";
 
 const ExpensesTable = () => {
 	const navigate = useNavigate();
@@ -20,13 +21,15 @@ const ExpensesTable = () => {
 	const allExpenses = useExpensesControllerFindAll();
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const removeExpense = useExpensesControllerRemove();
+	const { openVendorsView } = useCreateVendorsViewStore.getState();
 	const handleEdit = (invoiceId: string) => {
 		navigate(`/expenses/createexpenses/${invoiceId}`);
 	};
 	const handleView = (vendorId: string) => {
+		openVendorsView(vendorId);
 		navigate("/vendors/vendorslist");
-		console.log(vendorId);
 	};
+
 	const columns: GridColDef[] = [
 		{
 			field: "vendor",

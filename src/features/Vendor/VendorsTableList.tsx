@@ -14,9 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Loader from "@shared/components/Loader";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import VendorView from "./VendorView";
-import { useDialog } from "@shared/hooks/useDialog";
-import React from "react";
+import { useCreateVendorsViewStore } from "@store/createVendorViewStore";
 
 const VendorsTableList = () => {
 	const queryClient = useQueryClient();
@@ -24,12 +22,7 @@ const VendorsTableList = () => {
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const { updateVendors } = useCreateVendorsStore.getState();
 	const removeVendors = useVendorsControllerRemove();
-	const [viewVendorId, setViewVendorId] = React.useState<string | null>(null);
-	const { handleClickOpen, handleClose, open } = useDialog();
-	const openVendorView = (id: string) => {
-		setViewVendorId(id);
-		handleClickOpen();
-	};
+	const { openVendorsView } = useCreateVendorsViewStore.getState();
 
 	const columns: GridColDef[] = [
 		{
@@ -75,7 +68,7 @@ const VendorsTableList = () => {
 						<CustomIconButton
 							src={VisibilityIcon}
 							onClick={() => {
-								openVendorView(params.row.id);
+								openVendorsView(params.row.id);
 							}}
 						/>
 					</Box>
@@ -128,7 +121,7 @@ const VendorsTableList = () => {
 	return (
 		<Box>
 			<DataGrid autoHeight rows={allvendors?.data} columns={columns} />
-			<VendorView open={open} handleClose={handleClose} vendorId={viewVendorId ?? ""} />
+			{/* <VendorViewDialog  open={open} handleClose={handleClose} vendorId={viewVendorId ?? ""} /> */}
 		</Box>
 	);
 };
