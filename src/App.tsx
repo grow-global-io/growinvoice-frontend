@@ -114,6 +114,7 @@ function AppContainer() {
 							<Route key={path} path={path} element={<Component />} />
 						))}
 						<Route path="/login" element={<Navigate to="/" replace />} />
+						<Route path="/register" element={<Navigate to="/" replace />} />
 					</Routes>
 				</ParentofSidebar>
 			) : (
