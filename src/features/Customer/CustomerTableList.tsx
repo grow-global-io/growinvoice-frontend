@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Tooltip, Typography } from "@mui/material";
+import { Chip, Tooltip, Typography } from "@mui/material";
 import {
 	getCustomerControllerFindAllQueryKey,
 	useCustomerControllerFindAll,
@@ -74,22 +74,26 @@ const CustomerTableList = () => {
 			},
 		},
 		{
-			field: "invoice",
+			field: "_count",
 			headerName: "Invoice",
 			flex: 1,
 			minWidth: 150,
-			renderCell: () => {
-				return <Typography>0</Typography>;
+			renderCell: (params) => {
+				return <Typography>{params?.value?.invoice}</Typography>;
 			},
 		},
 
 		{
-			field: "amountDue",
+			field: "totalDue",
 			headerName: "Amount Due",
 			flex: 1,
 			minWidth: 150,
-			renderCell: () => {
-				return <Typography>0</Typography>;
+			renderCell: (params) => {
+				return (
+					<Typography>
+						<Chip label={params?.value} variant="filled" color={"error"} />
+					</Typography>
+				);
 			},
 		},
 		{

@@ -11,12 +11,14 @@ import DashbaordCard from "@shared/components/DashbaordCard";
 import { FaFileInvoiceDollar, FaFileInvoice } from "react-icons/fa";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { MdAccountBalanceWallet } from "react-icons/md";
+import { useQuotationControllerCountTotal } from "@api/services/quotation";
 
 const ExpensesSummary = () => {
 	const { user } = useAuthStore();
 	const customerCount = useCustomerControllerCustomerCount();
 	const invoiceCount = useInvoiceControllerInvoiceCount();
 	const invoiceDueAmount = useInvoiceControllerTotalDue();
+	const quotationCount = useQuotationControllerCountTotal();
 
 	const data = [
 		{
@@ -24,28 +26,37 @@ const ExpensesSummary = () => {
 			name: "Customers",
 			img: <FaPeopleGroup color="#fff" fontSize={"50px"} />,
 			BgColor: "custom.DashboardBlue",
+			navigateToPath: "/customer/customerlist",
 		},
 		{
 			value: invoiceCount?.data ?? "",
 			name: "Invoices",
 			img: <FaFileInvoice color="#fff" fontSize={"40px"} />,
 			BgColor: "custom.DashbaordYellow",
+			navigateToPath: "/invoice/invoicelist?invoiceTab=2",
 		},
 		{
-			value: 0,
+			value: quotationCount?.data?.total ?? "",
 			name: "Estimates",
 			img: <FaFileInvoiceDollar color="#fff" fontSize={"40px"} />,
 			BgColor: "custom.DashboadRed",
+			navigateToPath: "/quotation/quotationlist",
 		},
 		{
 			value: currencyFormatter(invoiceDueAmount?.data ?? 0, user?.currency?.short_code),
 			name: "Due Amount",
 			img: <MdAccountBalanceWallet color="#fff" fontSize={"50px"} />,
 			BgColor: "custom.DashboardGreen",
+			navigateToPath: "/invoice/invoicelist?invoiceTab=0",
 		},
 	];
 
-	if (customerCount.isLoading || invoiceCount.isLoading || invoiceDueAmount.isLoading) {
+	if (
+		customerCount.isLoading ||
+		invoiceCount.isLoading ||
+		invoiceDueAmount.isLoading ||
+		quotationCount?.isLoading
+	) {
 		return <Loader />;
 	}
 	return (
@@ -57,6 +68,7 @@ const ExpensesSummary = () => {
 						icon={item.img}
 						value={item.value}
 						bgColor={item.BgColor}
+						navigateToPath={item.navigateToPath}
 					/>
 				</Grid>
 			))}

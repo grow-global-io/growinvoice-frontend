@@ -22,10 +22,10 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 			menuName: "Company",
 			path: "/setting/company",
 		},
-		{
-			menuName: "Preferences",
-			path: "/setting/preferences",
-		},
+		// {
+		// 	menuName: "Preferences",
+		// 	path: "/setting/preferences",
+		// },
 		{
 			menuName: "Invoices",
 			path: "/setting/invoices",

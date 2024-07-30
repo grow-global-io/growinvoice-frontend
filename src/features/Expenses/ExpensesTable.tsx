@@ -23,8 +23,32 @@ const ExpensesTable = () => {
 	const handleEdit = (invoiceId: string) => {
 		navigate(`/expenses/createexpenses/${invoiceId}`);
 	};
-
+	const handleView = (vendorId: string) => {
+		navigate("/vendors/vendorslist");
+		console.log(vendorId);
+	};
 	const columns: GridColDef[] = [
+		{
+			field: "vendor",
+			headerName: "Vendro Name",
+			flex: 1,
+			minWidth: 150,
+			renderCell: (params) => {
+				return (
+					<Box
+						sx={{ cursor: "pointer" }}
+						onClick={() => {
+							handleView(params?.value?.id);
+						}}
+					>
+						<Typography variant="h6" color={"secondary"}>
+							{params?.value?.name}
+						</Typography>
+					</Box>
+				);
+			},
+		},
+
 		{
 			field: "category",
 			headerName: "Category",

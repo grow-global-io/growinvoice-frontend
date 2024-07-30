@@ -197,6 +197,9 @@ const CreateInvoice = ({ id }: { id?: string }) => {
 			await createInvoice.mutateAsync({
 				data: {
 					...values,
+					reference_number: values?.reference_number
+						? values?.reference_number
+						: values?.invoice_number,
 					recurring: values.recurring as CreateInvoiceWithProductsRecurring,
 					date: formatDateToIso(values.date),
 					due_date: formatDateToIso(values.due_date),
