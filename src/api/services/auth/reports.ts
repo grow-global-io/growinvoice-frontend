@@ -14,7 +14,7 @@ import type {
 } from "@tanstack/react-query";
 import type {
 	CustomerWithInvocieDto,
-	ExpensesDto,
+	Expenses,
 	InvoiceDto,
 	InvoiceProducts,
 	ProfitLossCountDto,
@@ -392,7 +392,7 @@ export const reportsControllerGetExpenseReports = (
 	params: ReportsControllerGetExpenseReportsParams,
 	signal?: AbortSignal,
 ) => {
-	return authInstance<ExpensesDto[]>({
+	return authInstance<Expenses[]>({
 		url: `/api/reports/expense-reports`,
 		method: "GET",
 		params,
@@ -449,6 +449,59 @@ export const useReportsControllerGetExpenseReports = <
 	},
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 	const queryOptions = getReportsControllerGetExpenseReportsQueryOptions(params, options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const reportsControllerGetExpenseRange = (signal?: AbortSignal) => {
+	return authInstance<RangeSelectDto>({ url: `/api/reports/expense-range`, method: "GET", signal });
+};
+
+export const getReportsControllerGetExpenseRangeQueryKey = () => {
+	return [`/api/reports/expense-range`] as const;
+};
+
+export const getReportsControllerGetExpenseRangeQueryOptions = <
+	TData = Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getReportsControllerGetExpenseRangeQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>> = ({
+		signal,
+	}) => reportsControllerGetExpenseRange(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type ReportsControllerGetExpenseRangeQueryResult = NonNullable<
+	Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>
+>;
+export type ReportsControllerGetExpenseRangeQueryError = ErrorType<unknown>;
+
+export const useReportsControllerGetExpenseRange = <
+	TData = Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetExpenseRange>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getReportsControllerGetExpenseRangeQueryOptions(options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

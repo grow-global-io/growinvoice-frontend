@@ -3,9 +3,8 @@ import ExpensesReportTable from "./ExpensesReportTable";
 import { useEffect, useMemo, useState } from "react";
 import { DayRange } from "react-modern-calendar-datepicker";
 import { DateCalander } from "@shared/components/DateCalendar";
-import { useReportsControllerGetProfitLossRange } from "@api/services/reports";
+import { useReportsControllerGetExpenseRange } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
-import moment from "moment";
 import { convertUtcToFormat, parseDateStringToFormat } from "@shared/formatter";
 
 const Expenses = () => {
@@ -13,8 +12,7 @@ const Expenses = () => {
 		from: null,
 		to: null,
 	});
-	const dateRange = useReportsControllerGetProfitLossRange();
-	
+	const dateRange = useReportsControllerGetExpenseRange();
 
 	useEffect(() => {
 		setDayRange({
@@ -29,7 +27,7 @@ const Expenses = () => {
 				year: parseInt(parseDateStringToFormat(dateRange?.data?.end ?? "", "YYYY")),
 			},
 		});
-	}, [dateRange]);
+	}, [dateRange?.data]);
 
 	const fromDate = useMemo(() => {
 		if (dayRange.from) {
@@ -61,14 +59,19 @@ const Expenses = () => {
 					display: "flex",
 					justifyContent: "space-between",
 					alignItems: "center",
-					flexDirection: { xs: "column", lg: "row" },
+					flexDirection: { xs: "column", sm: "row", lg: "row" },
 				}}
 				mb={2}
 			>
 				<Typography variant="h3" fontWeight={"500"} textTransform={"capitalize"}>
 					Expenses Report
 				</Typography>
-				<DateCalander dayRange={dayRange} setDayRange={setDayRange} />
+				<Box>
+					<Typography variant="h6" fontWeight={"500"} textTransform={"capitalize"}>
+						Select Date Range
+					</Typography>
+					<DateCalander dayRange={dayRange} setDayRange={setDayRange} />
+				</Box>
 			</Box>
 			<Box
 				sx={{ width: { xs: "85vw", sm: "auto" }, overflowX: { xs: "scroll", sm: "visible" } }}
