@@ -159,6 +159,59 @@ export const usePaymentsControllerSuccessPlans = <
 	return query;
 };
 
+export const paymentsControllerCancelPlans = (signal?: AbortSignal) => {
+	return authInstance<void>({ url: `/api/payments/cancelPlans`, method: "GET", signal });
+};
+
+export const getPaymentsControllerCancelPlansQueryKey = () => {
+	return [`/api/payments/cancelPlans`] as const;
+};
+
+export const getPaymentsControllerCancelPlansQueryOptions = <
+	TData = Awaited<ReturnType<typeof paymentsControllerCancelPlans>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerCancelPlans>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getPaymentsControllerCancelPlansQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentsControllerCancelPlans>>> = ({
+		signal,
+	}) => paymentsControllerCancelPlans(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof paymentsControllerCancelPlans>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type PaymentsControllerCancelPlansQueryResult = NonNullable<
+	Awaited<ReturnType<typeof paymentsControllerCancelPlans>>
+>;
+export type PaymentsControllerCancelPlansQueryError = ErrorType<unknown>;
+
+export const usePaymentsControllerCancelPlans = <
+	TData = Awaited<ReturnType<typeof paymentsControllerCancelPlans>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof paymentsControllerCancelPlans>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getPaymentsControllerCancelPlansQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
 export const paymentsControllerSuccessRazorpay = (
 	params: PaymentsControllerSuccessRazorpayParams,
 	signal?: AbortSignal,

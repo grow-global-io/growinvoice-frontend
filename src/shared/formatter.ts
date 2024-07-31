@@ -229,6 +229,9 @@ export const convertUtcToFormat = (utcTime: Date | string, format?: string) => {
 	if (!format) {
 		format = "MM/DD/YYYY";
 	}
+	if (format === "iso") {
+		return moment.utc(utcTime).toISOString();
+	}
 	return moment.utc(utcTime).format(format);
 };
 

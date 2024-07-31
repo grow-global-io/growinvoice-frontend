@@ -725,6 +725,13 @@
   resolved "https://registry.npmjs.org/@fontsource/montserrat/-/montserrat-5.0.18.tgz"
   integrity sha512-85JBs2rCdFK/VBdSb401e2lXk5gynVo2zi3Rh2Guem4WNtT2q52+V90o3KzjmajY3TPJvCZA/kI7R05ev7148g==
 
+"@hassanmojab/react-modern-calendar-datepicker@^3.1.7":
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/@hassanmojab/react-modern-calendar-datepicker/-/react-modern-calendar-datepicker-3.1.7.tgz#e5b8a1a78e0bf9d8001cc46b5b722c47c68975b7"
+  integrity sha512-dX/FXGcvIW31dgA1fcFJkHmIx3k4AqX166SfCQ6weBb0ZLr6C/f5YzcXVop19ifX18ezEw11Xb+l02JGj4+R6g==
+  dependencies:
+    jalaali-js "^1.1.0"
+
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.14.tgz"
