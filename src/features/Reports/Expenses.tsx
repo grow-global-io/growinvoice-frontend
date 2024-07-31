@@ -14,7 +14,7 @@ const Expenses = () => {
 		to: null,
 	});
 	const dateRange = useReportsControllerGetProfitLossRange();
-	console.log(dateRange?.data);
+	
 
 	useEffect(() => {
 		setDayRange({
