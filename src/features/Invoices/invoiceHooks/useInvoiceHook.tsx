@@ -74,7 +74,7 @@ export const useInvoiceHook = () => {
 					});
 					LoaderService.instance.hideLoader();
 					if (paymentSubmit) {
-						navigate("/payment/success");
+						navigate("/invoice/invoicetemplate/" + invoiceId);
 					}
 				},
 				notes: {
