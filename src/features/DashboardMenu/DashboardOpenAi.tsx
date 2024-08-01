@@ -5,6 +5,7 @@ import {
 } from "@api/services/models";
 import { useOpenaiControllerCreate, useOpenaiControllerCreateGraph } from "@api/services/openai";
 import {
+	Box,
 	Button,
 	Card,
 	CardContent,
@@ -288,7 +289,13 @@ const DashboardOpenAi = () => {
 		>
 			{openAiApi?.isPending && (
 				<Grid item xs={12}>
-					<Loader />
+					<Box
+						sx={{
+							maxHeight: "50vh",
+						}}
+					>
+						<Loader />
+					</Box>
 				</Grid>
 			)}
 

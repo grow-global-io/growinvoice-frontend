@@ -2,7 +2,7 @@ import { Card, Grid, Typography } from "@mui/material";
 
 interface OverviewCardProps {
 	name: string;
-	icon: any;
+	icon: React.ReactNode;
 	value: string | number;
 }
 
