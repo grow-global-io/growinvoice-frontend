@@ -4,75 +4,12 @@ import { Button, Typography } from "@mui/material";
 import { useReportsControllerGetProfitLossReports } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
 import { useMemo } from "react";
+import { currencyFormatter } from "@shared/formatter";
+import { useAuthStore } from "@store/auth";
 
-const columns: GridColDef[] = [
-	{
-		field: "type",
-		headerName: "Type",
-		flex: 1,
-		renderCell: (params) => {
-			return (
-				<Button
-					variant="contained"
-					sx={{
-						bgcolor: params.value == "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor",
-						fontWeight: 300,
-					}}
-				>
-					{params.value}
-				</Button>
-			);
-		},
-	},
-	{
-		field: "id",
-		headerName: "Expense ID",
-		flex: 1,
-		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
-		},
-	},
-	{
-		field: "number",
-		headerName: "Invoice Number",
-		flex: 1,
-		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
-		},
-	},
-	{
-		field: "category",
-		headerName: "Category",
-		flex: 1,
-		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
-		},
-	},
-	{
-		field: "amount",
-		headerName: "Amount",
-		flex: 1,
-		renderCell: (params) => {
-			const color = params.row.type === "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor";
-			return (
-				<Typography color={color}>
-					{" "}
-					{params.row.type === "INVOICE" ? "+" : "-"} {params.value}
-				</Typography>
-			);
-		},
-	},
-
-	{
-		field: "referenceNumber",
-		headerName: "Reference Number",
-		flex: 1,
-		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
-		},
-	},
-];
 const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
+	const { user } = useAuthStore();
+
 	const profitLossReportData = useReportsControllerGetProfitLossReports(
 		{
 			end: toDate,
@@ -119,6 +56,76 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 	}, [profitLossReportData?.data?.expenses]);
 
 	const combined = [...invoiceMap, ...expenseMap];
+
+	const columns: GridColDef[] = [
+		{
+			field: "type",
+			headerName: "Type",
+			flex: 1,
+			renderCell: (params) => {
+				return (
+					<Button
+						variant="contained"
+						sx={{
+							bgcolor: params.value == "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor",
+							fontWeight: 300,
+						}}
+					>
+						{params.value}
+					</Button>
+				);
+			},
+		},
+		{
+			field: "id",
+			headerName: "Expense ID",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "number",
+			headerName: "Invoice Number",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "category",
+			headerName: "Category",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+		{
+			field: "amount",
+			headerName: "Amount",
+			flex: 1,
+			renderCell: (params) => {
+				const color =
+					params.row.type === "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor";
+				return (
+					<Typography color={color}>
+						{" "}
+						{params.row.type === "INVOICE" ? "+" : "-"}{" "}
+						{currencyFormatter(params?.value, user?.currency?.short_code)}
+					</Typography>
+				);
+			},
+		},
+
+		{
+			field: "referenceNumber",
+			headerName: "Reference Number",
+			flex: 1,
+			renderCell: (params) => {
+				return <Typography>{params.value}</Typography>;
+			},
+		},
+	];
 
 	if (profitLossReportData?.isLoading || profitLossReportData?.isFetching) {
 		return <Loader />;

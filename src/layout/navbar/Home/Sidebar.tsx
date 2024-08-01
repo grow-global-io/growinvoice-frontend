@@ -159,7 +159,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 				{ path: "/reports/customersales", label: "Customer Sales" },
 				{ path: "/reports/profitloss", label: "Profit Loss" },
 				{ path: "/reports/Expenses", label: "Expenses" },
-				{ path: "/reports/vendors", label: "Vendors" },
+				// { path: "/reports/vendors", label: "Vendors" },
 			],
 		},
 	];

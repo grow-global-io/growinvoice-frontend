@@ -37,7 +37,7 @@ const ProfitLoss = () => {
 				year: parseInt(parseDateStringToFormat(dateRange?.data?.end ?? "", "YYYY")),
 			},
 		});
-	}, [dateRange]);
+	}, [dateRange?.data]);
 
 	const fromDate = useMemo(() => {
 		if (dayRange.from) {
@@ -96,12 +96,7 @@ const ProfitLoss = () => {
 		},
 	];
 
-	if (
-		dateRange?.isLoading ||
-		dateRange?.isRefetching ||
-		profitLossData?.isLoading ||
-		profitLossData?.isFetching
-	) {
+	if (dateRange?.isLoading || dateRange?.isRefetching) {
 		return <Loader />;
 	}
 	return (
