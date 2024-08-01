@@ -60,7 +60,6 @@ export * from "./customerControllerCreate201AllOf";
 export * from "./customerControllerUpdate200";
 export * from "./customerControllerUpdate200AllOf";
 export * from "./customerOption";
-export * from "./customerWithInvocieDto";
 export * from "./dashboardsControllerCreate200";
 export * from "./dashboardsControllerCreate200AllOf";
 export * from "./dashboardsControllerUpdate200";

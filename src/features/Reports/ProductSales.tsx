@@ -12,7 +12,6 @@ const ProductSales = () => {
 		to: null,
 	});
 	const dateRange = useReportsControllerGetProfitLossRange();
-	
 
 	useEffect(() => {
 		setDayRange({
@@ -27,7 +26,7 @@ const ProductSales = () => {
 				year: parseInt(parseDateStringToFormat(dateRange?.data?.end ?? "", "YYYY")),
 			},
 		});
-	}, [dateRange]);
+	}, [dateRange?.data]);
 
 	const fromDate = useMemo(() => {
 		if (dayRange.from) {
@@ -67,12 +66,12 @@ const ProductSales = () => {
 				</Typography>
 				<DateCalander dayRange={dayRange} setDayRange={setDayRange} />
 			</Box>
-			
+
 			<Box
 				sx={{ width: { xs: "85vw", sm: "auto" }, overflowX: { xs: "scroll", sm: "visible" } }}
 				my={2}
 			>
-				<ProductReportTableList fromDate={fromDate} toDate={toDate}/>
+				<ProductReportTableList fromDate={fromDate} toDate={toDate} />
 			</Box>
 		</>
 	);

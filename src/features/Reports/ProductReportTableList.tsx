@@ -1,10 +1,9 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import ProductReportsData from "./../../data/ProductReportsData.json";
 import { Typography } from "@mui/material";
 import { useReportsControllerGetProductReports } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
-const expenseData = ProductReportsData;
+import { convertUtcToFormat, currencyFormatter } from "@shared/formatter";
 
 const columns: GridColDef[] = [
 	{
@@ -12,7 +11,17 @@ const columns: GridColDef[] = [
 		headerName: "Product Name",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value?.name}</Typography>;
+			return (
+				<Typography
+					sx={{
+						color: "primary.main",
+						cursor: "pointer",
+						fontWeight: "bold",
+					}}
+				>
+					{params.value?.name}
+				</Typography>
+			);
 		},
 	},
 	{
@@ -20,7 +29,7 @@ const columns: GridColDef[] = [
 		headerName: "Invoice Date",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{convertUtcToFormat(params.row?.invoice?.date)}</Typography>;
 		},
 	},
 	{
@@ -28,7 +37,7 @@ const columns: GridColDef[] = [
 		headerName: "Invoice Number",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{params.row?.invoice?.invoice_number}</Typography>;
 		},
 	},
 	{
@@ -36,21 +45,28 @@ const columns: GridColDef[] = [
 		headerName: "Invoice Amount",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{currencyFormatter(params.row?.invoice?.total)}</Typography>;
 		},
 	},
 ];
 const ProductReportTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
-	const productReportDate = useReportsControllerGetProductReports({
-		end: toDate,
-		start: fromDate,
-	});
+	const productReportDate = useReportsControllerGetProductReports(
+		{
+			end: toDate,
+			start: fromDate,
+		},
+		{
+			query: {
+				enabled: !!fromDate && !!toDate,
+			},
+		},
+	);
 	if (productReportDate.isLoading || productReportDate.isRefetching) {
 		return <Loader />;
 	}
 	return (
 		<Box>
-			<DataGrid autoHeight rows={expenseData} columns={columns} />
+			<DataGrid autoHeight rows={productReportDate?.data ?? []} columns={columns} />
 		</Box>
 	);
 };

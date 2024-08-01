@@ -13,8 +13,8 @@ import type {
 	UseQueryResult,
 } from "@tanstack/react-query";
 import type {
-	CustomerWithInvocieDto,
 	Expenses,
+	Invoice,
 	InvoiceDto,
 	InvoiceProducts,
 	ProfitLossCountDto,
@@ -246,7 +246,7 @@ export const reportsControllerGetCustomerReports = (
 	params: ReportsControllerGetCustomerReportsParams,
 	signal?: AbortSignal,
 ) => {
-	return authInstance<CustomerWithInvocieDto[]>({
+	return authInstance<Invoice[]>({
 		url: `/api/reports/customer-reports`,
 		method: "GET",
 		params,

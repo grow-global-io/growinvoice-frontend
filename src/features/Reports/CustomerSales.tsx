@@ -67,13 +67,12 @@ const CustomerSales = () => {
 					Customer Report
 				</Typography>
 				<DateCalander dayRange={dayRange} setDayRange={setDayRange} />
-				
 			</Box>
 			<Box
 				sx={{ width: { xs: "85vw", sm: "auto" }, overflowX: { xs: "scroll", sm: "visible" } }}
 				my={2}
 			>
-				<CustomerReportTalbeList  fromDate={fromDate} toDate={toDate}/>
+				<CustomerReportTalbeList fromDate={fromDate} toDate={toDate} />
 			</Box>
 		</>
 	);

@@ -6,7 +6,10 @@ import ProfitLossCard from "@shared/components/ProfitLossCard";
 import { useEffect, useMemo, useState } from "react";
 import { DayRange } from "react-modern-calendar-datepicker";
 import { DateCalander } from "@shared/components/DateCalendar";
-import { useReportsControllerGetProfitLossCount, useReportsControllerGetProfitLossRange } from "@api/services/reports";
+import {
+	useReportsControllerGetProfitLossCount,
+	useReportsControllerGetProfitLossRange,
+} from "@api/services/reports";
 import Loader from "@shared/components/Loader";
 import { convertUtcToFormat, currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
@@ -14,14 +17,12 @@ import { FaArrowUpLong } from "react-icons/fa6";
 import { FaArrowDownLong } from "react-icons/fa6";
 
 const ProfitLoss = () => {
-	
-    const {user}=useAuthStore()
+	const { user } = useAuthStore();
 	const [dayRange, setDayRange] = useState<DayRange>({
 		from: null,
 		to: null,
 	});
 	const dateRange = useReportsControllerGetProfitLossRange();
-	
 
 	useEffect(() => {
 		setDayRange({
@@ -65,12 +66,15 @@ const ProfitLoss = () => {
 		{
 			amount: currencyFormatter(profitLossData?.data?.totalIncome ?? 0, user?.currency?.short_code),
 			text: "Total Income",
-			icon: <FiFileText style={{ color: "rgba(25, 32, 56, 1)", fontSize: "30px" }} />
+			icon: <FiFileText style={{ color: "rgba(25, 32, 56, 1)", fontSize: "30px" }} />,
 		},
 		{
-			amount:currencyFormatter(profitLossData?.data?.totalExpenses ?? 0, user?.currency?.short_code),
+			amount: currencyFormatter(
+				profitLossData?.data?.totalExpenses ?? 0,
+				user?.currency?.short_code,
+			),
 			text: "Total Expenses",
-			icon: <FiFileText style={{ color: "rgba(246, 146, 22, 1)", fontSize: "30px" }} />
+			icon: <FiFileText style={{ color: "rgba(246, 146, 22, 1)", fontSize: "30px" }} />,
 		},
 		{
 			amount: "$32.5k",
@@ -78,13 +82,26 @@ const ProfitLoss = () => {
 			icon: <HiOutlineCircleStack style={{ color: "rgba(15, 187, 0, 1)", fontSize: "30px" }} />,
 		},
 		{
-			amount: currencyFormatter(profitLossData?.data?.profitOrLoss ?? 0, user?.currency?.short_code),
-			text: (profitLossData?.data?.profitOrLoss ?? 0) >0?"Profit":"Loss",
-			icon:(profitLossData?.data?.profitOrLoss ?? 0) >0?<FaArrowUpLong style={{ color: "#0FBB00", fontSize: "30px" }} />:<FaArrowDownLong style={{ color: "#BF384B", fontSize: "30px" }}/>,
-		}
-	]
+			amount: currencyFormatter(
+				profitLossData?.data?.profitOrLoss ?? 0,
+				user?.currency?.short_code,
+			),
+			text: (profitLossData?.data?.profitOrLoss ?? 0) > 0 ? "Profit" : "Loss",
+			icon:
+				(profitLossData?.data?.profitOrLoss ?? 0) > 0 ? (
+					<FaArrowUpLong style={{ color: "#0FBB00", fontSize: "30px" }} />
+				) : (
+					<FaArrowDownLong style={{ color: "#BF384B", fontSize: "30px" }} />
+				),
+		},
+	];
 
-	if (dateRange?.isLoading || dateRange?.isRefetching || profitLossData?.isLoading || profitLossData?.isFetching) {
+	if (
+		dateRange?.isLoading ||
+		dateRange?.isRefetching ||
+		profitLossData?.isLoading ||
+		profitLossData?.isFetching
+	) {
 		return <Loader />;
 	}
 	return (
@@ -105,11 +122,7 @@ const ProfitLoss = () => {
 			<Grid container spacing={2}>
 				{data.map((item, index) => (
 					<Grid item xs={12} md={3} key={index}>
-						<ProfitLossCard
-							name={item.text}
-							icon={item.icon}
-							value={item.amount}
-						/>
+						<ProfitLossCard name={item.text} icon={item.icon} value={item.amount} />
 					</Grid>
 				))}
 			</Grid>
@@ -117,7 +130,7 @@ const ProfitLoss = () => {
 				sx={{ width: { xs: "85vw", sm: "auto" }, overflowX: { xs: "scroll", sm: "visible" } }}
 				my={2}
 			>
-				<ProfitLossTableList fromDate={fromDate} toDate={toDate}/>
+				<ProfitLossTableList fromDate={fromDate} toDate={toDate} />
 			</Box>
 		</>
 	);

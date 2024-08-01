@@ -3,6 +3,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Button, Typography } from "@mui/material";
 import { useReportsControllerGetProfitLossReports } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
+import { useMemo } from "react";
 
 const columns: GridColDef[] = [
 	{
@@ -14,7 +15,7 @@ const columns: GridColDef[] = [
 				<Button
 					variant="contained"
 					sx={{
-						bgcolor: params.value == "invoice" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor",
+						bgcolor: params.value == "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor",
 						fontWeight: 300,
 					}}
 				>
@@ -24,7 +25,7 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "expenseID",
+		field: "id",
 		headerName: "Expense ID",
 		flex: 1,
 		renderCell: (params) => {
@@ -32,7 +33,7 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "invoice_number",
+		field: "number",
 		headerName: "Invoice Number",
 		flex: 1,
 		renderCell: (params) => {
@@ -40,7 +41,7 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "expenseDate",
+		field: "category",
 		headerName: "Category",
 		flex: 1,
 		renderCell: (params) => {
@@ -48,22 +49,22 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "sub_total",
+		field: "amount",
 		headerName: "Amount",
 		flex: 1,
 		renderCell: (params) => {
-			const color = params.row.type === "invoice" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor";
+			const color = params.row.type === "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor";
 			return (
 				<Typography color={color}>
 					{" "}
-					{params.row.type === "invoice" ? "+" : "-"} {params.value}
+					{params.row.type === "INVOICE" ? "+" : "-"} {params.value}
 				</Typography>
 			);
 		},
 	},
 
 	{
-		field: "reference_number",
+		field: "referenceNumber",
 		headerName: "Reference Number",
 		flex: 1,
 		renderCell: (params) => {
@@ -72,15 +73,56 @@ const columns: GridColDef[] = [
 	},
 ];
 const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
-	const profitLossReportData = useReportsControllerGetProfitLossReports({
-		end: toDate,
-		start: fromDate,
-	});
-	const combined = profitLossReportData?.data?.invoices.map((item, index) => {
-		return { ...item, ...profitLossReportData?.data?.expenses[index] };
-	  });
+	const profitLossReportData = useReportsControllerGetProfitLossReports(
+		{
+			end: toDate,
+			start: fromDate,
+		},
+		{
+			query: {
+				enabled: !!fromDate && !!toDate,
+			},
+		},
+	);
+	const invoiceMap = useMemo(() => {
+		if (profitLossReportData?.data?.invoices && profitLossReportData?.data?.invoices?.length > 0) {
+			return profitLossReportData?.data?.invoices?.map((item) => {
+				return {
+					type: "INVOICE",
+					id: item?.id,
+					number: item?.invoice_number,
+					category: "-",
+					date: item?.date,
+					amount: item?.total,
+					referenceNumber: item?.reference_number,
+				};
+			});
+		}
+		return [];
+	}, [profitLossReportData?.data?.invoices]);
 
-	if (profitLossReportData?.isLoading || profitLossReportData?.isFetching) { return <Loader /> }
+	const expenseMap = useMemo(() => {
+		if (profitLossReportData?.data?.expenses && profitLossReportData?.data?.expenses?.length > 0) {
+			return profitLossReportData?.data?.expenses?.map((item) => {
+				return {
+					type: "EXPENSES",
+					id: item?.id,
+					number: "-",
+					category: item?.category,
+					date: item?.expenseDate,
+					amount: item?.amount,
+					referenceNumber: "-",
+				};
+			});
+		}
+		return [];
+	}, [profitLossReportData?.data?.expenses]);
+
+	const combined = [...invoiceMap, ...expenseMap];
+
+	if (profitLossReportData?.isLoading || profitLossReportData?.isFetching) {
+		return <Loader />;
+	}
 	return (
 		<Box>
 			<DataGrid autoHeight rows={combined} columns={columns} />
