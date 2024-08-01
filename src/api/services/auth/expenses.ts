@@ -17,6 +17,7 @@ import type {
 } from "@tanstack/react-query";
 import type {
 	CreateExpensesDto,
+	Expenses,
 	ExpensesControllerCreate200,
 	ExpensesControllerUpdate200,
 	ExpensesDto,
@@ -92,7 +93,7 @@ export const useExpensesControllerCreate = <
 	return useMutation(mutationOptions);
 };
 export const expensesControllerFindAll = (signal?: AbortSignal) => {
-	return authInstance<ExpensesDto[]>({ url: `/api/expenses`, method: "GET", signal });
+	return authInstance<Expenses[]>({ url: `/api/expenses`, method: "GET", signal });
 };
 
 export const getExpensesControllerFindAllQueryKey = () => {

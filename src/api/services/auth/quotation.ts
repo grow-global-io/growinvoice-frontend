@@ -30,6 +30,7 @@ import type {
 	QuotationControllerMarkedAsRejected200,
 	QuotationControllerMarkedAsRejectedParams,
 	QuotationControllerUpdate200,
+	QuotationTotalCountDto,
 	QuotationWithAllDataDto,
 	SendMailDto,
 	SuccessResponseDto,
@@ -150,6 +151,63 @@ export const useQuotationControllerFindAll = <
 	>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 	const queryOptions = getQuotationControllerFindAllQueryOptions(options);
+
+	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+};
+
+export const quotationControllerCountTotal = (signal?: AbortSignal) => {
+	return authInstance<QuotationTotalCountDto>({
+		url: `/api/quotation/countTotal`,
+		method: "GET",
+		signal,
+	});
+};
+
+export const getQuotationControllerCountTotalQueryKey = () => {
+	return [`/api/quotation/countTotal`] as const;
+};
+
+export const getQuotationControllerCountTotalQueryOptions = <
+	TData = Awaited<ReturnType<typeof quotationControllerCountTotal>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof quotationControllerCountTotal>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getQuotationControllerCountTotalQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof quotationControllerCountTotal>>> = ({
+		signal,
+	}) => quotationControllerCountTotal(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof quotationControllerCountTotal>>,
+		TError,
+		TData
+	> & { queryKey: QueryKey };
+};
+
+export type QuotationControllerCountTotalQueryResult = NonNullable<
+	Awaited<ReturnType<typeof quotationControllerCountTotal>>
+>;
+export type QuotationControllerCountTotalQueryError = ErrorType<unknown>;
+
+export const useQuotationControllerCountTotal = <
+	TData = Awaited<ReturnType<typeof quotationControllerCountTotal>>,
+	TError = ErrorType<unknown>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof quotationControllerCountTotal>>, TError, TData>
+	>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+	const queryOptions = getQuotationControllerCountTotalQueryOptions(options);
 
 	const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

@@ -2,19 +2,14 @@ import { Box, Grid, Typography, IconButton, Divider } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
 import CreateProductUnit from "@features/ProductUnit/CreateProductUnit";
-import { useDialog } from "@shared/hooks/useDialog";
 import NoteOutlinedIcon from "@mui/icons-material/NoteOutlined";
+import { useCreateProductUnitStore } from "@store/createProductUnitStore";
 
-const ProductUnitForm = ({ handleClose }: { handleClose: () => void }) => {
-	const {
-		// handleClickOpen: handleProductUnitOpen,
-		handleClose: handleProductUnitClose,
-		// open: openProductUnitForm,
-	} = useDialog();
-
+const ProductUnitForm = () => {
+	const { setOpenProductUnitForm } = useCreateProductUnitStore.getState();
 	return (
-		<Box sx={{ width: { sm: "400px" } }} role="presentation" p={2}>
-			<Grid container justifyContent={"space-between"}>
+		<Box sx={{ width: { sm: "400px" } }} role="presentation">
+			<Grid container justifyContent={"space-between"} p={2}>
 				<Typography
 					variant="h4"
 					sx={{
@@ -24,20 +19,23 @@ const ProductUnitForm = ({ handleClose }: { handleClose: () => void }) => {
 					}}
 				>
 					<NoteOutlinedIcon /> New Product Unit
-					{/* <img src={Constants.customImages.QuotationIcon} alt="Invoice Icon" /> New Quotation */}
 				</Typography>
 				<IconButton
 					sx={{
 						color: "secondary.dark",
 					}}
-					onClick={() => handleClose()}
+					onClick={() => setOpenProductUnitForm(false)}
 				>
 					<CloseIcon />
 				</IconButton>
 			</Grid>
 			<Divider />
-			<Box sx={{ mb: 2, mt: 2 }}>
-				<CreateProductUnit handleClose={handleProductUnitClose} />
+			<Box sx={{ mb: 2, mt: 2 }} p={2}>
+				<CreateProductUnit
+					handleClose={() => {
+						setOpenProductUnitForm(false);
+					}}
+				/>
 			</Box>
 		</Box>
 	);

@@ -13,6 +13,8 @@ import { useConfirmDialogStore } from "@store/confirmDialog";
 import { useQueryClient } from "@tanstack/react-query";
 import Loader from "@shared/components/Loader";
 import { useCreateVendorsStore } from "@store/createVendorsStore";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useCreateVendorsViewStore } from "@store/createVendorViewStore";
 
 const VendorsTableList = () => {
 	const queryClient = useQueryClient();
@@ -20,6 +22,7 @@ const VendorsTableList = () => {
 	const { handleOpen, cleanUp } = useConfirmDialogStore();
 	const { updateVendors } = useCreateVendorsStore.getState();
 	const removeVendors = useVendorsControllerRemove();
+	const { openVendorsView } = useCreateVendorsViewStore.getState();
 
 	const columns: GridColDef[] = [
 		{
@@ -60,6 +63,16 @@ const VendorsTableList = () => {
 			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
+				<Tooltip title="View Vendor" key={params.row?.id}>
+					<Box>
+						<CustomIconButton
+							src={VisibilityIcon}
+							onClick={() => {
+								openVendorsView(params.row.id);
+							}}
+						/>
+					</Box>
+				</Tooltip>,
 				<Tooltip title="Edit Vendor" key={params.row?.id}>
 					<Box>
 						<CustomIconButton
@@ -108,6 +121,7 @@ const VendorsTableList = () => {
 	return (
 		<Box>
 			<DataGrid autoHeight rows={allvendors?.data} columns={columns} />
+			{/* <VendorViewDialog  open={open} handleClose={handleClose} vendorId={viewVendorId ?? ""} /> */}
 		</Box>
 	);
 };

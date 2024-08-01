@@ -12,7 +12,7 @@ const commonHooks = {
 	afterAllFilesWrite: "yarn run format",
 };
 
-const BASE_URL = "https://growinvoice-94ee0dd2031b.herokuapp.com";
+const BASE_URL = "http://localhost:3000";
 
 const AUTH_API = `${BASE_URL}`;
 const instanceTemplate = `import Axios, { AxiosError, AxiosRequestConfig } from 'axios';

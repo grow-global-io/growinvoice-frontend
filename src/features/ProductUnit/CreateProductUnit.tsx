@@ -1,7 +1,10 @@
 import { CreateProductUnitDto } from "@api/services/models";
 import {
 	getProductunitControllerFindAllQueryKey,
+	getProductunitControllerFindOneQueryKey,
 	useProductunitControllerCreate,
+	useProductunitControllerFindOne,
+	useProductunitControllerUpdate,
 } from "@api/services/productunit";
 import { Box, Button } from "@mui/material";
 import { TextFormField } from "@shared/components/FormFields/TextFormField";
@@ -9,12 +12,12 @@ import { useAuthStore } from "@store/auth";
 import { Field, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { useCreateProductUnitStore } from "@store/createProductUnitStore";
+import Loader from "@shared/components/Loader";
 const validationSchema: Yup.Schema<CreateProductUnitDto> = Yup.object().shape({
 	name: Yup.string().required("Unit Name is required"),
 	user_id: Yup.string().required("User id is required"),
 });
-
 const style = {
 	bgcolor: "custom.lightBlue",
 	padding: 2,
@@ -26,9 +29,15 @@ const CreateProductUnit = ({ handleClose }: { handleClose?: () => void }) => {
 	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 	const createProductUnit = useProductunitControllerCreate();
-
+	const updateProductUnit = useProductunitControllerUpdate();
+	const { editProductUnitId } = useCreateProductUnitStore.getState();
+	const editValues = useProductunitControllerFindOne(editProductUnitId ?? "", {
+		query: {
+			enabled: editProductUnitId !== null,
+		},
+	});
 	const initialValues: CreateProductUnitDto = {
-		name: "",
+		name: editValues?.data?.name ?? "",
 		user_id: user?.id ?? "",
 	};
 
@@ -37,9 +46,19 @@ const CreateProductUnit = ({ handleClose }: { handleClose?: () => void }) => {
 		action: FormikHelpers<CreateProductUnitDto>,
 	) => {
 		action.setSubmitting(true);
-		await createProductUnit.mutateAsync({
-			data: values,
-		});
+		if (editProductUnitId) {
+			await updateProductUnit.mutateAsync({
+				id: editProductUnitId ?? "",
+				data: values,
+			});
+			queryClient.invalidateQueries({
+				queryKey: getProductunitControllerFindOneQueryKey(editProductUnitId ?? ""),
+			});
+		} else {
+			await createProductUnit.mutateAsync({
+				data: values,
+			});
+		}
 		action.resetForm();
 		if (handleClose) handleClose();
 		queryClient.invalidateQueries({
@@ -47,6 +66,9 @@ const CreateProductUnit = ({ handleClose }: { handleClose?: () => void }) => {
 		});
 		action.setSubmitting(false);
 	};
+	if (editValues?.isLoading || editValues?.isFetching) {
+		return <Loader />;
+	}
 	return (
 		<Box sx={style}>
 			<Formik
@@ -65,7 +87,7 @@ const CreateProductUnit = ({ handleClose }: { handleClose?: () => void }) => {
 										handleSubmit();
 									}}
 								>
-									Create Product Unit
+									{editProductUnitId ? "Update" : "Create"} Product Unit
 								</Button>
 								{handleClose && (
 									<Button variant="outlined" onClick={handleClose}>

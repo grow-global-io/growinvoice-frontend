@@ -1,4 +1,5 @@
 import { usePaymentsControllerFindAll } from "@api/services/payments";
+import { useInvoiceHook } from "@features/Invoices/invoiceHooks/useInvoiceHook";
 import { Box, Chip, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Loader from "@shared/components/Loader";
@@ -9,6 +10,7 @@ import { useAuthStore } from "@store/auth";
 const PaymentsTableList = () => {
 	const { user } = useAuthStore();
 	const paymentsList = usePaymentsControllerFindAll();
+	const { handleView } = useInvoiceHook();
 	const columns: GridColDef[] = [
 		{
 			field: "paymentDate",
@@ -61,9 +63,16 @@ const PaymentsTableList = () => {
 			minWidth: 150,
 			renderCell: (params) => {
 				return (
-					<Typography textTransform={"capitalize"}>
-						{params.row?.invoice?.invoice_number}
-					</Typography>
+					<Box
+						sx={{ cursor: "pointer" }}
+						onClick={() => {
+							handleView(params.row?.invoice?.id);
+						}}
+					>
+						<Typography variant="h6" color={"secondary"}>
+							{params.row?.invoice?.invoice_number}
+						</Typography>
+					</Box>
 				);
 			},
 		},
