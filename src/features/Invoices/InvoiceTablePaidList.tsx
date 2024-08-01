@@ -24,9 +24,16 @@ const InvoiceTablePaidList = () => {
 			minWidth: 150,
 			renderCell: (params) => {
 				return (
-					<Typography variant="h6" color={"secondary"}>
-						{params?.value}
-					</Typography>
+					<Box
+						sx={{ cursor: "pointer" }}
+						onClick={() => {
+							handleView(params.row.id);
+						}}
+					>
+						<Typography variant="h6" color={"secondary"}>
+							{params.value}
+						</Typography>
+					</Box>
 				);
 			},
 		},

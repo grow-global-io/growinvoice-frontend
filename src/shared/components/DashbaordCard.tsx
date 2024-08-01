@@ -1,19 +1,24 @@
 import { Card, Grid, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface OverviewCardProps {
 	name: string;
 	icon: React.ReactNode;
 	value: string | number;
 	bgColor: string;
+	navigateToPath: string;
 }
 
-const DashbaordCard = ({ name, icon, value, bgColor }: OverviewCardProps) => {
+const DashbaordCard = ({ name, icon, value, bgColor, navigateToPath }: OverviewCardProps) => {
+	const navigate = useNavigate();
 	return (
 		<Card
 			sx={{
 				alignItems: "stretch",
 				height: "100%",
+				cursor: "pointer",
 			}}
+			onClick={() => navigate(navigateToPath)}
 		>
 			<Grid
 				container

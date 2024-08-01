@@ -18,6 +18,16 @@ export default defineConfig({
 			"@store": path.resolve(__dirname, "src/store"),
 		},
 	},
+	server: {
+		proxy: {
+			"/api": {
+				target: "http://localhost:3000",
+				changeOrigin: true,
+				secure: false,
+				rewrite: (path) => path,
+			},
+		},
+	},
 	build: {
 		rollupOptions: {
 			output: {

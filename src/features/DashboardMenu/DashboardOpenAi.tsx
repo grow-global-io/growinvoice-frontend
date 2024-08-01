@@ -281,59 +281,11 @@ const DashboardOpenAi = () => {
 	};
 
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<Formik
-					initialValues={initialValues}
-					onSubmit={handleSubmit}
-					validationSchema={validationSchema}
-					innerRef={formikRef}
-				>
-					{() => {
-						const buttonText = openAiApi?.isPending ? "Loading..." : "Submit";
-						return (
-							<Form>
-								<Grid container spacing={1}>
-									<Grid item xs={12} md={2}>
-										<Field
-											name="type"
-											label="Type"
-											component={AutocompleteField}
-											options={Object.keys(Constants.dashboardType).map(stringToListDto)}
-										/>
-									</Grid>
-									<Grid item xs={12} md={8}>
-										<Field
-											name="prompt"
-											label="Tell us what you want to see?"
-											placeholder="Tell us what you want to see?"
-											component={TextFormField}
-										/>
-									</Grid>
-									<Grid
-										item
-										xs={12}
-										md={1}
-										mx={2}
-										display={"flex"}
-										alignItems={"center"}
-										justifyContent={"center"}
-									>
-										<Button
-											type="submit"
-											variant="contained"
-											fullWidth
-											disabled={openAiApi?.isPending}
-										>
-											{buttonText}
-										</Button>
-									</Grid>
-								</Grid>
-							</Form>
-						);
-					}}
-				</Formik>
-			</Grid>
+		<Grid
+			container
+			spacing={2}
+			style={{ height: "80vh", display: "flex", flexDirection: "row", alignItems: "flex-end" }}
+		>
 			{openAiApi?.isPending && (
 				<Grid item xs={12}>
 					<Loader />
@@ -433,6 +385,59 @@ const DashboardOpenAi = () => {
 					</Grid>
 				</>
 			)}
+
+			<Grid item xs={12}>
+				<Formik
+					initialValues={initialValues}
+					onSubmit={handleSubmit}
+					validationSchema={validationSchema}
+					innerRef={formikRef}
+				>
+					{() => {
+						const buttonText = openAiApi?.isPending ? "Loading..." : "Submit";
+						return (
+							<Form>
+								<Grid container spacing={1}>
+									<Grid item xs={12} md={2}>
+										<Field
+											name="type"
+											label="Type"
+											component={AutocompleteField}
+											options={Object.keys(Constants.dashboardType).map(stringToListDto)}
+										/>
+									</Grid>
+									<Grid item xs={12} md={8}>
+										<Field
+											name="prompt"
+											label="Tell us what you want to see?"
+											placeholder="Tell us what you want to see?"
+											component={TextFormField}
+										/>
+									</Grid>
+									<Grid
+										item
+										xs={12}
+										md={1}
+										mx={2}
+										display={"flex"}
+										alignItems={"center"}
+										justifyContent={"center"}
+									>
+										<Button
+											type="submit"
+											variant="contained"
+											fullWidth
+											disabled={openAiApi?.isPending}
+										>
+											{buttonText}
+										</Button>
+									</Grid>
+								</Grid>
+							</Form>
+						);
+					}}
+				</Formik>
+			</Grid>
 
 			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
 				<Formik initialValues={initialValues} onSubmit={handleSubmitData}>
