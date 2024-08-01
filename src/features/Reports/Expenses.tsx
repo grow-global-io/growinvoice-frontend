@@ -5,7 +5,6 @@ import { DayRange } from "react-modern-calendar-datepicker";
 import { DateCalander } from "@shared/components/DateCalendar";
 import { useReportsControllerGetProfitLossRange } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
-import moment from "moment";
 import { convertUtcToFormat, parseDateStringToFormat } from "@shared/formatter";
 
 const Expenses = () => {

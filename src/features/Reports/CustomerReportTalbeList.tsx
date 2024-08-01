@@ -1,48 +1,54 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import ProductReportsData from "./../../data/CustomerReportsData.json";
 import { Typography } from "@mui/material";
-const expenseData = ProductReportsData;
+import { useReportsControllerGetCustomerReports } from "@api/services/reports";
+import { parseDateStringToFormat } from "@shared/formatter";
+import Loader from "@shared/components/Loader";
 
 const columns: GridColDef[] = [
 	{
-		field: "customerName",
+		field: "name",
 		headerName: "Customer Name",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{params?.value}</Typography>;
 		},
 	},
 	{
-		field: "invoiceDate",
+		field: "date",
 		headerName: "Invoice Date",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{parseDateStringToFormat(params?.value)}</Typography>;
 		},
 	},
 	{
-		field: "invoiceNumber",
+		field: "invoice_number",
 		headerName: "Invoice Number",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{params?.value}</Typography>;
 		},
 	},
 	{
-		field: "invoiceAmount",
+		field: "sub_total",
 		headerName: "Invoice Amount",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{params?.value}</Typography>;
 		},
 	},
 ];
 
-const CustomerReportTalbeList = () => {
+const CustomerReportTalbeList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
+	const customerReportDate = useReportsControllerGetCustomerReports({
+		end:toDate,
+		start:fromDate,
+	});
+   if (customerReportDate?.isLoading || customerReportDate?.isFetching) { return <Loader /> }
 	return (
 		<Box>
-			<DataGrid autoHeight rows={expenseData} columns={columns} />
+			<DataGrid autoHeight rows={customerReportDate?.data} columns={columns} />
 		</Box>
 	);
 };

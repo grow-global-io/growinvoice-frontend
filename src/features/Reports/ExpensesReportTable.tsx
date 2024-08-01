@@ -1,15 +1,15 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import ProductReportsData from "./../../data/ExpensesReportsData.json";
 import { Typography } from "@mui/material";
 import { useReportsControllerGetExpenseReports } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
+import { parseDateStringToFormat } from "@shared/formatter";
 
-const expenseData = ProductReportsData;
+
 
 const columns: GridColDef[] = [
 	{
-		field: "expenseCategory",
+		field: "category",
 		headerName: "Expense Category",
 		flex: 1,
 		renderCell: (params) => {
@@ -21,11 +21,11 @@ const columns: GridColDef[] = [
 		headerName: "Expense Date",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{parseDateStringToFormat(params.value)}</Typography>;
 		},
 	},
 	{
-		field: "expenseAmount",
+		field: "amount",
 		headerName: "Expense Amount",
 		flex: 1,
 		renderCell: (params) => {
@@ -35,18 +35,17 @@ const columns: GridColDef[] = [
 ];
 
 const ExpensesReportTable = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
-	const expensesDate = useReportsControllerGetExpenseReports({
+	const expensesReportDate = useReportsControllerGetExpenseReports({
 		end: toDate,
 		start: fromDate,
 	});
-
-	if (expensesDate.isLoading || expensesDate.isRefetching) {
+	if (expensesReportDate.isLoading || expensesReportDate.isRefetching) {
 		return <Loader />;
 	}
 
 	return (
 		<Box>
-			<DataGrid autoHeight rows={expenseData} columns={columns} />
+			<DataGrid autoHeight rows={expensesReportDate?.data} columns={columns} />
 		</Box>
 	);
 };

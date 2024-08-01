@@ -1,9 +1,8 @@
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import ProductReportsData from "./../../data/ProfitLossData.json";
 import { Button, Typography } from "@mui/material";
-
-const expenseData = ProductReportsData;
+import { useReportsControllerGetProfitLossReports } from "@api/services/reports";
+import Loader from "@shared/components/Loader";
 
 const columns: GridColDef[] = [
 	{
@@ -33,7 +32,7 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "invoiceNumber",
+		field: "invoice_number",
 		headerName: "Invoice Number",
 		flex: 1,
 		renderCell: (params) => {
@@ -41,7 +40,7 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "category",
+		field: "expenseDate",
 		headerName: "Category",
 		flex: 1,
 		renderCell: (params) => {
@@ -49,7 +48,7 @@ const columns: GridColDef[] = [
 		},
 	},
 	{
-		field: "amount",
+		field: "sub_total",
 		headerName: "Amount",
 		flex: 1,
 		renderCell: (params) => {
@@ -62,16 +61,9 @@ const columns: GridColDef[] = [
 			);
 		},
 	},
+
 	{
-		field: "date",
-		headerName: "Date",
-		flex: 1,
-		renderCell: (params) => {
-			return <Typography> {params.value}</Typography>;
-		},
-	},
-	{
-		field: "referenceNumber",
+		field: "reference_number",
 		headerName: "Reference Number",
 		flex: 1,
 		renderCell: (params) => {
@@ -79,10 +71,19 @@ const columns: GridColDef[] = [
 		},
 	},
 ];
-const ProfitLossTableList = () => {
+const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
+	const profitLossReportData = useReportsControllerGetProfitLossReports({
+		end: toDate,
+		start: fromDate,
+	});
+	const combined = profitLossReportData?.data?.invoices.map((item, index) => {
+		return { ...item, ...profitLossReportData?.data?.expenses[index] };
+	  });
+
+	if (profitLossReportData?.isLoading || profitLossReportData?.isFetching) { return <Loader /> }
 	return (
 		<Box>
-			<DataGrid autoHeight rows={expenseData} columns={columns} />
+			<DataGrid autoHeight rows={combined} columns={columns} />
 		</Box>
 	);
 };

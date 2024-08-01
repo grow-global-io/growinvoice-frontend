@@ -2,15 +2,17 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ProductReportsData from "./../../data/ProductReportsData.json";
 import { Typography } from "@mui/material";
+import { useReportsControllerGetProductReports } from "@api/services/reports";
+import Loader from "@shared/components/Loader";
 const expenseData = ProductReportsData;
 
 const columns: GridColDef[] = [
 	{
-		field: "productName",
+		field: "product",
 		headerName: "Product Name",
 		flex: 1,
 		renderCell: (params) => {
-			return <Typography>{params.value}</Typography>;
+			return <Typography>{params.value?.name}</Typography>;
 		},
 	},
 	{
@@ -38,7 +40,14 @@ const columns: GridColDef[] = [
 		},
 	},
 ];
-const ProductReportTableList = () => {
+const ProductReportTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
+	const productReportDate = useReportsControllerGetProductReports({
+		end: toDate,
+		start: fromDate,
+	});
+	if (productReportDate.isLoading || productReportDate.isRefetching) {
+		return <Loader />;
+	}
 	return (
 		<Box>
 			<DataGrid autoHeight rows={expenseData} columns={columns} />
