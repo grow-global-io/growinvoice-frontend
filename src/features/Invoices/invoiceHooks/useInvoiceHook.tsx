@@ -40,7 +40,7 @@ export const useInvoiceHook = () => {
 	const handleRedirectStripePayment = async (invoiceId: string, user_id: string) => {
 		const params = { invoice_id: invoiceId, user_id };
 		const response = await createstripPaymentUrl.mutateAsync({ params });
-		window.open(response);
+		window.location.href = response;
 	};
 
 	const handleRazorPayPayment = useCallback(
