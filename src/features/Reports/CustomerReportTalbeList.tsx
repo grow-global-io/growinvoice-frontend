@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { useReportsControllerGetCustomerReports } from "@api/services/reports";
-import { convertUtcToFormat, currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
+import { convertUtcToFormat, currencyFormatter } from "@shared/formatter";
 import Loader from "@shared/components/Loader";
 import { useAuthStore } from "@store/auth";
 
