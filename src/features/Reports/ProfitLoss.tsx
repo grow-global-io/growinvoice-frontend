@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import ProfitLossTableList from "./ProfitLossTableList";
 import { FiFileText } from "react-icons/fi";
-import { HiOutlineCircleStack } from "react-icons/hi2";
+// import { HiOutlineCircleStack } from "react-icons/hi2";
 import ProfitLossCard from "@shared/components/ProfitLossCard";
 import { DateCalander } from "@shared/components/DateCalendar";
 import { useReportsControllerGetProfitLossCount } from "@api/services/reports";
@@ -33,11 +33,11 @@ const ProfitLoss = () => {
 			text: "Total Expenses",
 			icon: <FiFileText style={{ color: "rgba(246, 146, 22, 1)", fontSize: "30px" }} />,
 		},
-		{
-			amount: "$32.5k",
-			text: "Invoiced Amount",
-			icon: <HiOutlineCircleStack style={{ color: "rgba(15, 187, 0, 1)", fontSize: "30px" }} />,
-		},
+		// {
+		// 	amount: "$32.5k",
+		// 	text: "Invoiced Amount",
+		// 	icon: <HiOutlineCircleStack style={{ color: "rgba(15, 187, 0, 1)", fontSize: "30px" }} />,
+		// },
 		{
 			amount: currencyFormatter(
 				profitLossData?.data?.profitOrLoss ?? 0,
