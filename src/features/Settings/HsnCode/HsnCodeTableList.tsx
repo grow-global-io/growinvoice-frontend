@@ -26,6 +26,7 @@ const HsnCodeTableList = () => {
 			field: "code",
 			headerName: "Code",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},

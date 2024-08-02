@@ -4,12 +4,15 @@ import { Typography } from "@mui/material";
 import { useReportsControllerGetProductReports } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
 import { convertUtcToFormat, currencyFormatter } from "@shared/formatter";
+import { CustomToolbar } from "@features/DashboardMenu/DashboardOpenAi";
+import { useMemo } from "react";
 
 const columns: GridColDef[] = [
 	{
 		field: "product",
 		headerName: "Product Name",
 		flex: 1,
+		minWidth: 150,
 		renderCell: (params) => {
 			return (
 				<Typography
@@ -28,6 +31,7 @@ const columns: GridColDef[] = [
 		field: "invoiceDate",
 		headerName: "Invoice Date",
 		flex: 1,
+		minWidth: 150,
 		renderCell: (params) => {
 			return <Typography>{convertUtcToFormat(params.row?.invoice?.date)}</Typography>;
 		},
@@ -36,6 +40,7 @@ const columns: GridColDef[] = [
 		field: "invoiceNumber",
 		headerName: "Invoice Number",
 		flex: 1,
+		minWidth: 150,
 		renderCell: (params) => {
 			return <Typography>{params.row?.invoice?.invoice_number}</Typography>;
 		},
@@ -44,13 +49,14 @@ const columns: GridColDef[] = [
 		field: "invoiceAmount",
 		headerName: "Invoice Amount",
 		flex: 1,
+		minWidth: 150,
 		renderCell: (params) => {
 			return <Typography>{currencyFormatter(params.row?.invoice?.total)}</Typography>;
 		},
 	},
 ];
 const ProductReportTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
-	const productReportDate = useReportsControllerGetProductReports(
+	const productReportData = useReportsControllerGetProductReports(
 		{
 			end: toDate,
 			start: fromDate,
@@ -61,12 +67,34 @@ const ProductReportTableList = ({ fromDate, toDate }: { fromDate: string; toDate
 			},
 		},
 	);
-	if (productReportDate.isLoading || productReportDate.isRefetching) {
+	const ProductReportMap = useMemo(() => {
+		if (productReportData?.data && productReportData?.data?.length > 0) {
+			return productReportData?.data?.map((item) => {
+				return {
+					ProductName: item?.product?.name,
+					InvoiceDate: item?.invoice?.date,
+					InvoiceNumber: item?.invoice?.invoice_number,
+					InvoiceAmount: item?.invoice?.total,
+				};
+			});
+		}
+		return [];
+	}, [productReportData?.data]);
+	if (productReportData.isLoading || productReportData.isRefetching) {
 		return <Loader />;
 	}
 	return (
 		<Box>
-			<DataGrid autoHeight rows={productReportDate?.data ?? []} columns={columns} />
+			<DataGrid
+				autoHeight
+				rows={productReportData?.data ?? []}
+				columns={columns}
+				slots={{
+					toolbar: () => {
+						return <CustomToolbar rows={ProductReportMap ?? []} />;
+					},
+				}}
+			/>
 		</Box>
 	);
 };

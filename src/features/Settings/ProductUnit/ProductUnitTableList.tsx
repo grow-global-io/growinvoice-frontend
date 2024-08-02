@@ -24,11 +24,13 @@ const ProductUnitTableList = () => {
 			field: "name",
 			headerName: "Name",
 			flex: 1,
+			minWidth: 150,
 		},
 		{
 			field: "action",
 			headerName: "Action",
 			flex: 1,
+			minWidth: 150,
 			type: "actions",
 			getActions: (params) => [
 				<Tooltip title="Edit Product Unit" key={params.row?.id}>

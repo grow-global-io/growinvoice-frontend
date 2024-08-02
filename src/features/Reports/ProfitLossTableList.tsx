@@ -6,10 +6,10 @@ import Loader from "@shared/components/Loader";
 import { useMemo } from "react";
 import { currencyFormatter } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
+import { CustomToolbar } from "@features/DashboardMenu/DashboardOpenAi";
 
 const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
 	const { user } = useAuthStore();
-
 	const profitLossReportData = useReportsControllerGetProfitLossReports(
 		{
 			end: toDate,
@@ -62,6 +62,7 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			field: "type",
 			headerName: "Type",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return (
 					<Button
@@ -80,6 +81,7 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			field: "id",
 			headerName: "Expense ID",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -88,6 +90,7 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			field: "number",
 			headerName: "Invoice Number",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -96,6 +99,7 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			field: "category",
 			headerName: "Category",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -104,6 +108,7 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			field: "amount",
 			headerName: "Amount",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				const color =
 					params.row.type === "INVOICE" ? "custom.GreenBtnColor" : "custom.apiBtnBgColor";
@@ -121,6 +126,7 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			field: "referenceNumber",
 			headerName: "Reference Number",
 			flex: 1,
+			minWidth: 150,
 			renderCell: (params) => {
 				return <Typography>{params.value}</Typography>;
 			},
@@ -132,7 +138,16 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 	}
 	return (
 		<Box>
-			<DataGrid autoHeight rows={combined} columns={columns} />
+			<DataGrid
+				autoHeight
+				rows={combined}
+				columns={columns}
+				slots={{
+					toolbar: () => {
+						return <CustomToolbar rows={combined ?? []} />;
+					},
+				}}
+			/>
 		</Box>
 	);
 };
