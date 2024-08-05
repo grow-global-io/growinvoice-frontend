@@ -6,10 +6,12 @@ import Loader from "@shared/components/Loader";
 import { useMemo } from "react";
 import { currencyFormatter } from "@shared/formatter";
 import { useAuthStore } from "@store/auth";
-import { CustomToolbar } from "@features/DashboardMenu/DashboardOpenAi";
+import { useInvoiceHook } from "@features/Invoices/invoiceHooks/useInvoiceHook";
+import { CustomToolbar } from "@shared/components/CustomToolbar";
 
 const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
 	const { user } = useAuthStore();
+	const { handleView } = useInvoiceHook();
 	const profitLossReportData = useReportsControllerGetProfitLossReports(
 		{
 			end: toDate,
@@ -92,7 +94,18 @@ const ProfitLossTableList = ({ fromDate, toDate }: { fromDate: string; toDate: s
 			flex: 1,
 			minWidth: 150,
 			renderCell: (params) => {
-				return <Typography>{params.value}</Typography>;
+				return (
+					<Box
+						sx={{ cursor: "pointer" }}
+						onClick={() => {
+							params?.value == "-" ? "" : handleView(params.row?.id);
+						}}
+					>
+						<Typography variant="h6" color={"secondary"}>
+							{params?.value}
+						</Typography>
+					</Box>
+				);
 			},
 		},
 		{

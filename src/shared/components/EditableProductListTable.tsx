@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
@@ -19,7 +19,7 @@ import {
 	GridRowParams,
 	MuiEvent,
 } from "@mui/x-data-grid";
-import { Grid, SelectChangeEvent, Typography, useTheme } from "@mui/material";
+import { Grid, SelectChangeEvent, Tooltip, Typography, useTheme } from "@mui/material";
 import GridSelectField from "@shared/components/DataGridFields/GridSelectField";
 import GridTextField from "@shared/components/DataGridFields/GridTextField";
 import { useProductControllerFindAll } from "@api/services/product";
@@ -29,6 +29,7 @@ import { FormikProps } from "formik";
 import { OmitCreateInvoiceProductsDto } from "@api/services/models";
 import { useTaxcodeControllerFindAll } from "@api/services/tax-code";
 import { useHsncodeControllerFindAll } from "@api/services/hsncode";
+import { CustomIconButton } from "./CustomIconButton";
 
 export default function FullFeaturedCrudGrid({
 	rows,
@@ -378,7 +379,7 @@ export default function FullFeaturedCrudGrid({
 			field: "actions",
 			type: "actions",
 			headerName: "Actions",
-			flex: 0.5,
+			flex: 0.7,
 			cellClassName: "actions",
 			getActions: ({ id }) => {
 				const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -387,7 +388,13 @@ export default function FullFeaturedCrudGrid({
 					return [
 						<GridActionsCellItem
 							key={0}
-							icon={<SaveIcon />}
+							icon={
+								<Tooltip title="Save Record">
+									<Box>
+										<CustomIconButton src={SaveIcon} />
+									</Box>
+								</Tooltip>
+							}
 							label="Save"
 							sx={{
 								color: "primary.main",
@@ -396,7 +403,13 @@ export default function FullFeaturedCrudGrid({
 						/>,
 						<GridActionsCellItem
 							key={1}
-							icon={<CancelIcon />}
+							icon={
+								<Tooltip title="Cancel Record">
+									<Box>
+										<CustomIconButton src={CancelIcon} buttonType="delete" iconColor="error" />
+									</Box>
+								</Tooltip>
+							}
 							label="Cancel"
 							className="textPrimary"
 							onClick={handleCancelClick(id)}
@@ -407,7 +420,13 @@ export default function FullFeaturedCrudGrid({
 
 				return [
 					<GridActionsCellItem
-						icon={<EditIcon />}
+						icon={
+							<Tooltip title="Edit Record">
+								<Box>
+									<CustomIconButton src={EditIcon} />
+								</Box>
+							</Tooltip>
+						}
 						key={0}
 						label="Edit"
 						className="textPrimary"
@@ -416,7 +435,13 @@ export default function FullFeaturedCrudGrid({
 					/>,
 					<GridActionsCellItem
 						key={1}
-						icon={<DeleteIcon />}
+						icon={
+							<Tooltip title="Delete Record">
+								<Box>
+									<CustomIconButton src={DeleteIcon} buttonType="delete" iconColor="error" />
+								</Box>
+							</Tooltip>
+						}
 						label="Delete"
 						onClick={handleDeleteClick(id)}
 						color="inherit"

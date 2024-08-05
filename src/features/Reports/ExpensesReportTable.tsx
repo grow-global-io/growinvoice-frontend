@@ -4,8 +4,8 @@ import { Typography } from "@mui/material";
 import { useReportsControllerGetExpenseReports } from "@api/services/reports";
 import Loader from "@shared/components/Loader";
 import { currencyFormatter, parseDateStringToFormat } from "@shared/formatter";
-import { CustomToolbar } from "@features/DashboardMenu/DashboardOpenAi";
 import { useMemo } from "react";
+import { CustomToolbar } from "@shared/components/CustomToolbar";
 
 const ExpensesReportTable = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
 	const expensesDate = useReportsControllerGetExpenseReports(

@@ -1,9 +1,9 @@
 import { AIDashboardDtoType, OpenaiControllerDashboardDataGet200 } from "@api/services/models";
 import { useOpenaiControllerDashboardDataGet } from "@api/services/openai";
 import BarChart from "@features/DashboardMenu/DashboardChart";
-import { CustomToolbar } from "@features/DashboardMenu/DashboardOpenAi";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { CustomToolbar } from "@shared/components/CustomToolbar";
 import Loader from "@shared/components/Loader";
 import LottieNoDataFound from "@shared/components/LottieNoDataFound";
 import { snakeToReadableText } from "@shared/formatter";

@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import { CustomToolbar } from "@features/DashboardMenu/DashboardOpenAi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { useReportsControllerGetCustomerReports } from "@api/services/reports";
@@ -7,9 +6,12 @@ import { convertUtcToFormat, currencyFormatter } from "@shared/formatter";
 import Loader from "@shared/components/Loader";
 import { useAuthStore } from "@store/auth";
 import { useMemo } from "react";
+import { useInvoiceHook } from "@features/Invoices/invoiceHooks/useInvoiceHook";
+import { CustomToolbar } from "@shared/components/CustomToolbar";
 
 const CustomerReportTalbeList = ({ fromDate, toDate }: { fromDate: string; toDate: string }) => {
 	const { user } = useAuthStore();
+	const { handleView } = useInvoiceHook();
 	const customerReportData = useReportsControllerGetCustomerReports(
 		{
 			end: toDate,
@@ -21,6 +23,7 @@ const CustomerReportTalbeList = ({ fromDate, toDate }: { fromDate: string; toDat
 			},
 		},
 	);
+	console.log(customerReportData, "data");
 	const CustomerReportMap = useMemo(() => {
 		if (customerReportData?.data && customerReportData?.data?.length > 0) {
 			return customerReportData?.data?.map((item) => {
@@ -69,7 +72,18 @@ const CustomerReportTalbeList = ({ fromDate, toDate }: { fromDate: string; toDat
 			flex: 1,
 			minWidth: 150,
 			renderCell: (params) => {
-				return <Typography>{params?.value}</Typography>;
+				return (
+					<Box
+						sx={{ cursor: "pointer" }}
+						onClick={() => {
+							handleView(params.row?.id);
+						}}
+					>
+						<Typography variant="h6" color={"secondary"}>
+							{params?.value}
+						</Typography>
+					</Box>
+				);
 			},
 		},
 		{
