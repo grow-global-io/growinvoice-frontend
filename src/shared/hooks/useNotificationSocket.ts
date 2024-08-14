@@ -1,3 +1,4 @@
+import { environment } from "@enviroment";
 import { useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
@@ -6,7 +7,7 @@ const useSocket = (userId: string) => {
 
 	useEffect(() => {
 		if (userId) {
-			const socketInstance = io("https://growinvoice-94ee0dd2031b.herokuapp.com", {
+			const socketInstance = io(environment.baseUrl, {
 				secure: true,
 				reconnection: true,
 				reconnectionAttempts: 5,
