@@ -12,7 +12,11 @@ const commonHooks = {
 	afterAllFilesWrite: "yarn run format",
 };
 
+
 const BASE_URL = process.env.VITE_BASE_URL;
+
+const BASE_URL = "http://192.248.152.35";
+
 
 const AUTH_API = `${BASE_URL}`;
 const instanceTemplate = `import Axios, { AxiosError, AxiosRequestConfig } from 'axios';

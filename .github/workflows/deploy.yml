@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 📄 Create .env File
         run: |
-          echo "VITE_BASE_URL=https://growinvoice-backend-16f908d94aed.herokuapp.com" > .env
+          echo "VITE_BASE_URL=http://192.248.152.35" > .env
       - name: 📦 Upload .env File
         uses: actions/upload-artifact@v3
         with:
