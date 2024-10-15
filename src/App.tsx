@@ -92,16 +92,16 @@ function AppContainer() {
 	}
 
 	const includeParentofSidebar = location.pathname.includes("setting");
-	if (user?.UserPlans?.length === 0) {
-		return (
-			<>
-				<Routes>
-					<Route path={"/plan/planspage"} element={<PlansPage />} />
-					<Route path={"*"} element={<Navigate to="/plan/planspage" replace />} />
-				</Routes>
-			</>
-		);
-	}
+	// if (user?.UserPlans?.length === 0) {
+	// 	return (
+	// 		<>
+	// 			<Routes>
+	// 				<Route path={"/plan/planspage"} element={<PlansPage />} />
+	// 				<Route path={"*"} element={<Navigate to="/plan/planspage" replace />} />
+	// 			</Routes>
+	// 		</>
+	// 	);
+	// }
 
 	return (
 		<Navbar>

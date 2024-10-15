@@ -7,7 +7,11 @@ const useSocket = (userId: string) => {
 
 	useEffect(() => {
 		if (userId) {
+
+			const socketInstance = io(`${process.env.VITE_BASE_URL}`, {
+
 			const socketInstance = io(environment.baseUrl, {
+
 				secure: true,
 				reconnection: true,
 				reconnectionAttempts: 5,
