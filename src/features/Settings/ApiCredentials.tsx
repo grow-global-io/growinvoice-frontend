@@ -31,7 +31,7 @@ const ApiCredentials = () => {
 					To learn more, check the documentation:
 					<Typography
 						component="a"
-						href="https://growinvoice-94ee0dd2031b.herokuapp.com/docs"
+						href={process.env.VITE_BASE_URL_DOC}
 						color="custom.primary"
 						sx={{ ml: 1, wordBreak: "break-all" }}
 						target="_blank"

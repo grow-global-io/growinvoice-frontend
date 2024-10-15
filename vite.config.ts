@@ -21,7 +21,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": {
-				target: "https://growinvoice-94ee0dd2031b.herokuapp.com",
+				target: process.env.VITE_BASE_URL,
 				changeOrigin: true,
 				secure: false,
 				rewrite: (path) => path,

@@ -6,7 +6,7 @@ const useSocket = (userId: string) => {
 
 	useEffect(() => {
 		if (userId) {
-			const socketInstance = io("https://growinvoice-94ee0dd2031b.herokuapp.com", {
+			const socketInstance = io(`${process.env.VITE_BASE_URL}`, {
 				secure: true,
 				reconnection: true,
 				reconnectionAttempts: 5,
