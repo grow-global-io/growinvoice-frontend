@@ -21,7 +21,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": {
-				target: "https://growinvoice-94ee0dd2031b.herokuapp.com",
+				target: "http://localhost:3000m",
 				changeOrigin: true,
 				secure: false,
 				rewrite: (path) => path,
