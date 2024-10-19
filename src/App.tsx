@@ -33,11 +33,11 @@ import { GateWayDialog } from "@features/GatewayDetails/GateWayDetailsIndex";
 import "react-toastify/dist/ReactToastify.css";
 import useSocket from "@shared/hooks/useNotificationSocket";
 import PlansPage from "@pages/PlansPage";
-import axios from 'axios'
+import axios from "axios";
 import { environment } from "@enviroment";
 
 function AppContainer() {
-	axios.defaults.baseURL = environment.baseUrl
+	axios.defaults.baseURL = environment.baseUrl;
 	const { isLoggedIn, logout, validateToken, user } = useAuthStore();
 	const [isLoading, setIsLoading] = useState(true);
 	const location = useLocation(); // Get the current path
